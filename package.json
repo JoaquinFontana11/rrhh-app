@@ -33,6 +33,9 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/auth-helpers-sveltekit": "^0.8.6",
-		"@supabase/supabase-js": "^2.2.2"
+		"@supabase/supabase-js": "^2.2.2",
+		"i": "^0.3.7",
+		"npm": "^9.2.0",
+		"svelte-hero-icons": "^4.1.3"
 	}
 }
