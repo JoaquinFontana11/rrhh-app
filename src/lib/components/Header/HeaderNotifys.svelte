@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon, Bell } from 'svelte-hero-icons';
+	import HeaderNotfyWindow from './HeaderNotfyWindow.svelte';
 	let show = false;
 </script>
 
@@ -13,6 +14,6 @@
 		<Icon src={Bell} class="w-8 h-8 " />
 	</button>
 	{#if show}
-		<p class="absolute top-10 right-5">contenido de las notificaciones</p>
+		<HeaderNotfyWindow />
 	{/if}
 </div>
