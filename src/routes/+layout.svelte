@@ -6,7 +6,7 @@
 
 <main class="flex bg-white w-screen h-screen dark:bg-stone-900">
 	<Sidebar />
-	<div class="grow">
+	<div class="grow flex flex-col">
 		<Header />
 		<slot />
 	</div>

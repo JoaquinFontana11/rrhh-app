@@ -3,10 +3,11 @@
 	import { Icon, type IconSource } from 'svelte-hero-icons';
 	export let icon: IconSource;
 	export let tooltip: String;
+	export let href: string = '#';
 	let active = false;
 </script>
 
-<button
+<a
 	class=" relative w-10 h-10 rounded-lg  text-stone-700 hover:bg-gray-200 hover:text-gray-900 flex justify-center items-center dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300"
 	on:mouseenter={() => {
 		active = true;
@@ -14,6 +15,7 @@
 	on:mouseleave={() => {
 		active = false;
 	}}
+	{href}
 >
 	<Icon src={icon} class="w-8 h-8" />
 	{#if active}
@@ -24,4 +26,4 @@
 			{tooltip}
 		</p>
 	{/if}
-</button>
+</a>
