@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import HeaderNotifySmallCard from './HeaderNotifySmallCard.svelte';
 	import HeaderNotifyButton from './HeaderNotifyButton.svelte';
 </script>
@@ -8,6 +9,7 @@
 /> -->
 <div
 	class="bg-white drop-shadow-lg absolute top-12 right-8 text-stone-300 w-80 h-40 rounded-md  overflow-auto scrollbar-thin scrollbar-thumb-stone-400 scrollbar-w-1 scrollbar-thumb-rounded-md dark:bg-black"
+	transition:fly
 >
 	<div class="flex flex-row gap-3 m-2">
 		<HeaderNotifyButton text="F1" type="" />
@@ -19,8 +21,5 @@
 		<HeaderNotifySmallCard info="es una buena OPCION??!!!" category="peligro" />
 		<HeaderNotifySmallCard info="lo averiguaremos en el proximo capitulo" category="bien" />
 		<HeaderNotifySmallCard info="mentira, es buenisimo" category="peligro" />
-	</div>
-	<div class="m-2 flex justify-end">
-		<HeaderNotifyButton text="Agregar Nota" type="add" />
 	</div>
 </div>

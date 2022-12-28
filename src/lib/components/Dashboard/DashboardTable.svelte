@@ -7,7 +7,7 @@
 	<thead>
 		<slot name="row-extra-header" />
 		{#each tableData.headers as header}
-			<th class="h-8 bg-stone-100">{header}</th>
+			<th class="h-8 bg-stone-100 font-medium dark:bg-stone-800 dark:text-stone-300">{header}</th>
 		{/each}
 	</thead>
 	<tbody>
@@ -17,7 +17,7 @@
 				<slot name="row-extra-cell" rowData={data} />
 				{#each tableData.fields as field, i}
 					<td
-						class="border border-stone-100"
+						class="border border-stone-100 dark:border-stone-800 dark:text-stone-400"
 						style={`${i == 0 || i == tableData.fields.length ? 'border-left: 0px' : ''}`}
 						>{data[field]}</td
 					>

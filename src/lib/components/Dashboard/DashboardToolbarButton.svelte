@@ -9,7 +9,7 @@
 <button
 	class={`
 	 p-1 text-sm rounded-md flex gap-2 justify-center items-center ${
-			highlight ? 'dark:text-stone-900' : 'dark:text-stone-400'
+			highlight ? 'dark:text-stone-900' : 'dark:text-stone-400 dark:hover:text-stone-200'
 		}`}
 	class:highligth={highlight}
 	on:click><Icon src={icon} class="w-4 h-4" /> {name}</button

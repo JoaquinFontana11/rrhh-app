@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Plus, Refresh, ArrowLeft, ArrowRight, Filter, SortAscending } from 'svelte-hero-icons';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -8,6 +9,8 @@
 
 	let showDrawer = false;
 	let drawerContent = Test;
+	let page = 1;
+	let lastPage = 10;
 
 	const tableData = {
 		headers: ['campo1', 'campo2', 'campo3', 'campo4', 'campo5', 'campo6'],
@@ -54,9 +57,21 @@
 		<DashboardToolbarButton name="Orden" icon={SortAscending} />
 		<DashboardToolbarButton name="Agregar filtro" icon={Filter} />
 		<div class="flex gap-1 justify-center items-center">
-			<DashboardToolbarButton name="" icon={ArrowLeft} />
-			<p class="dark:text-stone-400">1 / 10</p>
-			<DashboardToolbarButton name="" icon={ArrowRight} />
+			<DashboardToolbarButton
+				name=""
+				icon={ArrowLeft}
+				on:click={() => {
+					page = page == 0 ? page : page - 1;
+				}}
+			/>
+			<p class="dark:text-stone-400">{page} / {lastPage}</p>
+			<DashboardToolbarButton
+				name=""
+				icon={ArrowRight}
+				on:click={() => {
+					page = page == lastPage ? page : page + 1;
+				}}
+			/>
 		</div>
 		<DashboardToolbarButton name="" icon={Refresh} />
 		<DashboardToolbarButton
@@ -70,8 +85,15 @@
 		/>
 	</div>
 	<DashboardTable {tableData} slot="dashboard-content">
-		<th class="bg-stone-100" slot="row-extra-header" />
-		<td slot="row-extra-cell" class="border-t border-b border-r border-stone-100" let:rowData
+		<th
+			slot="row-extra-header"
+			class="h-8  bg-stone-100 font-medium dark:bg-stone-800 dark:text-stone-300"
+		/>
+
+		<td
+			slot="row-extra-cell"
+			class=" dark:border-stone-800 dark:text-stone-400 border-t border-b border-r border-stone-100"
+			let:rowData
 			><button
 				on:click={() => {
 					console.log(rowData);
