@@ -4,9 +4,11 @@
 	import Header from '$lib/components/Header/Header.svelte';
 </script>
 
-<main class="flex bg-white w-screen h-screen dark:bg-stone-900">
+<main
+	class="flex bg-white w-screen h-screen max-w-screen max-h-screen dark:bg-stone-900 overflow-x-hidden"
+>
 	<Sidebar />
-	<div class="grow flex flex-col">
+	<div class="flex flex-col ">
 		<Header />
 		<slot />
 	</div>

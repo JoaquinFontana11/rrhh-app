@@ -5,6 +5,9 @@
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
+	import type { PageLoad } from './$types';
+
+	export let data: PageLoad;
 
 	let showDrawer = false;
 	let drawerContent = Test;
@@ -12,43 +15,12 @@
 	let lastPage = 10;
 
 	const tableData = {
-		headers: ['campo1', 'campo2', 'campo3', 'campo4', 'campo5', 'campo6'],
-		fields: ['campo1', 'campo2', 'campo3', 'campo4', 'campo5', 'campo6'],
-		data: [
-			{
-				campo1: 'nombre 1',
-				campo2: 'nombre 2',
-				campo3: 'nombre 3',
-				campo4: 'nombre 4',
-				campo5: 'nombre 5',
-				campo6: 'nombre 6'
-			},
-			{
-				campo1: 'nombre 1',
-				campo2: 'nombre 2',
-				campo3: 'nombre 3',
-				campo4: 'nombre 4',
-				campo5: 'nombre 5',
-				campo6: 'nombre 6'
-			},
-			{
-				campo1: 'nombre 1',
-				campo2: 'nombre 2',
-				campo3: 'nombre 3',
-				campo4: 'nombre 4',
-				campo5: 'nombre 5',
-				campo6: 'nombre 6'
-			},
-			{
-				campo1: 'nombre 1',
-				campo2: 'nombre 2',
-				campo3: 'nombre 3',
-				campo4: 'nombre 4',
-				campo5: 'nombre 5',
-				campo6: 'nombre 6'
-			}
-		]
+		headers: Object.entries(data.data[0]).map((entries) => entries[0]),
+		fields: Object.entries(data.data[0]).map((entries) => entries[0]),
+		data: data.data
 	};
+
+	console.log(tableData);
 </script>
 
 <Dashboard bind:showDrawer {drawerContent}>
