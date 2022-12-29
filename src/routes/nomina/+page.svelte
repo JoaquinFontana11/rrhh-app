@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { Plus, Refresh, ArrowLeft, ArrowRight, Filter, SortAscending } from 'svelte-hero-icons';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
