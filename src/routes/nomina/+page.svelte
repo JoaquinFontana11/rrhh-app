@@ -5,6 +5,7 @@
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
+	import DrawerNewAgenteForm from '$lib/components/Drawer/DrawerNewAgenteForm.svelte';
 
 	let showDrawer = false;
 	let drawerContent = Test;
@@ -78,8 +79,8 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
-				drawerContent = Test;
-				showDrawer = true;
+				drawerContent = DrawerNewAgenteForm;
+				showDrawer = !showDrawer;
 			}}
 		/>
 	</div>

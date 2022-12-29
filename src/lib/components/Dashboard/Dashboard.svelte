@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex grow">
-	<div class="w-0 overflow-hidden duration-500" class:drawer--show={showDrawer}>
+	<div class="w-0 overflow-hidden min-w-96 duration-500" class:drawer--show={showDrawer}>
 		<DashboardDrawer
 			on:click={() => {
 				showDrawer = false;
