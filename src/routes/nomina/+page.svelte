@@ -8,10 +8,12 @@
 		Filter,
 		SortAscending
 	} from 'svelte-hero-icons';
-	import page from './pageStore';
+	import page from '$lib/stores/pageStore';
+	import order from '$lib/stores/orderStore';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
+	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageLoad } from './$types';
@@ -24,9 +26,9 @@
 	// TODO: definir bien el tipo
 	let tableData: any = [];
 	let stopLongPolling: any;
+	let intervalsIds: any[] = [];
 
 	const transformData = (data) => {
-		console.log(data);
 		return {
 			headers: Object.entries(data[0]).map((entries) => entries[0]),
 			fields: Object.entries(data[0]).map((entries) => entries[0]),
@@ -34,30 +36,38 @@
 		};
 	};
 
-	const initLongPolling = (page) => {
-		const intervalID = setInterval(async () => {
-			tableData = transformData((await data.reloadData(page)).data);
-		}, 1000);
+	const initLongPolling = (page, order) => {
+		intervalsIds.push(
+			setInterval(async () => {
+				tableData = transformData((await data.reloadData(page, order)).data);
+			}, 10000)
+		);
 
-		return () => {
-			clearInterval(intervalID);
-		};
+		return () => intervalsIds.forEach((id) => clearInterval(id));
 	};
 
 	tableData = transformData(data.data);
-	stopLongPolling = initLongPolling(0);
+	stopLongPolling = initLongPolling(0, $order);
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	page.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData(val)).data);
-		stopLongPolling = initLongPolling(val);
+		tableData = transformData((await data.reloadData(val, $order)).data);
+		stopLongPolling = initLongPolling(val, $order);
+	});
+	// cuando se cambia el orden tambien se recarga la pagina
+	order.subscribe(async (val) => {
+		stopLongPolling();
+		tableData = transformData((await data.reloadData($page, val)).data);
+		stopLongPolling = initLongPolling($page, val);
 	});
 </script>
 
 <Dashboard bind:showDrawer {drawerContent}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
-		<DashboardToolbarButton name="Orden" icon={SortAscending} />
+		<DashboardToolbarButton name="Orden" icon={SortAscending} dropdown={true}>
+			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
+		</DashboardToolbarButton>
 		<DashboardToolbarButton name="Agregar filtro" icon={Filter} />
 		<DashboardToolbarButton name="Agregar Campo" icon={Eye} />
 		<div class="flex gap-1 justify-center items-center">
