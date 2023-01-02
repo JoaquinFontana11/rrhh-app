@@ -12,4 +12,20 @@ interface datosPersonalesType {
 	genero: string | null;
 	activo: boolean | null;
 }
-export type { datosPersonalesType };
+
+interface IOption {
+	name: string;
+	value: string | boolean | number;
+}
+interface IComponent {
+	type: string;
+	label: string;
+	name: string;
+	value: any;
+	required?: boolean;
+	files?: FileList | Array<File>;
+	options?: IOption[];
+	images?: Array<Object>;
+}
+
+export type { datosPersonalesType, IComponent };
