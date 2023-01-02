@@ -8,6 +8,7 @@
 		Filter,
 		SortAscending
 	} from 'svelte-hero-icons';
+	import page from './pageStore';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
@@ -17,18 +18,41 @@
 
 	export let data: PageLoad;
 
+	let lastPage = data.lastPage;
 	let showDrawer = false;
 	let drawerContent = Test;
-	let page = 1;
-	let lastPage = 10;
+	// TODO: definir bien el tipo
+	let tableData: any = [];
+	let stopLongPolling: any;
 
-	const tableData = {
-		headers: Object.entries(data.data[0]).map((entries) => entries[0]),
-		fields: Object.entries(data.data[0]).map((entries) => entries[0]),
-		data: data.data
+	const transformData = (data) => {
+		console.log(data);
+		return {
+			headers: Object.entries(data[0]).map((entries) => entries[0]),
+			fields: Object.entries(data[0]).map((entries) => entries[0]),
+			data: data
+		};
 	};
 
-	console.log(tableData);
+	const initLongPolling = (page) => {
+		const intervalID = setInterval(async () => {
+			tableData = transformData((await data.reloadData(page)).data);
+		}, 1000);
+
+		return () => {
+			clearInterval(intervalID);
+		};
+	};
+
+	tableData = transformData(data.data);
+	stopLongPolling = initLongPolling(0);
+
+	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
+	page.subscribe(async (val) => {
+		stopLongPolling();
+		tableData = transformData((await data.reloadData(val)).data);
+		stopLongPolling = initLongPolling(val);
+	});
 </script>
 
 <Dashboard bind:showDrawer {drawerContent}>
@@ -41,15 +65,15 @@
 				name=""
 				icon={ArrowLeft}
 				on:click={() => {
-					page = page == 0 ? page : page - 1;
+					page.update((n) => (n == 0 ? n : n - 1));
 				}}
 			/>
-			<p class="dark:text-stone-400">{page} / {lastPage}</p>
+			<p class="dark:text-stone-400">{$page} / {lastPage}</p>
 			<DashboardToolbarButton
 				name=""
 				icon={ArrowRight}
 				on:click={() => {
-					page = page == lastPage ? page : page + 1;
+					page.update((n) => (n == lastPage ? n : n + 1));
 				}}
 			/>
 		</div>

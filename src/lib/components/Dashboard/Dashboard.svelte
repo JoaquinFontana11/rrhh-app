@@ -24,7 +24,7 @@
 			<slot name="toolbar-content" />
 		</DashboardToolbar>
 		<div
-			class=" dashboard-content-table scrollbar-thin  scrollbar-w-2 scrollbar-h-2 scrollbar-thumb-stone-200 dark:scrollbar-thumb-stone-700"
+			class=" dashboard-content-table scrollbar-thin  scrollbar-w-2 scrollbar-h-2 scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-700"
 		>
 			<slot name="dashboard-content" />
 		</div>
