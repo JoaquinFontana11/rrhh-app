@@ -1,6 +1,14 @@
 <script lang="ts">
+	import { watchResize } from 'svelte-watch-resize';
+
 	// TODO: crear un tipo para la clase de data que recibe la tabla
 	export let tableData: any = {};
+	// ancho de cada columna
+	let sizes = tableData.headers.map((e) => 40);
+
+	const headerResize = (node: HTMLElement) => {
+		sizes[tableData.headers.findIndex((e) => e == node.textContent)] = node.clientWidth;
+	};
 </script>
 
 <table class="overflow-auto">
@@ -9,7 +17,7 @@
 		{#each tableData.headers as header}
 			<th
 				class="h-8  w-10 bg-stone-100 font-medium dark:bg-stone-800 dark:text-stone-300 border-l border-r dark:border-stone-700 "
-				><p class="p-2 resize-x block overflow-auto">
+				><p class="p-2 resize-x block overflow-auto" use:watchResize={headerResize}>
 					{header}
 				</p>
 			</th>
@@ -22,10 +30,12 @@
 				<slot name="row-extra-cell" rowData={data} />
 				{#each tableData.fields as field, i}
 					<td
-						class="border border-stone-100 dark:border-stone-800 dark:text-stone-400 text-elipsis overflow-hidden"
+						class="border border-stone-100 dark:border-stone-800 dark:text-stone-400 text-elipsis overflow-hidden w-10"
 						style={`${i == 0 || i == tableData.fields.length ? 'border-left: 0px' : ''}`}
 					>
-						{data[field]}
+						<p class={`truncate p-2`} style={`width: ${sizes[i]}px;`}>
+							{data[field]}
+						</p>
 					</td>
 				{/each}
 			</tr>

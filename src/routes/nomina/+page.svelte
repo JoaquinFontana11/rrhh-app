@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { Plus, Refresh, ArrowLeft, ArrowRight, Filter, SortAscending } from 'svelte-hero-icons';
+	import {
+		Plus,
+		Eye,
+		Refresh,
+		ArrowLeft,
+		ArrowRight,
+		Filter,
+		SortAscending
+	} from 'svelte-hero-icons';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
@@ -27,6 +35,7 @@
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarButton name="Orden" icon={SortAscending} />
 		<DashboardToolbarButton name="Agregar filtro" icon={Filter} />
+		<DashboardToolbarButton name="Agregar Campo" icon={Eye} />
 		<div class="flex gap-1 justify-center items-center">
 			<DashboardToolbarButton
 				name=""
