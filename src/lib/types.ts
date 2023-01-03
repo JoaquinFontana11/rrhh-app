@@ -1,18 +1,3 @@
-interface datosPersonalesType {
-	DNI: number | null;
-	CUIT: number | null;
-	fechaNacimiento: Date | null;
-	domicilio: Date | null;
-	emailPersonal: string | null;
-	emailInstitucional: string | null;
-	telefono: number | null;
-	categoria: string | null;
-	curriculum: string | null;
-	agrupamiento: string | null;
-	genero: string | null;
-	activo: boolean | null;
-}
-
 interface IOption {
 	name: string;
 	value: string | boolean | number;
@@ -28,4 +13,12 @@ interface IComponent {
 	images?: Array<Object>;
 }
 
-export type { datosPersonalesType, IComponent };
+interface IComponentObject {
+	[key: string]: IComponent[];
+}
+
+interface FunctionsObject {
+	[key: string]: Function;
+}
+
+export type { IComponent, IComponentObject, FunctionsObject };

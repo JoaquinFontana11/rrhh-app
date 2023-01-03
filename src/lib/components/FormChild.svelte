@@ -80,15 +80,11 @@
 		try {
 			await Promise.all(
 				components.map(async (component) => {
-					// si es de tipo objetc es porque es un File por eso lo pasamos a base 64
-					if (typeof component.value == 'object') {
-						formData.append(component.name, await fileToBase64(component.value[0]));
-						formData.append('name', component.value[0].name);
-					} else formData.append(component.name, component.value);
+					formData.append(component.name, component.value);
 				})
 			);
 			console.log('---------------------------');
-			console.log([...formData][0].length);
+			console.log([...formData]);
 		} catch (err) {
 			console.log('---------------------------');
 			console.log(err);
@@ -97,9 +93,7 @@
 	});
 </script>
 
-<form
-	class="py-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col justify-center items-center"
->
+<form class="py-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col justify-center">
 	<!-- Dejamos un slot para ampliar la funcionalidad del formulario dependiendo la necesidad -->
 	<slot name="top-slot" />
 	{#each components as component}
@@ -134,24 +128,6 @@
 				bind:value={component.value}
 				required={component.required}
 			/>
-			<!-- {:else if component.type == 'file'}
-			<FormInputFile label={component.label} bind:files={component.value} />
-		{:else if component.type == 'image'}
-			<FormInputFileImage label={component.label} bind:files={component.value} />
-		{:else if component.type == 'editor'}
-			<FormEditor label={component.label} bind:value={component.value} />
-		{:else if component.type == 'select-image'}
-			<FormInputSelectImage
-				label={component.label}
-				bind:value={component.value}
-				images={component.images}
-			/>
-		{:else if component.type == 'big-select-image'}
-			<FormInputBigSelectImage
-				label={component.label}
-				bind:value={component.value}
-				images={component.images}
-			/> -->
 		{/if}
 	{/each}
 	<!-- Dejamos un slot para ampliar la funcionalidad del formulario dependiendo la necesidad -->

@@ -16,7 +16,7 @@ const extensionsImages = ['.jpg', '.png', '.jpeg', '.jfif'];
 const factoryValidators = (type: string | null = null) => {
 	return (value: any, styleError: { input: string; message: string } = error) => {
 		let message = '';
-		if (value === '') message = 'Debe completar este campo';
+		if (value === '' || value === 'null') message = 'Debe completar este campo';
 		// if (type == 'text' && /[°¬!#$%&@=?'¡¿´¨+*~}{[^}_-]/.test(value))
 		// 	message = 'No se admiten caracteres especiales';
 		// if (type == 'email' && /[|°¬!#$%&()=?'¡¿´¨+*~}{[^}_]/.test(value))
@@ -25,7 +25,6 @@ const factoryValidators = (type: string | null = null) => {
 		// 	message = 'No se admiten archivos con esa extension';
 		// if (type == 'image' && !validateFilesAndImages(value, extensionsImages))
 		// 	message = 'Solo se admiten Imagenes';
-
 		if (message)
 			return {
 				message,
