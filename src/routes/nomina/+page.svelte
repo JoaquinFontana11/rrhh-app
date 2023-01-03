@@ -8,14 +8,17 @@
 		Filter,
 		SortAscending
 	} from 'svelte-hero-icons';
-	import page from '$lib/stores/pageStore';
-	import order from '$lib/stores/orderStore';
-	import filter from '$lib/stores/filterStore';
+	import pageStore from '$lib/stores/pageStore';
+	import orderStore from '$lib/stores/orderStore';
+	import filterStore from '$lib/stores/filterStore';
+	import showStore from '$lib/stores/showStore';
+	import { showAllStore } from '$lib/stores/showStore';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
-	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
+	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
+	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageLoad } from './$types';
@@ -30,10 +33,19 @@
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
-	const transformData = (data) => {
+	const transformData = (data, filter = () => true) => {
+		if (data.length == 0) return { headers: [], fields: [], data: [] };
 		return {
-			headers: Object.entries(data[0]).map((entries) => entries[0]),
-			fields: Object.entries(data[0]).map((entries) => entries[0]),
+			headers: Object.entries(data[0])
+				.map((entries) => entries[0])
+				.filter(
+					(header) => $showStore.some((fieldAllow) => fieldAllow.field == header) || $showAllStore
+				),
+			fields: Object.entries(data[0])
+				.map((entries) => entries[0])
+				.filter(
+					(header) => $showStore.some((fieldAllow) => fieldAllow?.field == header) || $showAllStore
+				),
 			data: data
 		};
 	};
@@ -49,27 +61,34 @@
 	};
 
 	tableData = transformData(data.data);
-	stopLongPolling = initLongPolling(0, $order, $filter);
+	stopLongPolling = initLongPolling(0, $orderStore, $filterStore);
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
-	page.subscribe(async (val) => {
+	pageStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData(val, $order, $filter)).data);
-		stopLongPolling = initLongPolling(val, $order, $filter);
+		tableData = transformData((await data.reloadData(val, $orderStore, $filterStore)).data);
+		stopLongPolling = initLongPolling(val, $orderStore, $filterStore);
 	});
 	// cuando se cambia el orden tambien se recarga la pagina
-	order.subscribe(async (val) => {
+	orderStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData($page, val, $filter)).data);
-		stopLongPolling = initLongPolling($page, val, $filter);
+		tableData = transformData((await data.reloadData($pageStore, val, $filterStore)).data);
+		stopLongPolling = initLongPolling($pageStore, val, $filterStore);
 	});
 	// cuando se cambian los filtros tambien se recarga la pagina
-	filter.subscribe(async (val) => {
+	filterStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData($page, $order, val)).data);
-		stopLongPolling = initLongPolling($page, $order, val);
-		const { count } = await data.reloadLastPage($order, val);
-		lastPage = Math.trunc(count / 10) - 1;
+		tableData = transformData((await data.reloadData($pageStore, $orderStore, val)).data);
+		stopLongPolling = initLongPolling($pageStore, $orderStore, val);
+		const { count } = await data.calcLastPage($orderStore, val);
+		lastPage = Math.trunc(count / 10);
+	});
+	// cuando se cambian los campos a mostrar se recalcula tableData
+	showStore.subscribe(async (val) => {
+		tableData = transformData((await data.reloadData($pageStore, $orderStore, $filterStore)).data);
+	});
+	showAllStore.subscribe(async (val) => {
+		tableData = transformData((await data.reloadData($pageStore, $orderStore, $filterStore)).data);
 	});
 </script>
 
@@ -79,24 +98,32 @@
 			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
 		</DashboardToolbarButton>
 		<DashboardToolbarButton name="Agregar filtro" icon={Filter} dropdown={true}>
-			<DashboardToolbarFilter slot="dropdown-content" fields={tableData.fields} />
+			<DashboardToolbarFilter
+				slot="dropdown-content"
+				fields={Object.entries(data.fields).map((entries) => entries[0])}
+			/>
 		</DashboardToolbarButton>
 
-		<DashboardToolbarButton name="Agregar Campo" icon={Eye} />
+		<DashboardToolbarButton name="Agregar Campo" icon={Eye} dropdown={true}>
+			<DashboardToolbarShow
+				slot="dropdown-content"
+				fields={Object.entries(data.fields).map((entries) => entries[0])}
+			/>
+		</DashboardToolbarButton>
 		<div class="flex gap-1 justify-center items-center">
 			<DashboardToolbarButton
 				name=""
 				icon={ArrowLeft}
 				on:click={() => {
-					page.update((n) => (n == 0 ? n : n - 1));
+					pageStore.update((n) => (n == 0 ? n : n - 1));
 				}}
 			/>
-			<p class="dark:text-stone-400">{$page} / {lastPage}</p>
+			<p class="dark:text-stone-400">{$pageStore} / {lastPage}</p>
 			<DashboardToolbarButton
 				name=""
 				icon={ArrowRight}
 				on:click={() => {
-					page.update((n) => (n == lastPage ? n : n + 1));
+					pageStore.update((n) => (n == lastPage ? n : n + 1));
 				}}
 			/>
 		</div>

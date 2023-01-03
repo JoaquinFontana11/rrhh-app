@@ -15,9 +15,10 @@ export const load: PageLoad = async () => {
 
 	return {
 		data: agentes.data,
-		lastPage: lastPage / 10 - 1,
+		lastPage: Math.trunc(lastPage / 10),
 		reloadData: reloadData,
-		reloadLastPage
+		calcLastPage,
+		fields: (await supabase.from('agente').select('*').range(0, 1)).data[0]
 	};
 };
 
@@ -34,7 +35,7 @@ const reloadData = async (
 	return await eval(querySupabase);
 };
 
-const reloadLastPage = async (order = { field: 'DNI', direction: true }, filters: any[]) => {
+const calcLastPage = async (order = { field: 'DNI', direction: true }, filters: any[]) => {
 	let querySupabase = `supabase.from('agente').select('*', {count: 'exact'})`;
 	filters.map((f) => {
 		querySupabase += `.${f.filter}('${f.field}', '${f.value}')`;
