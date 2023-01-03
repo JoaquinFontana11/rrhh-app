@@ -6,20 +6,39 @@ export const ssr = false;
 
 export const load: PageLoad = async () => {
 	const order = JSON.parse(localStorage.getItem('order')) || { field: 'DNI', direction: true };
-	const { count: lastPage } = await supabase.from('agente').select('*', { count: 'exact' });
-	const agentes = await supabase
-		.from('agente')
-		.select('*')
-		.range(0, 9)
-		.order(order.field, { ascending: order.direction });
+	const filter = JSON.parse(localStorage.getItem('filter')) || [];
+
+	//contamos la cantidad maxima de registros para la paginacion
+	let { count: lastPage } = await supabase.from('agente').select('*', { count: 'exact' });
+	// modificamos la funcin de supabase para aplicar los filtros
+	const agentes = await reloadData(0, order, filter);
+
 	return {
 		data: agentes.data,
 		lastPage: lastPage / 10 - 1,
-		reloadData: async (page, order = { field: 'DNI', direction: true }) =>
-			await supabase
-				.from('agente')
-				.select('*')
-				.range(page * 10, page * 10 + 9)
-				.order(order.field, { ascending: order.direction })
+		reloadData: reloadData,
+		reloadLastPage
 	};
+};
+
+const reloadData = async (
+	page: number,
+	order = { field: 'DNI', direction: true },
+	filters: any[]
+) => {
+	let querySupabase = `supabase.from('agente').select('*').range(${page * 10}, ${page * 10 + 9})`;
+	filters.map((f) => {
+		querySupabase += `.${f.filter}('${f.field}', '${f.value}')`;
+	});
+	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
+	return await eval(querySupabase);
+};
+
+const reloadLastPage = async (order = { field: 'DNI', direction: true }, filters: any[]) => {
+	let querySupabase = `supabase.from('agente').select('*', {count: 'exact'})`;
+	filters.map((f) => {
+		querySupabase += `.${f.filter}('${f.field}', '${f.value}')`;
+	});
+	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
+	return await eval(querySupabase);
 };
