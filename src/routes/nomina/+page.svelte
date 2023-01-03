@@ -6,7 +6,9 @@
 		ArrowLeft,
 		ArrowRight,
 		Filter,
-		SortAscending
+		SortAscending,
+		Icon,
+		Document
 	} from 'svelte-hero-icons';
 	import pageStore from '$lib/stores/pageStore';
 	import orderStore from '$lib/stores/orderStore';
@@ -21,10 +23,10 @@
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
-	import type { PageLoad } from './$types';
+	import type { PageData } from './$types';
 	import DrawerNewAgenteForm from '$lib/components/Drawer/DrawerNewAgenteForm.svelte';
 
-	export let data: PageLoad;
+	export let data: PageData;
 
 	let lastPage = data.lastPage;
 	let showDrawer = false;
@@ -34,24 +36,32 @@
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
-	const transformData = (data, filter = () => true) => {
+	const transformData = (data: any[]) => {
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
 		return {
 			headers: Object.entries(data[0])
 				.map((entries) => entries[0])
 				.filter(
-					(header) => $showStore.some((fieldAllow) => fieldAllow.field == header) || $showAllStore
+					(header) =>
+						$showStore.some((fieldAllow: { field: string }) => fieldAllow.field == header) ||
+						$showAllStore
 				),
 			fields: Object.entries(data[0])
 				.map((entries) => entries[0])
 				.filter(
-					(header) => $showStore.some((fieldAllow) => fieldAllow?.field == header) || $showAllStore
+					(header) =>
+						$showStore.some((fieldAllow: { field: string }) => fieldAllow?.field == header) ||
+						$showAllStore
 				),
 			data: data
 		};
 	};
 
-	const initLongPolling = (page, order, filter) => {
+	const initLongPolling = (
+		page: number,
+		order: { field: string; direction: boolean },
+		filter: { field: string; filter: string; value: string }[]
+	) => {
 		intervalsIds.push(
 			setInterval(async () => {
 				tableData = transformData((await data.reloadData(page, order, filter)).data);
@@ -99,17 +109,11 @@
 			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
 		</DashboardToolbarButton>
 		<DashboardToolbarButton name="Agregar filtro" icon={Filter} dropdown={true}>
-			<DashboardToolbarFilter
-				slot="dropdown-content"
-				fields={Object.entries(data.fields).map((entries) => entries[0])}
-			/>
+			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
 
 		<DashboardToolbarButton name="Agregar Campo" icon={Eye} dropdown={true}>
-			<DashboardToolbarShow
-				slot="dropdown-content"
-				fields={Object.entries(data.fields).map((entries) => entries[0])}
-			/>
+			<DashboardToolbarShow slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
 		<div class="flex gap-1 justify-center items-center">
 			<DashboardToolbarButton
@@ -154,7 +158,9 @@
 					console.log(rowData);
 					drawerContent = Test2;
 					showDrawer = true;
-				}}>datos</button
+				}}
+				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"
+				><Icon src={Document} class="w-4 h-4" /></button
 			></td
 		>
 	</DashboardTable>

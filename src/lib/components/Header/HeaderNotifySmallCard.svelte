@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon, Bell, Plus, CheckCircle, Exclamation, ExclamationCircle } from 'svelte-hero-icons';
-	export let info: String;
-	export let category: String;
+	export let info: string;
+	export let category: string;
 	let styleText = {
 		bien: 'text-green-500',
 		alerta: 'text-yellow-500',

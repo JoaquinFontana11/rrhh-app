@@ -9,7 +9,7 @@
     />
 -->
 <aside
-	class="z-10 relative left-15 top-0 h-full bg-white w-56  dark:bg-stone-900 drawer overflow-y-scroll scrollbar-thin scrollbar-w-2"
+	class="z-10 relative left-15 top-0 h-full bg-white w-auto  dark:bg-stone-900 drawer overflow-y-scroll scrollbar-thin scrollbar-w-2"
 >
 	<button
 		on:click

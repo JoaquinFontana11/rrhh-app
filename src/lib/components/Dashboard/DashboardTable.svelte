@@ -4,10 +4,10 @@
 	// TODO: crear un tipo para la clase de data que recibe la tabla
 	export let tableData: any = {};
 	// ancho de cada columna
-	let sizes = tableData.headers.map((e) => 40);
+	let sizes = tableData.headers.map((e: number) => 40);
 
 	const headerResize = (node: HTMLElement) => {
-		sizes[tableData.headers.findIndex((e) => e == node.textContent)] = node.clientWidth;
+		sizes[tableData.headers.findIndex((e: string) => e == node.textContent)] = node.clientWidth;
 	};
 </script>
 

@@ -398,10 +398,8 @@
 	console.log(validate);
 </script>
 
-<div
-	class="p-2 flex flex-col items-center w-[85.5%]  scrollbar-thin scrollbar-w-10 overflow-y-scroll"
->
-	<FormAgente>
+<div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
+	<FormAgente {components}>
 		{#each formNames as formName}
 			<DrawerDropDownButton
 				validate={validate[formName]}

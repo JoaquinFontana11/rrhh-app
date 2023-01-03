@@ -11,8 +11,8 @@
 	showStore.subscribe((val) => {
 		localStorage.setItem('show', JSON.stringify(val));
 	});
-	showAllStore.subscribe((val) => {
-		localStorage.setItem('showAll', val);
+	showAllStore.subscribe((val: boolean) => {
+		localStorage.setItem('showAll', val.toString());
 	});
 </script>
 

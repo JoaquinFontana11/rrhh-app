@@ -38,11 +38,13 @@
 	</select>
 	<button
 		class="bg-lime-500 rounded-lg p-1"
-		on:click={orderStore.update((n) => {
-			return {
-				field,
-				direction
-			};
-		})}>Ordenar</button
+		on:click={() => {
+			orderStore.update((n) => {
+				return {
+					field,
+					direction
+				};
+			});
+		}}>Ordenar</button
 	>
 </div>
