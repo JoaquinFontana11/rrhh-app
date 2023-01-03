@@ -22,6 +22,7 @@
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageLoad } from './$types';
+	import DrawerNewAgenteForm from '$lib/components/Drawer/DrawerNewAgenteForm.svelte';
 
 	export let data: PageLoad;
 
@@ -133,8 +134,8 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
-				drawerContent = Test;
-				showDrawer = true;
+				drawerContent = DrawerNewAgenteForm;
+				showDrawer = !showDrawer;
 			}}
 		/>
 	</div>
