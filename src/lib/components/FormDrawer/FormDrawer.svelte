@@ -31,8 +31,9 @@
 	on:submit|preventDefault={handlerSubmit}
 >
 	<slot />
-	<button
-		class="w-[80%] mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-lime-500 hover:bg-lime-600"
-		>Confirmar</button
-	>
+	<input
+		type="submit"
+		class="w-5/6 mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-lime-500 hover:bg-lime-600 hover:cursor-pointer"
+		value="Agregar agente"
+	/>
 </form>

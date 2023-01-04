@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import FormDrawer from './FormDrawer.svelte';
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
-	import { validateEmptyInput } from './validators';
 	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
 
 	const dropdown = {
@@ -258,7 +258,7 @@
 				label: 'Ingreso a Planta temporaria',
 				name: 'ingresoPlantaTemporaria',
 				value: '',
-				required: true
+				required: false
 			},
 			{
 				type: 'text',
@@ -311,19 +311,24 @@
 			}
 		]
 	};
+
+	const validateForm = () => {
+		return true;
+	};
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
 	<FormDrawer {components} action="create">
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
-				dropdown={() => {
+				on:click={() => {
 					dropdown[formName] = !dropdown[formName];
 				}}
 				label={labels[formName]}
+				validate={true}
 			/>
 			{#if dropdown[formName]}
-				<div class=" w-full  rounded-lg divide-y divide-gray-100  dark:bg-stone-900">
+				<div class=" w-auto divide-y divide-gray-100  dark:bg-stone-900 mt-3" transition:fly>
 					<FormDrawerInputGroup bind:components={components[formName]} on:destroy={validateForm} />
 				</div>
 			{/if}

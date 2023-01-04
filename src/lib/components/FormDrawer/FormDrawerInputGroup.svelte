@@ -43,6 +43,7 @@
 			required={component.required}
 			type={component.type}
 			options={component.options}
+			name={component.name}
 		/>
 	{/each}
 </div>

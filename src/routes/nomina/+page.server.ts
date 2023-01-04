@@ -16,18 +16,20 @@ const create: Action = async ({ request }) => {
 		consideracion: data.get('consideracion')
 	};
 	const recorrido = {
-		antiguedadCLS: data.get('antiguedadCLS'),
-		antiguedadPPT: data.get('antiguedadPPT'),
-		plantaTemporaria: data.get('plantaTemporaria'),
-		ingresoPlantaTemporaria: data.get('ingresoPlantaTemporaria'),
-		expTramitacionDesignacion: data.get('expTramitacionDesignacion'),
-		resoDesignacion: data.get('resoDesignacion'),
-		numSIAPE: data.get('numSIAPE'),
-		bajaPTT: data.get('bajaPTT'),
-		expBajaPPT: data.get('expBajaPPT'),
-		ingresoCLS: data.get('ingresoCLS'),
-		bajaCLS: data.get('bajaCLS')
+		antiguedadCLS: data.get('antiguedadCLS') || null,
+		antiguedadPPT: data.get('antiguedadPPT') || null,
+		plantaTemporaria: data.get('plantaTemporaria') || null,
+		ingresoPlantaTemporaria: data.get('ingresoPlantaTemporaria') || null,
+		expTramitacionDesignacion: data.get('expTramitacionDesignacion') || null,
+		resoDesignacion: data.get('resoDesignacion') || null,
+		numSIAPE: data.get('numSIAPE') || null,
+		bajaPTT: data.get('bajaPTT') || null,
+		expBajaPPT: data.get('expBajaPPT') || null,
+		ingresoCLS: data.get('ingresoCLS') || null,
+		bajaCLS: data.get('bajaCLS') || null
 	};
+
+	console.log(recorrido);
 
 	const { data: dataSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')

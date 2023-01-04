@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
+	export let name: string;
 	export let value: string;
 	export let label: string;
 	export let required = false;
@@ -33,6 +34,7 @@
 			id={label}
 			type="number"
 			class="input"
+			{name}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -41,6 +43,7 @@
 			id={label}
 			type="text"
 			class="input"
+			{name}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -49,6 +52,7 @@
 			id={label}
 			type="date"
 			class="input"
+			{name}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -58,6 +62,7 @@
 			id={label}
 			type="email"
 			class="input"
+			{name}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -66,6 +71,7 @@
 		<select
 			id={label}
 			class="input"
+			{name}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
