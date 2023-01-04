@@ -21,6 +21,7 @@
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
+	import DrawerAgenteInfo from '$lib/components/Drawer/DrawerAgenteInfo.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageData } from './$types';
@@ -156,7 +157,7 @@
 			><button
 				on:click={() => {
 					console.log(rowData);
-					drawerContent = Test2;
+					drawerContent = DrawerAgenteInfo;
 					showDrawer = true;
 				}}
 				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"

@@ -18,6 +18,12 @@
 		recorrido: true
 	};
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'recorrido'];
+	const labels = {
+		datosPersonales: 'Datos Personales',
+		datosSalud: 'Datos de Salud',
+		datosAcademicos: 'Datos Academicos',
+		recorrido: 'Recorrido'
+	};
 	const components: IComponentObject = {
 		datosPersonales: [
 			{
@@ -399,14 +405,14 @@
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<FormAgente {components}>
+	<FormAgente {components} action="create">
 		{#each formNames as formName}
 			<DrawerDropDownButton
 				validate={validate[formName]}
 				dropdown={() => {
 					dropdown[formName] = !dropdown[formName];
 				}}
-				label={formName}
+				label={labels[formName]}
 			/>
 			{#if dropdown[formName]}
 				<div class=" w-full  rounded-lg divide-y divide-gray-100 shadow dark:bg-stone-900">
