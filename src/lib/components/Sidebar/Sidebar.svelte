@@ -6,7 +6,8 @@
 		Archive,
 		Bookmark,
 		Calendar,
-		Chip
+		Chip,
+		Table
 	} from 'svelte-hero-icons';
 	import SidebarButton from './SidebarButton.svelte';
 	import SidebarButtonTheme from './SidebarButtonTheme.svelte';
@@ -17,13 +18,13 @@
 >
 	<Icon src={Chip} class="w-8 h-8 text-lime-500 mt-3" />
 	<ul class="flex flex-col gap-4 absolute top-1/2 -translate-y-1/2">
-		<SidebarButton icon={Adjustments} tooltip="Nomina de agentes" href="/nomina" />
-		<SidebarButton icon={Archive} tooltip="Del" />
-		<SidebarButton icon={Bookmark} tooltip="Sexo" />
-		<SidebarButton icon={Calendar} tooltip="En" />
+		<SidebarButton icon={Table} tooltip="Nomina de agentes" href="/nomina" />
 	</ul>
 	<ul class="absolute bottom-2 flex flex-col gap-3">
-		<SidebarButton icon={ChevronDoubleRight} tooltip="La PLAYA" />
+		<!--
+
+			<SidebarButton icon={ChevronDoubleRight} tooltip="La PLAYA" on:click />
+		-->
 		<SidebarButtonTheme />
 	</ul>
 </nav>

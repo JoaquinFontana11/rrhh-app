@@ -38,7 +38,9 @@ const reloadData = async (
 	order = { field: 'DNI', direction: true },
 	filters: any[]
 ) => {
-	let querySupabase = `supabase.from('agente').select('*').range(${page * 10}, ${page * 10 + 9})`;
+	let querySupabase = `supabase.from('agente').select('*, recorrido (*), datosAcademicos (*), datosSalud (*), equipo (*), rol (*), direccion (*), superiorDirecto (*)').range(${
+		page * 10
+	}, ${page * 10 + 9})`;
 	filters.map((f) => {
 		querySupabase += `.${f.filter}('${f.field}', '${f.value}')`;
 	});

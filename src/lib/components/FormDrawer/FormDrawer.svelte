@@ -1,20 +1,21 @@
 <script lang="ts">
 	import type { IComponentObject } from '$lib/types';
+	import { agenteStore } from '$lib/stores/agenteStore';
+
 	export let components: IComponentObject;
 	export let action: string;
 
 	const handlerSubmit = async (e: Event) => {
 		const formData = new FormData();
-		console.log(components);
 		try {
 			for (const key in components) {
-				console.log(components[key]);
 				await Promise.all(
 					components[key].map((component) => {
 						formData.append(component.name, component.value);
 					})
 				);
 			}
+			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			console.log([...formData]);
 		} catch (err) {
 			console.log(err);

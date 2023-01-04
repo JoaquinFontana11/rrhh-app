@@ -14,6 +14,7 @@
 	import orderStore from '$lib/stores/orderStore';
 	import filterStore from '$lib/stores/filterStore';
 	import showStore from '$lib/stores/showStore';
+	import { agenteStore } from '$lib/stores/agenteStore';
 	import { showAllStore } from '$lib/stores/showStore';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
@@ -23,7 +24,6 @@
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
 	import DrawerAgenteInfo from '$lib/components/FormDrawer/DrawerAgenteInfo.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
-	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageData } from './$types';
 	import FormDrawerAgente from '$lib/components/FormDrawer/FormDrawerAgente.svelte';
 
@@ -104,7 +104,7 @@
 	});
 </script>
 
-<Dashboard bind:showDrawer {drawerContent}>
+<Dashboard bind:showDrawer drawerContent={FormDrawerAgente}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarButton name="Orden" icon={SortAscending} dropdown={true}>
 			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
@@ -139,8 +139,10 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
-				drawerContent = FormDrawerAgente;
-				showDrawer = !showDrawer;
+				agenteStore.update((n) => {
+					return {};
+				});
+				showDrawer = true;
 			}}
 		/>
 	</div>
@@ -156,8 +158,9 @@
 			let:rowData
 			><button
 				on:click={() => {
+					agenteStore.update((n) => rowData);
+
 					console.log(rowData);
-					drawerContent = DrawerAgenteInfo;
 					showDrawer = true;
 				}}
 				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"

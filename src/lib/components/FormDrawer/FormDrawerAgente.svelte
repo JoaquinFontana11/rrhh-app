@@ -4,6 +4,13 @@
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
 	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
+	import { agenteStore } from '$lib/stores/agenteStore';
+
+	let action = 'create';
+
+	agenteStore.subscribe((agente) => {
+		action = Object.entries(agente).length == 0 ? 'create' : 'update';
+	});
 
 	const dropdown = {
 		datosPersonales: false,
@@ -24,90 +31,94 @@
 		datosAcademicos: 'Datos Academicos',
 		recorrido: 'Recorrido'
 	};
-	const components: IComponentObject = {
+	let components: IComponentObject;
+
+	//TODO: esto rompe porqueno se actualiza la store cuando se cambia un input
+
+	$: components = {
 		datosPersonales: [
 			{
 				type: 'number',
 				label: 'DNI',
 				name: 'DNI',
-				value: '',
+				value: $agenteStore.DNI || '',
 				required: true
 			},
 			{
 				type: 'number',
 				label: 'CUIT',
 				name: 'CUIT',
-				value: '',
+				value: $agenteStore.CUIT || '',
 				required: true
 			},
 			{
 				type: 'date',
 				label: 'Fecha de nacimiento',
 				name: 'fechaNacimiento',
-				value: '',
+				value: $agenteStore.fechaNacimiento || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'domicilio',
 				name: 'domicilio',
-				value: '',
+				value: $agenteStore.domicilio || '',
 				required: true
 			},
 			{
 				type: 'email',
 				label: 'email personal',
 				name: 'emailPersonal',
-				value: '',
+				value: $agenteStore.emailPersonal || '',
 				required: true
 			},
 			{
 				type: 'email',
 				label: 'email institucional',
 				name: 'emailInstitucional',
-				value: '',
+				value: $agenteStore.emailInstitucional || '',
 				required: true
 			},
 			{
 				type: 'number',
 				label: 'telefono',
 				name: 'telefono',
-				value: '',
+				value: $agenteStore.telefono || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'categoria',
 				name: 'categoria',
-				value: '',
+				value: $agenteStore.categoria || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'curriculum',
 				name: 'curriculum',
-				value: '',
+				value: $agenteStore.curriculum || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'agrupamiento',
 				name: 'agrupamiento',
-				value: '',
+				value: $agenteStore.agrupamientoc || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'genero',
 				name: 'genero',
-				value: '',
+				value: $agenteStore.genero || '',
 				required: true
 			},
 			{
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: '',
+				value: $agenteStore.activo || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -118,7 +129,7 @@
 				type: 'select',
 				label: 'Equipo',
 				name: 'equipo',
-				value: '',
+				value: $agenteStore.equipo || '',
 				required: true,
 				options: [
 					{ value: 1, name: 'equipo1' },
@@ -129,7 +140,7 @@
 				type: 'select',
 				label: 'Direccion de linea',
 				name: 'direccion',
-				value: '',
+				value: $agenteStore.direccion || '',
 				required: true,
 				options: [
 					{ value: 1, name: 'direccion1' },
@@ -140,7 +151,7 @@
 				type: 'select',
 				label: 'Rol',
 				name: 'rol',
-				value: '',
+				value: $agenteStore.rol || '',
 				required: true,
 				options: [
 					{ value: 1, name: 'empleado' },
@@ -152,7 +163,7 @@
 				type: 'text',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
-				value: '',
+				value: $agenteStore.superiorDirecto || '',
 				required: true
 			}
 		],
@@ -161,7 +172,7 @@
 				type: 'select',
 				label: 'Tipo de Sangre',
 				name: 'tipoSangre',
-				value: '',
+				value: $agenteStore.datosSalud?.tipoSangre || '',
 				required: true,
 				options: [
 					{ value: 'A+', name: 'A+' },
@@ -178,21 +189,21 @@
 				type: 'text',
 				label: 'medicamentos',
 				name: 'medicamentos',
-				value: '',
+				value: $agenteStore.datosSalud?.medicamento || '',
 				required: false
 			},
 			{
 				type: 'text',
 				label: 'consideraciones',
 				name: 'consideracion',
-				value: '',
+				value: $agenteStore.datosSalud?.consideracion || '',
 				required: false
 			},
 			{
 				type: 'select',
 				label: 'IOMA',
 				name: 'IOMA',
-				value: '',
+				value: $agenteStore.datosSalud?.IOMA || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -205,21 +216,21 @@
 				type: 'text',
 				label: 'Carrera Universitaria',
 				name: 'carreraUniversitaria',
-				value: '',
+				value: $agenteStore.datosAcademicos?.carreraUniversitaria || '',
 				required: false
 			},
 			{
 				type: 'text',
 				label: 'Carrera Postgrado',
 				name: 'carreraPostgrado',
-				value: '',
+				value: $agenteStore.datosAcademicos?.carreraPostgrado || '',
 				required: false
 			},
 			{
 				type: 'select',
 				label: 'Carrera universitaria Fianlizada',
 				name: 'carreraFinalizada',
-				value: '',
+				value: $agenteStore.datosAcademicos?.carreraFinalizada || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -232,21 +243,21 @@
 				type: 'number',
 				label: 'Antiguedad CLS',
 				name: 'antiguedadCLS',
-				value: '',
+				value: $agenteStore.recorrido?.antiguedadCLS || '',
 				required: false
 			},
 			{
 				type: 'number',
 				label: 'Antiguedad PPT',
 				name: 'antiguedadPPT',
-				value: '',
+				value: $agenteStore.recorrido?.antiguedadPPT || '',
 				required: false
 			},
 			{
 				type: 'select',
 				label: 'Planta temporaria',
 				name: 'plantaTemporaria',
-				value: '',
+				value: $agenteStore.recorrido?.plantaTemporaria || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -257,56 +268,56 @@
 				type: 'date',
 				label: 'Ingreso a Planta temporaria',
 				name: 'ingresoPlantaTemporaria',
-				value: '',
+				value: $agenteStore.recorrido?.ingresoPlantaTemporaria || '',
 				required: false
 			},
 			{
 				type: 'text',
 				label: 'Exp. tramitacion designacion',
 				name: 'expTramitacionDesignacion',
-				value: '',
+				value: $agenteStore.recorrido?.expTramitacionDesignacion || '',
 				required: false
 			},
 			{
 				type: 'text',
 				label: 'Reso. designacion',
 				name: 'resoDesignacion',
-				value: '',
+				value: $agenteStore.recorrido?.resoDesignacion || '',
 				required: false
 			},
 			{
 				type: 'number',
 				label: 'Numero SIAPE',
 				name: 'numSIAPE',
-				value: '',
+				value: $agenteStore.recorrido?.numSIAPE || '',
 				required: false
 			},
 			{
 				type: 'date',
 				label: 'Baja PPT',
 				name: 'bajaPTT',
-				value: '',
+				value: $agenteStore.recorrido?.bajaPTT || '',
 				required: true
 			},
 			{
 				type: 'text',
 				label: 'Exp. baja PPT',
 				name: 'expBajaPPT',
-				value: '',
+				value: $agenteStore.recorrido?.expBajaPPT || '',
 				required: false
 			},
 			{
 				type: 'date',
 				label: 'Ingreso CLS',
 				name: 'ingresoCLS',
-				value: '',
+				value: $agenteStore.recorrido?.ingresoCLS || '',
 				required: true
 			},
 			{
 				type: 'date',
 				label: 'Baja CLS',
 				name: 'bajaCLS',
-				value: '',
+				value: $agenteStore.recorrido?.bajaCLS || '',
 				required: true
 			}
 		]
@@ -318,7 +329,7 @@
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<FormDrawer {components} action="create">
+	<FormDrawer {components} {action}>
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
 				on:click={() => {
