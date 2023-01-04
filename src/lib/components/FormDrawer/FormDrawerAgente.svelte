@@ -2,7 +2,11 @@
 	import FormDrawer from './FormDrawer.svelte';
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
-	import { validateEmptyInput } from './validators';
+	import {
+		validateEmptyInput,
+		validateInputEmail,
+		validateInputEmailInstitucional
+	} from './validators';
 	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
 
 	const dropdown = {
@@ -31,77 +35,88 @@
 				label: 'DNI',
 				name: 'DNI',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'number',
 				label: 'CUIT',
 				name: 'CUIT',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'date',
 				label: 'Fecha de nacimiento',
 				name: 'fechaNacimiento',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'domicilio',
 				name: 'domicilio',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'email',
 				label: 'email personal',
 				name: 'emailPersonal',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput, validateInputEmail]
 			},
 			{
 				type: 'email',
 				label: 'email institucional',
 				name: 'emailInstitucional',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput, validateInputEmailInstitucional]
 			},
 			{
 				type: 'number',
 				label: 'telefono',
 				name: 'telefono',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'categoria',
 				name: 'categoria',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'curriculum',
 				name: 'curriculum',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'agrupamiento',
 				name: 'agrupamiento',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'genero',
 				name: 'genero',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -112,7 +127,8 @@
 				options: [
 					{ value: true, name: 'Si' },
 					{ value: false, name: 'No' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -123,7 +139,8 @@
 				options: [
 					{ value: 1, name: 'equipo1' },
 					{ value: 2, name: 'equipo2' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -134,7 +151,8 @@
 				options: [
 					{ value: 1, name: 'direccion1' },
 					{ value: 2, name: 'direccion2' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -146,14 +164,16 @@
 					{ value: 1, name: 'empleado' },
 					{ value: 2, name: 'coordinador' },
 					{ value: 3, name: 'esclavo' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			}
 		],
 		datosSalud: [
@@ -172,21 +192,24 @@
 					{ value: 'AB-', name: 'AB-' },
 					{ value: '0+', name: '0+' },
 					{ value: '0-', name: '0-' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'medicamentos',
 				name: 'medicamentos',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'consideraciones',
 				name: 'consideracion',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -197,7 +220,8 @@
 				options: [
 					{ value: true, name: 'Si' },
 					{ value: false, name: 'No' }
-				]
+				],
+				validators: [validateEmptyInput]
 			}
 		],
 		datosAcademicos: [
@@ -206,14 +230,16 @@
 				label: 'Carrera Universitaria',
 				name: 'carreraUniversitaria',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'Carrera Postgrado',
 				name: 'carreraPostgrado',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -224,7 +250,8 @@
 				options: [
 					{ value: true, name: 'Si' },
 					{ value: false, name: 'No' }
-				]
+				],
+				validators: [validateEmptyInput]
 			}
 		],
 		recorrido: [
@@ -233,14 +260,16 @@
 				label: 'Antiguedad CLS',
 				name: 'antiguedadCLS',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'number',
 				label: 'Antiguedad PPT',
 				name: 'antiguedadPPT',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
@@ -251,65 +280,77 @@
 				options: [
 					{ value: true, name: 'Si' },
 					{ value: false, name: 'No' }
-				]
+				],
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'date',
 				label: 'Ingreso a Planta temporaria',
 				name: 'ingresoPlantaTemporaria',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'Exp. tramitacion designacion',
 				name: 'expTramitacionDesignacion',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'Reso. designacion',
 				name: 'resoDesignacion',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'number',
 				label: 'Numero SIAPE',
 				name: 'numSIAPE',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'date',
 				label: 'Baja PPT',
 				name: 'bajaPTT',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
 				label: 'Exp. baja PPT',
 				name: 'expBajaPPT',
 				value: '',
-				required: false
+				required: false,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'date',
 				label: 'Ingreso CLS',
 				name: 'ingresoCLS',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			},
 			{
 				type: 'date',
 				label: 'Baja CLS',
 				name: 'bajaCLS',
 				value: '',
-				required: true
+				required: true,
+				validators: [validateEmptyInput]
 			}
 		]
+	};
+	const validateForm = () => {
+		return true;
 	};
 </script>
 

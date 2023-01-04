@@ -1,13 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import type { IComponent } from '$lib/types';
-	/*
-	import FormInputDate from '../Inputs/FormInputDate.svelte';
-	import FormInputNumber from '../Inputs/FormInputNumber.svelte';
-	import FormInputSelect from '../Inputs/FormInputSelect.svelte';
-	import FormInputText from '../Inputs/FormInputText.svelte';
-	import FormInputEmail from '../Inputs/FormInputEmail.svelte';
-*/
 	import FormDrawerInput from './FormDrawerInput.svelte';
 	// import Spinner from '$lib/components/Spinner.svelte';
 
@@ -43,6 +36,7 @@
 			required={component.required}
 			type={component.type}
 			options={component.options}
+			validators={component.validators}
 		/>
 	{/each}
 </div>

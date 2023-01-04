@@ -10,33 +10,21 @@ const predet = {
 	message: 'hidden'
 };
 
-const extensionErrorTypes = ['.zip', '.rar', '.exe', '.iso'];
-const extensionsImages = ['.jpg', '.png', '.jpeg', '.jfif'];
-
 const factoryValidators = (type: string | null = null) => {
-	return (value: any, styleError: { input: string; message: string } = error) => {
+	return (value: any) => {
 		let message = '';
 		if (value === '' || value === 'null') message = 'Debe completar este campo';
-		// if (type == 'text' && /[°¬!#$%&@=?'¡¿´¨+*~}{[^}_-]/.test(value))
-		// 	message = 'No se admiten caracteres especiales';
-		// if (type == 'email' && /[|°¬!#$%&()=?'¡¿´¨+*~}{[^}_]/.test(value))
-		// 	message = 'No se admiten caracteres especiales';
-		// if (type == 'file' && validateFilesAndImages(value, extensionErrorTypes))
-		// 	message = 'No se admiten archivos con esa extension';
-		// if (type == 'image' && !validateFilesAndImages(value, extensionsImages))
-		// 	message = 'Solo se admiten Imagenes';
+		if (type == 'email' && !/[@.]/.test(value)) message = 'No se cumple el formato de email';
+		if (type == 'emailInst' && !/[@.]/.test(value) && value.endsWith('@gba.gob.ar'))
+			message = 'No se cumple el formato de email Institucional';
 		if (message)
 			return {
 				message,
-				inputStyle: styleError.input,
-				messageStyle: styleError.message,
 				status: false
 			};
 
 		return {
 			message: '',
-			inputStyle: predet.input,
-			messageStyle: predet.message,
 			status: true
 		};
 	};
@@ -48,15 +36,7 @@ const validateFilesAndImages = (file: File, extensions: Array<string>): Boolean 
 };
 
 const validateEmptyInput = factoryValidators();
-const validateInputText = factoryValidators('text');
 const validateInputEmail = factoryValidators('email');
-const validateInputFile = factoryValidators('file');
-const validateInputFileImage = factoryValidators('image');
+const validateInputEmailInstitucional = factoryValidators('emailInst');
 
-export {
-	validateEmptyInput,
-	validateInputText,
-	validateInputFile,
-	validateInputFileImage,
-	validateInputEmail
-};
+export { validateEmptyInput, validateInputEmailInstitucional, validateInputEmail };
