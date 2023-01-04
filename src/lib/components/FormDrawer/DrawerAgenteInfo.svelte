@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DrawerDropDownButton from './DrawerDropDownButton.svelte';
+	import DrawerDropDownButton from './FormDrawerInputGroupButton.svelte';
 	import DrawerTableInfo from './DrawerTableInfo.svelte';
 
 	const formNames = ['datosSalud', 'datosAcademicos', 'recorrido'];

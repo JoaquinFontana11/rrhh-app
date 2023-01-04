@@ -21,11 +21,11 @@
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
-	import DrawerAgenteInfo from '$lib/components/Drawer/DrawerAgenteInfo.svelte';
+	import DrawerAgenteInfo from '$lib/components/FormDrawer/DrawerAgenteInfo.svelte';
 	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import Test2 from '$lib/components/Dashboard/TEST2.svelte';
 	import type { PageData } from './$types';
-	import DrawerNewAgenteForm from '$lib/components/Drawer/DrawerNewAgenteForm.svelte';
+	import FormDrawerAgente from '$lib/components/FormDrawer/FormDrawerAgente.svelte';
 
 	export let data: PageData;
 
@@ -139,7 +139,7 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
-				drawerContent = DrawerNewAgenteForm;
+				drawerContent = FormDrawerAgente;
 				showDrawer = !showDrawer;
 			}}
 		/>

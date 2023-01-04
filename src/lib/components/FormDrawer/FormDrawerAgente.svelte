@@ -1,8 +1,8 @@
 <script lang="ts">
-	import FormInputGroup from '../FormInputGroup.svelte';
-	import FormAgente from '../FormAgente.svelte';
-	import DrawerDropDownButton from './DrawerDropDownButton.svelte';
-	import { validateEmptyInput } from '../Inputs/validators';
+	import FormDrawer from './FormDrawer.svelte';
+	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
+	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
+	import { validateEmptyInput } from './validators';
 	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
 
 	const dropdown = {
@@ -284,7 +284,7 @@
 			{
 				type: 'date',
 				label: 'Baja PPT',
-				name: 'bajaPPT',
+				name: 'bajaPTT',
 				value: '',
 				required: true
 			},
@@ -311,118 +311,22 @@
 			}
 		]
 	};
-
-	const validators: FunctionsObject = {
-		datosPersonales: (data: any) => {
-			console.log(data);
-			if (
-				validateEmptyInput(data[0][1]).status &&
-				validateEmptyInput(data[1][1]).status &&
-				validateEmptyInput(data[2][1]).status &&
-				validateEmptyInput(data[3][1]).status &&
-				validateEmptyInput(data[4][1]).status &&
-				validateEmptyInput(data[5][1]).status &&
-				validateEmptyInput(data[6][1]).status &&
-				validateEmptyInput(data[7][1]).status &&
-				validateEmptyInput(data[8][1]).status &&
-				validateEmptyInput(data[9][1]).status &&
-				validateEmptyInput(data[10][1]).status &&
-				validateEmptyInput(data[10][1]).status &&
-				validateEmptyInput(data[11][1]).status &&
-				validateEmptyInput(data[12][1]).status &&
-				validateEmptyInput(data[13][1]).status &&
-				validateEmptyInput(data[14][1]).status
-			) {
-				return { form: 'datosPersonales', status: true, message: 'Se subio correctamente' };
-			} else {
-				return {
-					form: 'datosPersonales',
-					status: false,
-					message: 'Alguno de los datos ingresados es incorrecto'
-				};
-			}
-		},
-		datosSalud: (data: any) => {
-			console.log(data);
-			if (validateEmptyInput(data[0][1]).status && validateEmptyInput(data[3][1]).status) {
-				return { form: 'datosSalud', status: true, message: 'Se subio correctamente' };
-			} else {
-				return {
-					form: 'datosSalud',
-					status: false,
-					message: 'Alguno de los datos ingresados es incorrecto'
-				};
-			}
-		},
-		datosAcademicos: (data: any) => {
-			console.log(data);
-			if (
-				validateEmptyInput(data[0][1]).status &&
-				validateEmptyInput(data[1][1]).status &&
-				validateEmptyInput(data[2][1]).status
-			) {
-				return { form: 'datosAcademicos', status: true, message: 'Se subio correctamente' };
-			} else {
-				return {
-					form: 'datosAcademicos',
-					status: false,
-					message: 'Alguno de los datos ingresados es incorrecto'
-				};
-			}
-		},
-		recorrido: (data: any) => {
-			console.log(data);
-			if (
-				validateEmptyInput(data[0][1]).status &&
-				validateEmptyInput(data[1][1]).status &&
-				validateEmptyInput(data[2][1]).status &&
-				validateEmptyInput(data[3][1]).status &&
-				validateEmptyInput(data[4][1]).status &&
-				validateEmptyInput(data[5][1]).status &&
-				validateEmptyInput(data[6][1]).status &&
-				validateEmptyInput(data[7][1]).status &&
-				validateEmptyInput(data[8][1]).status &&
-				validateEmptyInput(data[9][1]).status &&
-				validateEmptyInput(data[10][1]).status
-			) {
-				return { form: 'recorrido', status: true, message: 'Se subio correctamente' };
-			} else {
-				return {
-					form: 'recorrido',
-					status: false,
-					message: 'Alguno de los datos ingresados es incorrecto'
-				};
-			}
-		}
-	};
-
-	const validateForm = async (e: CustomEvent) => {
-		console.log(e.detail);
-		validate[e.detail.form + ''] = e.detail.status;
-		console.log(validate);
-	};
-	console.log(validate);
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<FormAgente {components} action="create">
+	<FormDrawer {components} action="create">
 		{#each formNames as formName}
-			<DrawerDropDownButton
-				validate={validate[formName]}
+			<FormDrawerInputGroupButton
 				dropdown={() => {
 					dropdown[formName] = !dropdown[formName];
 				}}
 				label={labels[formName]}
 			/>
 			{#if dropdown[formName]}
-				<div class=" w-full  rounded-lg divide-y divide-gray-100 shadow dark:bg-stone-900">
-					<FormInputGroup
-						bind:components={components[formName]}
-						validators={validators[formName]}
-						on:destroy={validateForm}
-					/>
+				<div class=" w-full  rounded-lg divide-y divide-gray-100  dark:bg-stone-900">
+					<FormDrawerInputGroup bind:components={components[formName]} on:destroy={validateForm} />
 				</div>
 			{/if}
 		{/each}
-	</FormAgente>
+	</FormDrawer>
 </div>
