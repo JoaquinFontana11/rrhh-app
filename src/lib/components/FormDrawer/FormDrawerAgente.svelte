@@ -61,6 +61,7 @@
 	};
 	let components: IComponentObject;
 
+	// TODO: cambiar el formato del select de obra social
 	$: components = {
 		datosPersonales: [
 			{
@@ -134,8 +135,8 @@
 				label: 'categoria',
 				name: 'categoria',
 				value: $agenteStore.categoria || '',
-				required: true,
-				validators: [validateEmptyInput]
+				required: false,
+				validators: []
 			},
 			{
 				type: 'text',
