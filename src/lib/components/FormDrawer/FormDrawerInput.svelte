@@ -16,29 +16,25 @@
 	let status: boolean = false;
 	let viewErrors: boolean = false;
 
-	const styleError =
-		' col-span-4 col-start-3 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-stone-900 focus:border-red-500 block w-full p-1 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500';
-	const styleDefault =
-		'outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-900 dark:text-white dark:focus:ring-stone-50 dark:focus:border-stone-50';
-
 	const dispatch = createEventDispatcher();
 
 	const validateInput = (e: Event) => {
 		let res;
 		errors = [];
+		console.log(value);
 		validators.forEach((validator) => {
 			res = validator(value);
-			console.log(res);
 			if (res.message) errors.push(res.message);
 		});
+		console.log(validators, errors);
 		status = errors.length > 0 ? true : false;
-		console.log(errors);
-		console.log(errors.length);
 	};
 </script>
 
 <div class="grid grid-cols-6 mb-2 mx-2">
-	<label class=" block mb-0.5 mr-8 text-sm font-medium text-gray-900 dark:text-gray-300" for={label}
+	<label
+		class=" block mb-0.5 mr-8 text-sm font-medium text-stone-900 dark:text-stone-400"
+		for={label}
 		>{label}
 	</label>
 	{#if status}
@@ -77,17 +73,19 @@
 			id={label}
 			type="number"
 			{name}
-			class={status ? styleError : styleDefault}
+			class:error={status}
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 			{required}
 			bind:value
-			on:blur|preventDefault={required ? validateInput : null}
+			on:input|preventDefault={required ? validateInput : null}
 			on:input
 		/>
 	{:else if type == 'text'}<input
 			id={label}
 			type="text"
 			{name}
-			class={status ? styleError : styleDefault}
+			class:error={status}
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -97,7 +95,8 @@
 			id={label}
 			type="date"
 			{name}
-			class={status ? styleError : styleDefault}
+			class:error={status}
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -108,7 +107,8 @@
 			id={label}
 			type="email"
 			{name}
-			class={status ? styleError : styleDefault}
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
+			class:error={status}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -122,7 +122,8 @@
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
 			on:input
-			class={status ? styleError : styleDefault}
+			class:error={status}
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 		>
 			{#each options as option}
 				<option value={option.value}>{option.name}</option>
@@ -130,3 +131,9 @@
 		</select>
 	{/if}
 </div>
+
+<style>
+	.error {
+		@apply border-rose-500 text-rose-500;
+	}
+</style>

@@ -23,4 +23,4 @@ interface FunctionsObject {
 	[key: string]: Function;
 }
 
-export type { IComponent, IComponentObject, FunctionsObject };
+export type { IComponent, IComponentObject, FunctionsObject, IOption };

@@ -5,7 +5,10 @@
 	console.log(validate);
 </script>
 
-<button on:click class="flex justify-between w-full p-2 items-center" type="button"
+<button
+	on:click
+	class="flex justify-between w-full p-2 items-center dark:text-stone-400"
+	type="button"
 	><span>
 		{label}
 	</span>
