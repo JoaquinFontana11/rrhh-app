@@ -34,8 +34,6 @@
 	};
 	let components: IComponentObject;
 
-	//TODO: esto rompe porqueno se actualiza la store cuando se cambia un input
-
 	$: components = {
 		datosPersonales: [
 			{
