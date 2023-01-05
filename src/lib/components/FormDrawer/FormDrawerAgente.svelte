@@ -20,11 +20,12 @@
 		recorrido: false
 	};
 	const validate = {
-		datosPersonales: true,
-		datosSalud: true,
-		datosAcademicos: true,
-		recorrido: true
+		datosPersonales: false,
+		datosSalud: false,
+		datosAcademicos: false,
+		recorrido: false
 	};
+	let disabledbutton: boolean = true;
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'recorrido'];
 	const labels = {
 		datosPersonales: 'Datos Personales',
@@ -33,6 +34,14 @@
 		recorrido: 'Recorrido'
 	};
 	let components: IComponentObject;
+
+	let veryComplexValidators: FunctionsObject = {
+		datosAcademicos: (components: IComponent) => {
+			return components[2] & components[0]
+				? { message: '', status: false }
+				: { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true };
+		}
+	};
 
 	//TODO: esto rompe porqueno se actualiza la store cuando se cambia un input
 
@@ -44,7 +53,16 @@
 				name: 'DNI',
 				value: $agenteStore.DNI || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 8)
+							return {
+								message: 'El DNI debe tener 8 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'number',
@@ -52,7 +70,16 @@
 				name: 'CUIT',
 				value: $agenteStore.CUIT || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 11)
+							return {
+								message: 'El CUIT debe tener 11 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -60,7 +87,16 @@
 				name: 'fechaNacimiento',
 				value: $agenteStore.fechaNacimiento || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (Date.parse(value) >= Date.now())
+							return {
+								message: 'La fecha de Nacimiento debe ser menor a la fecha actual',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -102,7 +138,16 @@
 				name: 'telefono',
 				value: $agenteStore.telefono || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length < 8 && value.toString().length > 15)
+							return {
+								message: 'El numero de telefono debe tener entre 9  y 15 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -118,7 +163,16 @@
 				name: 'curriculum',
 				value: $agenteStore.curriculum || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (!value.startsWith('https://'))
+							return {
+								message: 'Debe ser una url (https://....)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -129,11 +183,16 @@
 				validators: [validateEmptyInput]
 			},
 			{
-				type: 'text',
+				type: 'select',
 				label: 'genero',
 				name: 'genero',
 				value: $agenteStore.genero || '',
 				required: true,
+				options: [
+					{ value: 'M', name: 'Masculino' },
+					{ value: 'F', name: 'Femenino' },
+					{ value: 'Otro', name: 'Otro' }
+				],
 				validators: [validateEmptyInput]
 			},
 			{
@@ -181,11 +240,15 @@
 				validators: [validateEmptyInput]
 			},
 			{
-				type: 'text',
+				type: 'select',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
 				value: $agenteStore.superiorDirecto || '',
 				required: true,
+				options: [
+					{ value: 1, name: 'señor1' },
+					{ value: 2, name: 'señor2' }
+				],
 				validators: [validateEmptyInput]
 			}
 		],
@@ -309,24 +372,51 @@
 				label: 'Exp. tramitacion designacion',
 				name: 'expTramitacionDesignacion',
 				value: $agenteStore.recorrido?.expTramitacionDesignacion || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 6)
+							return {
+								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
 				label: 'Reso. designacion',
 				name: 'resoDesignacion',
 				value: $agenteStore.recorrido?.resoDesignacion || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 5)
+							return {
+								message: 'No cumple con el formato de Resolucion (Tipo-Año-Nro-Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'number',
 				label: 'Numero SIAPE',
 				name: 'numSIAPE',
 				value: $agenteStore.recorrido?.numSIAPE || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 6)
+							return {
+								message: 'El numero SIAPE debe tener 6 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -341,8 +431,17 @@
 				label: 'Exp. baja PPT',
 				name: 'expBajaPPT',
 				value: $agenteStore.recorrido?.expBajaPPT || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 6)
+							return {
+								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -364,7 +463,16 @@
 	};
 
 	const validateForm = (e: CustomEvent) => {
+		console.log(e.detail);
 		validate[e.detail.form] = e.detail.status;
+		disabledbutton = true
+			? !(
+					validate.datosPersonales &&
+					validate.datosSalud &&
+					validate.datosAcademicos &&
+					validate.recorrido
+			  )
+			: false;
 	};
 
 	const changeInput = (e: Event) => {
@@ -391,7 +499,12 @@
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<FormDrawer {components} {action}>
+	<FormDrawer
+		{components}
+		{action}
+		disabled={disabledbutton}
+		extraValidations={veryComplexValidators}
+	>
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
 				on:click={() => {
