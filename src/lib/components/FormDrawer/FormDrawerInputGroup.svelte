@@ -7,12 +7,19 @@
 	const dispatch = createEventDispatcher();
 
 	export let components: IComponent[];
+	export let formName: string;
 
-	// agregamos validadores custom
-	export let validators: Function = () => {
-		return { status: true };
+	const validateAll = () => {
+		let res;
+		for (const component of components) {
+			let status: boolean = true;
+			component.validators.forEach((validator) => {
+				res = validator(component.value);
+				status = !res.status ? res.status : status;
+			});
+			if (!status) return { form: formName, status };
+		}
 	};
-
 	onDestroy(async () => {
 		const formData = new FormData();
 
@@ -23,8 +30,11 @@
 					formData.append(component.name, component.value);
 				})
 			);
-		} catch (err) {}
-		dispatch('destroy', validators([...formData]));
+		} catch (err) {
+			console.log(err);
+		}
+		validateAll();
+		dispatch('destroy', validateAll());
 	});
 </script>
 

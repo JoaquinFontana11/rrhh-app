@@ -2,11 +2,7 @@
 	import FormDrawer from './FormDrawer.svelte';
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
-	import {
-		validateEmptyInput,
-		validateInputEmail,
-		validateInputEmailInstitucional
-	} from './validators';
+	import { validateEmptyInput, validateInputEmail } from './validators';
 	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
 
 	const dropdown = {
@@ -76,7 +72,17 @@
 				name: 'emailInstitucional',
 				value: '',
 				required: true,
-				validators: [validateEmptyInput, validateInputEmailInstitucional]
+				validators: [
+					validateEmptyInput,
+					validateInputEmail,
+					(value: any) => {
+						if (!value.endsWith('@gba.gob.ar'))
+							return {
+								message: 'No se cumple el formato de email Institucional',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'number',
@@ -349,12 +355,15 @@
 			}
 		]
 	};
-	const validateForm = () => {
-		return true;
+	const validateForm = async (e: CustomEvent) => {
+		console.log(e.detail);
+		validate[e.detail.form] = e.detail.status;
 	};
 </script>
 
-<div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
+<div
+	class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll overflow-x-visible"
+>
 	<FormDrawer {components} action="create">
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
@@ -362,10 +371,15 @@
 					dropdown[formName] = !dropdown[formName];
 				}}
 				label={labels[formName]}
+				validate={validate[formName]}
 			/>
 			{#if dropdown[formName]}
 				<div class=" w-full  rounded-lg divide-y divide-gray-100  dark:bg-stone-900">
-					<FormDrawerInputGroup bind:components={components[formName]} on:destroy={validateForm} />
+					<FormDrawerInputGroup
+						bind:components={components[formName]}
+						on:destroy={validateForm}
+						{formName}
+					/>
 				</div>
 			{/if}
 		{/each}

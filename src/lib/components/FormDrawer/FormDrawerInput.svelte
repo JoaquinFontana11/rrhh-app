@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
 	import { Icon, ExclamationCircle } from 'svelte-hero-icons';
+	import { error } from '@sveltejs/kit';
 	export let value: string;
 	export let label: string;
 	export let required = false;
@@ -13,10 +14,16 @@
 	let status: boolean = false;
 	let viewErrors: boolean = false;
 
+	const styleError =
+		' col-span-4 col-start-3 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-stone-900 focus:border-red-500 block w-full p-1 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500';
+	const styleDefault =
+		'outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-900 dark:text-white dark:focus:ring-stone-50 dark:focus:border-stone-50';
+
 	const dispatch = createEventDispatcher();
 
 	const validateInput = (e: Event) => {
 		let res;
+		errors = [];
 		validators.forEach((validator) => {
 			res = validator(value);
 			console.log(res);
@@ -51,12 +58,19 @@
 			</div>
 
 			{#if viewErrors}
-				<p
-					class="absolute translate-y-1 translate-x-8 bg-stone-900 text-stone-300 p-1 rounded-md text-[12px] w-max dark:bg-black  "
+				<div
+					class="z-[100] absolute translate-y-1 translate-x-6 bg-stone-900 text-stone-300 p-3 rounded-md text-[12px] w-64 dark:bg-black"
+					style="z-index: 1000"
 					transition:fade={{ duration: 50 }}
 				>
-					Hola
-				</p>
+					<ul class="list-disc ml-3">
+						{#each errors as error}
+							<li>
+								{error}
+							</li>
+						{/each}
+					</ul>
+				</div>
 			{/if}
 		</div>
 	{/if}
@@ -65,7 +79,7 @@
 		<input
 			id={label}
 			type="number"
-			class={status ? 'error' : 'input'}
+			class={status ? styleError : styleDefault}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -73,7 +87,7 @@
 	{:else if type == 'text'}<input
 			id={label}
 			type="text"
-			class={status ? 'error' : 'input'}
+			class={status ? styleError : styleDefault}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -81,7 +95,7 @@
 	{:else if type == 'date'}<input
 			id={label}
 			type="date"
-			class={status ? 'error' : 'input'}
+			class={status ? styleError : styleDefault}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -90,7 +104,7 @@
 		<input
 			id={label}
 			type="email"
-			class={status ? 'error' : 'input'}
+			class={status ? styleError : styleDefault}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -98,7 +112,7 @@
 	{:else if type == 'select'}
 		<select
 			id={label}
-			class={status ? 'error' : 'input'}
+			class={status ? styleError : styleDefault}
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
@@ -110,13 +124,3 @@
 		</select>
 	{/if}
 </div>
-
-<!-- <label class={styleMessage} for={label}>{errorMsg}</label> -->
-<style lang="postcss">
-	.input {
-		@apply outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-500 focus:border-stone-500 block w-full p-1 dark:bg-stone-900 dark:border-stone-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
-	}
-	.error {
-		@apply col-span-4 col-start-3 bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-stone-800 focus:border-red-500 block w-full p-1 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500;
-	}
-</style>

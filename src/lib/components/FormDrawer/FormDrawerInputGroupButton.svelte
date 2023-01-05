@@ -3,6 +3,7 @@
 	export let validate: boolean;
 	export let dropdown: any;
 	export let label: string;
+	console.log(validate);
 </script>
 
 <button
