@@ -13,7 +13,8 @@
 		lte: '<=',
 		eq: '=',
 		gt: '>',
-		gte: '>='
+		gte: '>=',
+		ilike: 'contiene'
 	};
 
 	filterStore.subscribe((val) => {
@@ -44,6 +45,7 @@
 		<option value="eq">igual a</option>
 		<option value="gt">mayor a</option>
 		<option value="gte">mayor o igual a</option>
+		<option value="ilike">contiene a</option>
 	</select>
 
 	<label class="dark:text-stone-400">Valor</label>
@@ -52,6 +54,7 @@
 		bind:value
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	/>
+	<span class="text-stone-400 text-sm dark:text-stone-600">formato de fecha: yyyy-mm-dd</span>
 	<button
 		class="bg-lime-500 rounded-lg p-1"
 		on:click={() => {

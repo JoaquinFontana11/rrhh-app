@@ -42,7 +42,9 @@ const reloadData = async (
 		page * 10
 	}, ${page * 10 + 9})`;
 	filters.map((f) => {
-		querySupabase += `.${f.filter}('${f.field}', '${f.value}')`;
+		querySupabase += `.${f.filter}('${f.field}', '${
+			f.filter == 'ilike' ? `%${f.value}%` : f.value
+		}')`;
 	});
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 	return await eval(querySupabase);

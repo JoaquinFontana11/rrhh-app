@@ -22,8 +22,6 @@
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
-	import DrawerAgenteInfo from '$lib/components/FormDrawer/DrawerAgenteInfo.svelte';
-	import Test from '$lib/components/Dashboard/TEST.svelte';
 	import type { PageData } from './$types';
 	import FormDrawerAgente from '$lib/components/FormDrawer/FormDrawerAgente.svelte';
 
@@ -31,14 +29,13 @@
 
 	let lastPage = data.lastPage;
 	let showDrawer = false;
-	let drawerContent = Test;
 	// TODO: definir bien el tipo
 	let tableData: any = [];
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
 	const transformData = (data: any[]) => {
-		console.log(data);
+		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
 		return {
 			headers: Object.entries(data[0])
