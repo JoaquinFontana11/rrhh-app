@@ -104,7 +104,7 @@
 				type: 'text',
 				label: 'agrupamiento',
 				name: 'agrupamiento',
-				value: $agenteStore.agrupamientoc || '',
+				value: $agenteStore.agrupamiento || '',
 				required: true
 			},
 			{
@@ -118,7 +118,7 @@
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: $agenteStore.activo || '',
+				value: $agenteStore.activo || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -129,7 +129,7 @@
 				type: 'select',
 				label: 'Equipo',
 				name: 'equipo',
-				value: $agenteStore.equipo || '',
+				value: $agenteStore.equipo || 1,
 				required: true,
 				options: [
 					{ value: 1, name: 'equipo1' },
@@ -140,7 +140,7 @@
 				type: 'select',
 				label: 'Direccion de linea',
 				name: 'direccion',
-				value: $agenteStore.direccion || '',
+				value: $agenteStore.direccion || 1,
 				required: true,
 				options: [
 					{ value: 1, name: 'direccion1' },
@@ -148,16 +148,11 @@
 				]
 			},
 			{
-				type: 'select',
+				type: 'text',
 				label: 'Rol',
 				name: 'rol',
 				value: $agenteStore.rol || '',
-				required: true,
-				options: [
-					{ value: 1, name: 'empleado' },
-					{ value: 2, name: 'coordinador' },
-					{ value: 3, name: 'esclavo' }
-				]
+				required: true
 			},
 			{
 				type: 'text',
@@ -189,7 +184,7 @@
 				type: 'text',
 				label: 'medicamentos',
 				name: 'medicamentos',
-				value: $agenteStore.datosSalud?.medicamento || '',
+				value: $agenteStore.datosSalud?.medicamentos || '',
 				required: false
 			},
 			{
@@ -203,7 +198,7 @@
 				type: 'select',
 				label: 'IOMA',
 				name: 'IOMA',
-				value: $agenteStore.datosSalud?.IOMA || '',
+				value: $agenteStore.datosSalud?.IOMA || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -230,7 +225,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Fianlizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.datosAcademicos?.carreraFinalizada || '',
+				value: $agenteStore.datosAcademicos?.carreraFinalizada || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -257,7 +252,7 @@
 				type: 'select',
 				label: 'Planta temporaria',
 				name: 'plantaTemporaria',
-				value: $agenteStore.recorrido?.plantaTemporaria || '',
+				value: $agenteStore.recorrido?.plantaTemporaria || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -326,6 +321,28 @@
 	const validateForm = () => {
 		return true;
 	};
+
+	const changeInput = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		let value: string | number | boolean = target.value;
+
+		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
+
+		value = target.value * 1 ? target.value * 1 : value;
+
+		agenteStore.update((agente) => {
+			console.log(agente);
+			if (components.datosPersonales.some((c) => c.name == target.name))
+				agente[target.name as string] = value;
+			if (components.datosSalud.some((c) => c.name == target.name))
+				agente.datosSalud[target.name as string] = value;
+			if (components.datosAcademicos.some((c) => c.name == target.name))
+				agente.datosAcademicos[target.name as string] = value;
+			if (components.recorrido.some((c) => c.name == target.name))
+				agente.recorrido[target.name as string] = value;
+			return agente;
+		});
+	};
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
@@ -340,7 +357,11 @@
 			/>
 			{#if dropdown[formName]}
 				<div class=" w-auto divide-y divide-gray-100  dark:bg-stone-900 mt-3" transition:fly>
-					<FormDrawerInputGroup bind:components={components[formName]} on:destroy={validateForm} />
+					<FormDrawerInputGroup
+						bind:components={components[formName]}
+						on:destroy={validateForm}
+						on:input={changeInput}
+					/>
 				</div>
 			{/if}
 		{/each}

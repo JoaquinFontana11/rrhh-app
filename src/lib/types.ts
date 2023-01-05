@@ -11,6 +11,7 @@ interface IComponent {
 	files?: FileList | Array<File>;
 	options?: IOption[];
 	images?: Array<Object>;
+	[key: string]: any;
 }
 
 interface IComponentObject {

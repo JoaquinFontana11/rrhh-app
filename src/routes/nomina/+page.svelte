@@ -38,6 +38,7 @@
 	let intervalsIds: any[] = [];
 
 	const transformData = (data: any[]) => {
+		console.log(data);
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
 		return {
 			headers: Object.entries(data[0])

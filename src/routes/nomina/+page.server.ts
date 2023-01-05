@@ -135,10 +135,15 @@ const update: Action = async ({ request }) => {
 		.eq('id', currentAgente[0].recorrido);
 
 	// actualizamos los datos
-	await supabase.from('datosSalud').update(datosSalud).eq('id', currentSalud[0].id);
-	await supabase.from('datosAcademicos').update(datosAcademicos).eq('id', currentAcademico[0].id);
-	await supabase.from('recorrido').update(recorrido).eq('id', currentRecorrido[0].id);
-	await supabase.from('agente').update(agente).eq('id', data.get('id'));
+	try {
+		await supabase.from('datosSalud').update(datosSalud).eq('id', currentSalud[0].id);
+		await supabase.from('datosAcademicos').update(datosAcademicos).eq('id', currentAcademico[0].id);
+		await supabase.from('recorrido').update(recorrido).eq('id', currentRecorrido[0].id);
+		await supabase.from('agente').update(agente).eq('id', data.get('id'));
+		console.log('ok');
+	} catch (err) {
+		console.log(err);
+	}
 };
 
 export const actions: Actions = { create, update };

@@ -18,11 +18,6 @@
 		// 	messageStyle: styleMessage
 		// } = validateInputText(value, error));
 	};
-	const onChange = async (e: Event) => {
-		dispatch('custom-change', {
-			data: e.target.value
-		});
-	};
 </script>
 
 <div class="grid grid-cols-3 mb-2 mx-2">
@@ -38,6 +33,7 @@
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
+			on:input
 		/>
 	{:else if type == 'text'}<input
 			id={label}
@@ -47,6 +43,7 @@
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
+			on:input
 		/>
 	{:else if type == 'date'}<input
 			id={label}
@@ -56,6 +53,7 @@
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
+			on:input
 		/>
 	{:else if type == 'email'}
 		<input
@@ -66,6 +64,7 @@
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
+			on:input
 		/>
 	{:else if type == 'select'}
 		<select
@@ -75,6 +74,7 @@
 			{required}
 			bind:value
 			on:blur|preventDefault={required ? validateInput : null}
+			on:input
 		>
 			{#each options as option}
 				<option value={option.value}>{option.name}</option>
