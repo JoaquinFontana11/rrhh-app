@@ -12,6 +12,7 @@ interface IComponent {
 	options?: IOption[];
 	images?: Array<Object>;
 	[key: string]: any;
+	validators: Array<Function>;
 }
 
 interface IComponentObject {

@@ -1,25 +1,25 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import type { IComponent } from '$lib/types';
-	/*
-	import FormInputDate from '../Inputs/FormInputDate.svelte';
-	import FormInputNumber from '../Inputs/FormInputNumber.svelte';
-	import FormInputSelect from '../Inputs/FormInputSelect.svelte';
-	import FormInputText from '../Inputs/FormInputText.svelte';
-	import FormInputEmail from '../Inputs/FormInputEmail.svelte';
-*/
 	import FormDrawerInput from './FormDrawerInput.svelte';
 	// import Spinner from '$lib/components/Spinner.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let components: IComponent[];
+	export let formName: string;
 
-	// agregamos validadores custom
-	export let validators: Function = () => {
-		return { status: true };
+	const validateAll = () => {
+		let res;
+		for (const component of components) {
+			let status: boolean = true;
+			component.validators.forEach((validator) => {
+				res = validator(component.value);
+				status = !res.status ? res.status : status;
+			});
+			if (!status) return { form: formName, status };
+		}
 	};
-
 	onDestroy(async () => {
 		const formData = new FormData();
 
@@ -30,8 +30,11 @@
 					formData.append(component.name, component.value);
 				})
 			);
-		} catch (err) {}
-		dispatch('destroy', validators([...formData]));
+		} catch (err) {
+			console.log(err);
+		}
+		validateAll();
+		dispatch('destroy', validateAll());
 	});
 </script>
 
@@ -45,6 +48,7 @@
 			options={component.options}
 			name={component.name}
 			on:input
+			validators={component.validators}
 		/>
 	{/each}
 </div>

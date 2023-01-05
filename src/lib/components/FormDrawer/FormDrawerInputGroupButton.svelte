@@ -2,6 +2,7 @@
 	import { Icon, ChevronDown } from 'svelte-hero-icons';
 	export let validate: boolean;
 	export let label: string;
+	console.log(validate);
 </script>
 
 <button on:click class="flex justify-between w-full p-2 items-center" type="button"
