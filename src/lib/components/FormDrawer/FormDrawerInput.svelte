@@ -31,14 +31,18 @@
 	};
 </script>
 
-<div class="grid grid-cols-6 mb-2 mx-2">
+<!--
+
+	<div class="grid grid-cols-6 mb-2 mx-2 ">
+-->
+<div class="flex m-2 relative">
 	<label
-		class=" block mb-0.5 mr-8 text-sm font-medium text-stone-900 dark:text-stone-400"
+		class=" block  mr-8 text-sm font-medium text-stone-900 dark:text-stone-400 w-2/4"
 		for={label}
 		>{label}
 	</label>
 	{#if status}
-		<div>
+		<div class="absolute left-1/4  h-full ">
 			<div
 				on:mouseenter={() => {
 					viewErrors = true;
@@ -46,6 +50,7 @@
 				on:mouseleave={() => {
 					viewErrors = false;
 				}}
+				class="flex justify-center items-center h-full "
 			>
 				<Icon src={ExclamationCircle} class="text-red-500 w-6 h-6 ml-5" />
 			</div>
@@ -74,7 +79,7 @@
 			type="number"
 			{name}
 			class:error={status}
-			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
+			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500 "
 			{required}
 			bind:value
 			on:input|preventDefault={required ? validateInput : null}
