@@ -13,22 +13,26 @@
 	let equipos: IOption[] = [];
 	let superioresDirectos: IOption[] = [];
 
+	//TODO: Modificar esto porque toma el action update cuando estas creando
 	agenteStore.subscribe((agente) => {
-		action = Object.entries(agente).length == 0 ? 'create' : 'update';
+		console.log(Object.keys(Object.entries(agente)).length);
+		action = Object.keys(Object.entries(agente)).length <= 3 ? 'create' : 'update';
+		console.log(action);
 	});
 
 	const getSuperioresDorectos = async () => {
 		const { data, error } = await supabase
 			.from('agente')
-			.select('id,nombre')
+			.select('id,nombreCompleto')
 			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
 
 		superioresDirectos = data.map((superior) => {
 			return {
 				value: superior.id,
-				name: superior.name
+				name: superior.nombreCompleto
 			};
 		});
+		console.log(superioresDirectos);
 	};
 
 	const getDirecciones = async () => {
@@ -54,6 +58,7 @@
 
 	getEquipos();
 	getDirecciones();
+	getSuperioresDorectos();
 
 	const dropdown = {
 		datosPersonales: false,
@@ -78,9 +83,10 @@
 
 	let veryComplexValidators: FunctionsObject = {
 		datosAcademicos: (components: IComponent) => {
-			return components[2] & components[0]
-				? { message: '', status: false }
-				: { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true };
+			console.log(components[2].value, components[0].value);
+			return components[2].value && components[0].value === ''
+				? { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true }
+				: { message: '', status: false };
 		}
 	};
 
@@ -93,13 +99,39 @@
 				name: 'DNI',
 				value: $agenteStore.DNI || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 8)
+							return {
+								message: 'El DNI debe tener 8 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'number',
 				label: 'CUIT',
 				name: 'CUIT',
 				value: $agenteStore.CUIT || '',
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 11)
+							return {
+								message: 'El CUIT debe tener 11 digitos',
+								status: false
+							};
+					}
+				]
+			},
+			{
+				type: 'text',
+				label: 'Nombre Completo',
+				name: 'nombreCompleto',
+				value: $agenteStore.nombreCompleto || '',
 				required: true,
 				validators: [validateEmptyInput]
 			},
@@ -109,7 +141,16 @@
 				name: 'fechaNacimiento',
 				value: $agenteStore.fechaNacimiento || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (Date.parse(value) >= Date.now())
+							return {
+								message: 'La fecha de Nacimiento debe ser menor a la fecha actual',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -151,7 +192,16 @@
 				name: 'telefono',
 				value: $agenteStore.telefono || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length < 8 && value.toString().length > 15)
+							return {
+								message: 'El numero de telefono debe tener entre 9  y 15 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -167,7 +217,16 @@
 				name: 'curriculum',
 				value: $agenteStore.curriculum || '',
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (!value.startsWith('https://'))
+							return {
+								message: 'Debe ser una url (https://....)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -178,18 +237,23 @@
 				validators: [validateEmptyInput]
 			},
 			{
-				type: 'text',
+				type: 'select',
 				label: 'genero',
 				name: 'genero',
 				value: $agenteStore.genero || '',
 				required: true,
+				options: [
+					{ value: 'M', name: 'Masculino' },
+					{ value: 'F', name: 'Femenino' },
+					{ value: 'Otro', name: 'Otro' }
+				],
 				validators: [validateEmptyInput]
 			},
 			{
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: $agenteStore.activo || false,
+				value: $agenteStore.activo,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -201,7 +265,7 @@
 				type: 'select',
 				label: 'Equipo',
 				name: 'equipo',
-				value: $agenteStore.equipo || 1,
+				value: $agenteStore.equipo || '',
 				required: true,
 				options: equipos,
 				validators: [validateEmptyInput]
@@ -210,7 +274,7 @@
 				type: 'select',
 				label: 'Direccion de linea',
 				name: 'direccion',
-				value: $agenteStore.direccion || 1,
+				value: $agenteStore.direccion || '',
 				required: true,
 				options: direcciones,
 				validators: [validateEmptyInput]
@@ -227,7 +291,7 @@
 				type: 'select',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
-				value: $agenteStore.superiorDirecto || 1,
+				value: $agenteStore.superiorDirecto || '',
 				required: true,
 				options: superioresDirectos,
 				validators: [validateEmptyInput]
@@ -272,7 +336,7 @@
 				type: 'select',
 				label: 'Obra Social',
 				name: 'obraSocial',
-				value: $agenteStore.datosSalud?.obraSocial || false,
+				value: $agenteStore.datosSalud?.obraSocial || '',
 				required: true,
 				options: [
 					{ value: 'IOMA', name: 'IOMA' },
@@ -302,7 +366,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Fianlizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.datosAcademicos?.carreraFinalizada || false,
+				value: $agenteStore.datosAcademicos?.carreraFinalizada,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -332,7 +396,7 @@
 				type: 'select',
 				label: 'Planta temporaria',
 				name: 'plantaTemporaria',
-				value: $agenteStore.recorrido?.plantaTemporaria || false,
+				value: $agenteStore.recorrido?.plantaTemporaria,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -353,24 +417,51 @@
 				label: 'Exp. tramitacion designacion',
 				name: 'expTramitacionDesignacion',
 				value: $agenteStore.recorrido?.expTramitacionDesignacion || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 6)
+							return {
+								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
 				label: 'Reso. designacion',
 				name: 'resoDesignacion',
 				value: $agenteStore.recorrido?.resoDesignacion || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 5)
+							return {
+								message: 'No cumple con el formato de Resolucion (Tipo-Año-Nro-Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'number',
 				label: 'Numero SIAPE',
 				name: 'numSIAPE',
 				value: $agenteStore.recorrido?.numSIAPE || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length !== 6)
+							return {
+								message: 'El numero SIAPE debe tener 6 digitos',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -385,8 +476,17 @@
 				label: 'Exp. baja PPT',
 				name: 'expBajaPPT',
 				value: $agenteStore.recorrido?.expBajaPPT || '',
-				required: false,
-				validators: [validateEmptyInput]
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.split('-').length !== 6)
+							return {
+								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -426,7 +526,6 @@
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
 		value = target.value * 1 ? target.value * 1 : value;
-
 		agenteStore.update((agente) => {
 			if (components.datosPersonales.some((c) => c.name == target.name))
 				agente[target.name as string] = value;

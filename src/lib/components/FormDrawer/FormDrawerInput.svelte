@@ -4,7 +4,6 @@
 
 	export let name: string;
 	import { Icon, ExclamationCircle } from 'svelte-hero-icons';
-	import { error } from '@sveltejs/kit';
 	export let value: string;
 	export let label: string;
 	export let required = false;
@@ -21,12 +20,10 @@
 	const validateInput = (e: Event) => {
 		let res;
 		errors = [];
-		console.log(value);
 		validators.forEach((validator) => {
 			res = validator(value);
-			if (res.message) errors.push(res.message);
+			if (res && res.message) errors.push(res.message);
 		});
-		console.log(validators, errors);
 		status = errors.length > 0 ? true : false;
 	};
 </script>
@@ -93,7 +90,7 @@
 			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 			{required}
 			bind:value
-			on:blur|preventDefault={required ? validateInput : null}
+			on:input|preventDefault={required ? validateInput : null}
 			on:input
 		/>
 	{:else if type == 'date'}<input
@@ -104,7 +101,7 @@
 			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 			{required}
 			bind:value
-			on:blur|preventDefault={required ? validateInput : null}
+			on:input|preventDefault={required ? validateInput : null}
 			on:input
 		/>
 	{:else if type == 'email'}
@@ -116,7 +113,7 @@
 			class:error={status}
 			{required}
 			bind:value
-			on:blur|preventDefault={required ? validateInput : null}
+			on:input|preventDefault={required ? validateInput : null}
 			on:input
 		/>
 	{:else if type == 'select'}

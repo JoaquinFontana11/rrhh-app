@@ -126,6 +126,7 @@ const update: Action = async ({ request }) => {
 		.from('agente')
 		.select('*')
 		.eq('id', data.get('id'));
+	console.log(currentAgente);
 	const { data: currentSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
 		.select('*')

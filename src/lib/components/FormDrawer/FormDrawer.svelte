@@ -32,6 +32,7 @@
 				resExtraValidations = extraValidations[key]
 					? extraValidations[key](components[key])
 					: { status: false };
+				console.log(resExtraValidations);
 				if (resExtraValidations.status) {
 					error.message.push(resExtraValidations.message);
 					error.status = resExtraValidations.status;
@@ -44,10 +45,12 @@
 				);
 			}
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
-			// await fetch(`?/${action}`, {
-			// 	method: 'POST',
-			// 	body: formData
-			// });
+			console.log([...formData]);
+			console.log(action);
+			await fetch(`?/${action}`, {
+				method: 'POST',
+				body: formData
+			});
 		} catch (err) {
 			console.log(err);
 		} finally {
