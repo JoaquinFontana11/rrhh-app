@@ -11,7 +11,7 @@ const create: Action = async ({ request }) => {
 		carreraFinalizada: data.get('carreraFinalizada')
 	};
 	const datosSalud = {
-		IOMA: data.get('IOMA'),
+		obraSocial: data.get('obraSocial'),
 		tipoSangre: data.get('tipoSangre'),
 		medicamentos: data.get('medicamentos'),
 		consideracion: data.get('consideracion')
@@ -87,7 +87,7 @@ const update: Action = async ({ request }) => {
 		carreraFinalizada: data.get('carreraFinalizada')
 	};
 	const datosSalud = {
-		IOMA: data.get('IOMA'),
+		obraSocial: data.get('obraSocial'),
 		tipoSangre: data.get('tipoSangre'),
 		medicamentos: data.get('medicamentos'),
 		consideracion: data.get('consideracion')

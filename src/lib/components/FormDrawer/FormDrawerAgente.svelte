@@ -61,7 +61,6 @@
 	};
 	let components: IComponentObject;
 
-	// TODO: cambiar el formato del select de obra social
 	$: components = {
 		datosPersonales: [
 			{
