@@ -14,11 +14,12 @@
 		for (const component of components) {
 			let status: boolean = true;
 			component.validators.forEach((validator) => {
-				res = validator(component.value);
-				status = !res.status ? res.status : status;
+				res = component.required ? validator(component.value) : null;
+				status = res && !res.status ? res.status : status;
 			});
 			if (!status) return { form: formName, status };
 		}
+		return { form: formName, status: true };
 	};
 	onDestroy(async () => {
 		const formData = new FormData();

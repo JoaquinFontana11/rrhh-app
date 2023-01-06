@@ -29,7 +29,7 @@
 		validators.forEach((validator) => {
 			res = validator(value);
 			console.log(res);
-			if (res.message) errors.push(res.message);
+			if (res && res.message) errors.push(res.message);
 		});
 		status = errors.length > 0 ? true : false;
 		console.log(errors);
