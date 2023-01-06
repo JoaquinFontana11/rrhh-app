@@ -3,7 +3,7 @@
 	import DashboardToolbar from './DashboardToolbar.svelte';
 
 	export let showDrawer = false;
-	export let drawerContent: any;
+	export let drawerContent: any | null;
 </script>
 
 <div class="flex dashboard grow overflow-y-hidden">
