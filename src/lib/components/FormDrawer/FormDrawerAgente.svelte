@@ -11,10 +11,25 @@
 	let action = 'create';
 	let direcciones: IOption[] = [];
 	let equipos: IOption[] = [];
+	let superioresDirectos: IOption[] = [];
 
 	agenteStore.subscribe((agente) => {
 		action = Object.entries(agente).length == 0 ? 'create' : 'update';
 	});
+
+	const getSuperioresDorectos = async () => {
+		const { data, error } = await supabase
+			.from('agente')
+			.select('id,nombre')
+			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
+
+		superioresDirectos = data.map((superior) => {
+			return {
+				value: superior.id,
+				name: superior.name
+			};
+		});
+	};
 
 	const getDirecciones = async () => {
 		const { data, error } = await supabase.from('direccion').select('id, nombre');
@@ -209,11 +224,12 @@
 				validators: [validateEmptyInput]
 			},
 			{
-				type: 'text',
+				type: 'select',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
-				value: $agenteStore.superiorDirecto || '',
+				value: $agenteStore.superiorDirecto || 1,
 				required: true,
+				options: superioresDirectos,
 				validators: [validateEmptyInput]
 			}
 		],
