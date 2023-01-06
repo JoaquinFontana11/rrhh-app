@@ -1,7 +1,7 @@
 const factoryValidators = (type: string | null = null) => {
 	return (value: any) => {
 		let message = '';
-		if (type == 'empty' && (value === '' || value === 'null'))
+		if (type == 'empty' && (value === '' || value === null))
 			return {
 				message: 'Debe completar este campo',
 				status: false

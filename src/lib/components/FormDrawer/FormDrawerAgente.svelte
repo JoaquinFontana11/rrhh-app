@@ -4,14 +4,41 @@
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
 	import { validateEmptyInput, validateInputEmail } from './validators';
-	import type { FunctionsObject, IComponent, IComponentObject } from '$lib/types';
+	import type { FunctionsObject, IComponent, IComponentObject, IOption } from '$lib/types';
 	import { agenteStore } from '$lib/stores/agenteStore';
+	import { supabase } from '$lib/supabaseClient';
 
 	let action = 'create';
+	let direcciones: IOption[] = [];
+	let equipos: IOption[] = [];
 
 	agenteStore.subscribe((agente) => {
 		action = Object.entries(agente).length == 0 ? 'create' : 'update';
 	});
+
+	const getDirecciones = async () => {
+		const { data, error } = await supabase.from('direccion').select('id, nombre');
+
+		direcciones = data.map((direccion) => {
+			return {
+				value: direccion.id,
+				name: direccion.nombre
+			};
+		});
+	};
+	const getEquipos = async () => {
+		const { data, error } = await supabase.from('equipo').select('id, nombre');
+
+		equipos = data.map((equipo) => {
+			return {
+				value: equipo.id,
+				name: equipo.nombre
+			};
+		});
+	};
+
+	getEquipos();
+	getDirecciones();
 
 	const dropdown = {
 		datosPersonales: false,
@@ -157,8 +184,8 @@
 				label: 'categoria',
 				name: 'categoria',
 				value: $agenteStore.categoria || '',
-				required: true,
-				validators: [validateEmptyInput]
+				required: false,
+				validators: []
 			},
 			{
 				type: 'text',
@@ -216,10 +243,7 @@
 				name: 'equipo',
 				value: $agenteStore.equipo || 1,
 				required: true,
-				options: [
-					{ value: 1, name: 'equipo1' },
-					{ value: 2, name: 'equipo2' }
-				],
+				options: equipos,
 				validators: [validateEmptyInput]
 			},
 			{
@@ -228,10 +252,7 @@
 				name: 'direccion',
 				value: $agenteStore.direccion || 1,
 				required: true,
-				options: [
-					{ value: 1, name: 'direccion1' },
-					{ value: 2, name: 'direccion2' }
-				],
+				options: direcciones,
 				validators: [validateEmptyInput]
 			},
 			{
