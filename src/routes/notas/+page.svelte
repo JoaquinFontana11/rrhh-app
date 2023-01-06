@@ -32,8 +32,8 @@
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarSelect
 			options={[
-				{ name: 'nomina', value: 'nomina' },
-				{ name: 'licencias', value: 'licencias' }
+				{ name: 'nomina', value: '/nomina' },
+				{ name: 'licencias', value: '/licencias' }
 			]}
 			on:input={filterNotes}
 		/>
