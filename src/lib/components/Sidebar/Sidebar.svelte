@@ -21,7 +21,7 @@
 	<Icon src={Chip} class="w-8 h-8 text-lime-500 mt-3" />
 	<ul class="flex flex-col gap-4 absolute top-1/2 -translate-y-1/2">
 		<SidebarButton icon={Table} tooltip="Nomina de agentes" href="/nomina" />
-		<SidebarButton icon={Document} tooltip="Notas (proximamente)" href="/notas" />
+		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
 		<SidebarButton icon={Newspaper} tooltip="Licencias (proximamente)" href="/licencias" />
 		<SidebarButton icon={Calendar} tooltip="Calendario (proximamente)" href="/calendario" />
 	</ul>

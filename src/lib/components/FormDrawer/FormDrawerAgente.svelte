@@ -395,7 +395,6 @@
 		value = target.value * 1 ? target.value * 1 : value;
 
 		agenteStore.update((agente) => {
-			console.log(agente);
 			if (components.datosPersonales.some((c) => c.name == target.name))
 				agente[target.name as string] = value;
 			if (components.datosSalud.some((c) => c.name == target.name))
