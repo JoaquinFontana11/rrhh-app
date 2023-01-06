@@ -52,6 +52,7 @@
 		datosAcademicos: true,
 		recorrido: true
 	};
+	let disabledbutton: boolean = true;
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'recorrido'];
 	const labels = {
 		datosPersonales: 'Datos Personales',
@@ -59,8 +60,16 @@
 		datosAcademicos: 'Datos Academicos',
 		recorrido: 'Recorrido'
 	};
-	let components: IComponentObject;
 
+	let veryComplexValidators: FunctionsObject = {
+		datosAcademicos: (components: IComponent) => {
+			return components[2] & components[0]
+				? { message: '', status: false }
+				: { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true };
+		}
+	};
+
+	let components: IComponentObject;
 	$: components = {
 		datosPersonales: [
 			{
@@ -384,6 +393,14 @@
 
 	const validateForm = (e: CustomEvent) => {
 		validate[e.detail.form] = e.detail.status;
+		disabledbutton = true
+			? !(
+					validate.datosPersonales &&
+					validate.datosSalud &&
+					validate.datosAcademicos &&
+					validate.recorrido
+			  )
+			: false;
 	};
 
 	const changeInput = (e: Event) => {
@@ -409,7 +426,12 @@
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<FormDrawer {components} {action}>
+	<FormDrawer
+		{components}
+		{action}
+		disabled={disabledbutton}
+		extraValidations={veryComplexValidators}
+	>
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
 				on:click={() => {
