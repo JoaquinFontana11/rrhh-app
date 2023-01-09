@@ -6,7 +6,7 @@
 	export let components: IComponentObject;
 	export let action: string;
 	export let disabled: boolean = true;
-	export let extraValidations: FunctionsObject;
+	export let extraValidations: FunctionsObject | boolean = false;
 
 	let loading = false;
 	let error = { message: [], status: false };

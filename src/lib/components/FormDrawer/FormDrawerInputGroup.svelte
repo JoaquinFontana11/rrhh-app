@@ -42,7 +42,7 @@
 	console.log(validateAllInputs);
 </script>
 
-<div class="py-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col justify-center">
+<div class="py-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col justify-center w-full">
 	{#each components as component}
 		<FormDrawerInput
 			label={component.label}
