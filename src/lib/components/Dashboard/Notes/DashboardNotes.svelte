@@ -6,7 +6,6 @@
 	const dispatcher = createEventDispatcher();
 
 	export let notes;
-
 	const clearNotes = (e: CustomEvent) => {
 		notes = notes.filter((note) => note.id !== e.detail.id);
 		dispatcher('delete-note', { id: e.detail.id });

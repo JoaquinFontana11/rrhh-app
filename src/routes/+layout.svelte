@@ -1,12 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 	import Sidebar from '$lib/components/Sidebar/Sidebar.svelte';
-	import Header from '$lib/components/Header/Header.svelte';
-	import type { LayoutData } from './$types';
-
-	export let data: LayoutData;
-
-	console.log(data.data);
 </script>
 
 <main
@@ -14,7 +8,6 @@
 >
 	<Sidebar />
 	<div class="flex flex-col ">
-		<Header />
 		<slot />
 	</div>
 </main>

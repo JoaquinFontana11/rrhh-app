@@ -1,7 +1,7 @@
 import type { PageLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import type { PostgrestResponse } from '@supabase/supabase-js';
-
+import notasStore from '$lib/stores/notasStore';
 // usamos CSR para poder usar el localStorage
 export const ssr = false;
 
@@ -11,7 +11,13 @@ export const load: PageLoad<{
 	reloadData: Function;
 	calcLastPage: Function;
 	fields: any[] | null | undefined;
-}> = async () => {
+}> = async ({ url }) => {
+	const { data }: { data: any } = await supabase
+		.from('notas')
+		.select('*')
+		.ilike('modulo', `%${url.pathname}%`);
+	notasStore.update((n) => data);
+
 	const order = JSON.parse(localStorage.getItem('order') as string) || {
 		field: 'DNI',
 		direction: true

@@ -16,6 +16,7 @@
 	import showStore from '$lib/stores/showStore';
 	import { agenteStore } from '$lib/stores/agenteStore';
 	import { showAllStore } from '$lib/stores/showStore';
+	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -102,6 +103,7 @@
 	});
 </script>
 
+<Header />
 <Dashboard bind:showDrawer drawerContent={FormDrawerAgente}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarButton name="Orden" icon={SortAscending} dropdown={true}>

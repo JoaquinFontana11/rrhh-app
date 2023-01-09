@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon, Plus } from 'svelte-hero-icons';
+	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
 	import DashboardToolbarSelect from '$lib/components/Dashboard/DashboardToolbarSelect.svelte';
@@ -9,7 +10,7 @@
 
 	export let data: PageData;
 
-	let modulo = 'nomina';
+	let modulo = '/nomina';
 	let notes = data.data?.filter((note) => note.modulo == modulo);
 
 	const addNote = (e: CustomEvent) => {
@@ -28,6 +29,7 @@
 	};
 </script>
 
+<Header />
 <Dashboard>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarSelect

@@ -30,8 +30,8 @@
 		bind:value={modulo}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
-		<option value="nomina">nomina</option>
-		<option value="licencias">licencias</option>
+		<option value="/nomina">nomina</option>
+		<option value="/licencias">licencias</option>
 	</select>
 	<label class="dark:text-stone-400">Contenido de la nota</label>
 	<textarea
