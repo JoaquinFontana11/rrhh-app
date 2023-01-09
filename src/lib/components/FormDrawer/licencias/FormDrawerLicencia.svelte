@@ -57,11 +57,14 @@
 				validators: [validateEmptyInput],
 				options: [
 					{ value: 'ausente', name: 'ausente con aviso' },
-					{ value: 'academica', name: 'academica' }
+					{ value: 'academica', name: 'academica' },
+					{ value: 'salud', name: 'salud' },
+					{ value: 'teletrabajo', name: 'teletrabajo' },
+					{ value: 'vacaciones', name: 'vacaciones' }
 				]
 			}
 		],
-		academica: [
+		vacaciones: [
 			{
 				type: 'select',
 				label: 'periodo',
@@ -75,7 +78,81 @@
 				]
 			}
 		],
-		ausente: []
+		ausente: [],
+		salud: [
+			{
+				type: 'text',
+				label: 'concepto',
+				name: 'concepto',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput]
+			}
+		],
+		academica: [
+			{
+				type: 'select',
+				label: 'ultima materia',
+				name: 'ultimaMateria',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput],
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				]
+			}
+		],
+		teletrabajo: [
+			{
+				type: 'select',
+				label: 'mail autorizado',
+				name: 'mailAutorizado',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput],
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				]
+			},
+			{
+				type: 'select',
+				label: 'comunicacion inicio',
+				name: 'comunicacionInicio',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput],
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				]
+			},
+			{
+				type: 'select',
+				label: 'comunicacion fin',
+				name: 'comunicacionFin',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput],
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				]
+			},
+			{
+				type: 'select',
+				label: 'conectado a teams',
+				name: 'conectadoATeams',
+				value: '',
+				required: true,
+				validators: [validateEmptyInput],
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				]
+			}
+		]
 	};
 
 	const changeInputsGenerales = (e: Event) => {
