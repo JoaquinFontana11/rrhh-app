@@ -15,8 +15,7 @@
 
 	//TODO: Modificar esto porque toma el action update cuando estas creando
 	agenteStore.subscribe((agente) => {
-		console.log(Object.keys(Object.entries(agente)).length);
-		action = Object.keys(Object.entries(agente)).length <= 3 ? 'create' : 'update';
+		action = agente.id ? 'update' : 'create';
 		console.log(action);
 	});
 
@@ -562,6 +561,7 @@
 						on:destroy={validateForm}
 						on:input={changeInput}
 						{formName}
+						validateAllInputs={!validate[formName]}
 					/>
 				</div>
 			{/if}

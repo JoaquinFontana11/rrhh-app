@@ -2,7 +2,6 @@
 	import { Icon, ChevronDown } from 'svelte-hero-icons';
 	export let validate: boolean;
 	export let label: string;
-	console.log(validate);
 </script>
 
 <button

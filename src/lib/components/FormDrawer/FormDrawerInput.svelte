@@ -10,6 +10,7 @@
 	export let type: string = 'text';
 	export let options: any = {};
 	export let validators: Array<Function>;
+	export let runValidate: boolean;
 
 	let errors: Array<string> = [];
 	let status: boolean = false;
@@ -26,6 +27,9 @@
 		});
 		status = errors.length > 0 ? true : false;
 	};
+
+	// esto esta para que si se abre la segunda vez en input group se muestren todos los validadores
+	if (runValidate) validateInput();
 </script>
 
 <!--

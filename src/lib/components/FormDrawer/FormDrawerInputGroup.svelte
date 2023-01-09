@@ -8,6 +8,7 @@
 
 	export let components: IComponent[];
 	export let formName: string;
+	export let validateAllInputs: boolean = false;
 
 	const validateAll = () => {
 		let res;
@@ -37,6 +38,8 @@
 		validateAll();
 		dispatch('destroy', validateAll());
 	});
+
+	console.log(validateAllInputs);
 </script>
 
 <div class="py-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col justify-center">
@@ -50,6 +53,7 @@
 			name={component.name}
 			on:input
 			validators={component.validators}
+			runValidate={validateAllInputs}
 		/>
 	{/each}
 </div>
