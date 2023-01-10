@@ -43,6 +43,8 @@ const create: Action = async ({ request }) => {
 		.insert(recorrido)
 		.select();
 
+	console.log(errorAcademico, errorSalud, errorRecorrido);
+
 	if (errorSalud || errorAcademico || errorRecorrido) {
 		if (dataSalud) await supabase.from('datosSalud').delete().eq('id', dataSalud[0].id);
 		if (dataAcademico)
@@ -54,6 +56,7 @@ const create: Action = async ({ request }) => {
 	const agente = {
 		DNI: data.get('DNI'),
 		CUIT: data.get('CUIT'),
+		nombreCompleto: data.get('nombreCompleto'),
 		fechaNacimiento: data.get('fechaNacimiento'),
 		domicilio: data.get('domicilio'),
 		emailPersonal: data.get('emailPersonal'),
@@ -63,7 +66,7 @@ const create: Action = async ({ request }) => {
 		curriculum: data.get('curriculum'),
 		agrupamiento: data.get('agrupamiento'),
 		genero: data.get('genero'),
-		superiorDirecto: 1,
+		superiorDirecto: data.get('superiorDirecto'),
 		datosSalud: dataSalud[0].id,
 		datosAcademicos: dataAcademico[0].id,
 		equipo: data.get('equipo'),
@@ -73,7 +76,12 @@ const create: Action = async ({ request }) => {
 		activo: data.get('activo')
 	};
 
-	const { error: errorAgente } = await supabase.from('agente').insert(agente).select();
+	const { data: dataAgente, error: errorAgente } = await supabase
+		.from('agente')
+		.insert(agente)
+		.select();
+
+	console.log(errorAgente, dataAgente);
 
 	if (errorAgente) return fail(400);
 };
