@@ -4,6 +4,7 @@
 
 	export let showDrawer = false;
 	export let drawerContent: any | null;
+	export let drawerContentProps: any | null = {};
 </script>
 
 <div class="flex dashboard grow overflow-y-hidden">
@@ -13,7 +14,7 @@
 				showDrawer = false;
 			}}
 		>
-			<svelte:component this={drawerContent} />
+			<svelte:component this={drawerContent} props={{ drawerContentProps }} />
 		</DashboardDrawer>
 	</div>
 	<div

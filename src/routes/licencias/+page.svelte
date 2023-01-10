@@ -13,18 +13,16 @@
 	let showDrawer = false;
 
 	let tableData = {
-		headers: ['1'],
-		fields: ['1'],
-		data: [
-			{
-				'1': 'juan'
-			}
-		]
+		headers: Object.entries(data.licencias[0]).map((entries) => entries[0]),
+		fields: Object.entries(data.licencias[0]).map((entries) => entries[0]),
+		data: data.licencias
 	};
+
+	console.log(tableData, data.licencias);
 </script>
 
 <Header />
-<Dashboard bind:showDrawer drawerContent={FormDrawerLicencia}>
+<Dashboard bind:showDrawer drawerContent={FormDrawerLicencia} drawerContentProps={data.agentes}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarButton name="Agregar filtros" icon={Filter} />
 

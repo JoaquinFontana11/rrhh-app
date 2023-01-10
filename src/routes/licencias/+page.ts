@@ -10,8 +10,10 @@ export const load: PageLoad = async ({ url }) => {
 	notasStore.update((n) => data);
 
 	const { data: agentes } = await supabase.from('agente').select('*');
+	const { data: licencias } = await supabase.from('licencia').select('*');
 
 	return {
+		licencias,
 		agentes
 	};
 };
