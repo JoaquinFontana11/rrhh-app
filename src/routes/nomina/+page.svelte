@@ -35,6 +35,8 @@
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
+	console.log(data.data);
+
 	const transformData = (data: any[]) => {
 		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
@@ -143,7 +145,7 @@
 					return {
 						datosSalud: {},
 						datosAcademicos: {},
-						recorrido: {}
+						datosRecorrido: {}
 					};
 				});
 				showDrawer = true;

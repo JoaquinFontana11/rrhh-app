@@ -44,7 +44,7 @@ const reloadData = async (
 	order = { field: 'DNI', direction: true },
 	filters: any[]
 ) => {
-	let querySupabase = `supabase.from('agente').select('*, recorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)').range(${
+	let querySupabase = `supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)').range(${
 		page * 10
 	}, ${page * 10 + 9})`;
 	filters.map((f) => {
@@ -53,7 +53,27 @@ const reloadData = async (
 		}')`;
 	});
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
-	return await eval(querySupabase);
+
+	const resSupabase = await eval(querySupabase);
+
+	resSupabase.data = resSupabase.data.map((data: any) => {
+		let flattedArr: any = [];
+
+		// repasamos las claves y si hay un objeto lo llevamos un nivel por encima
+		for (let key in data) {
+			if (typeof data[key] !== 'object' || data[key] == null) {
+				flattedArr.push([key, data[key]]);
+			} else if (key == 'superiorDirecto') {
+				flattedArr.push([key, data[key].nombreCompleto]);
+			} else {
+				for (let subKey in data[key]) {
+					flattedArr.push([subKey, data[key][subKey]]);
+				}
+			}
+		}
+		return Object.fromEntries(flattedArr);
+	});
+	return resSupabase;
 };
 
 const calcLastPage = async (order = { field: 'DNI', direction: true }, filters: any[]) => {

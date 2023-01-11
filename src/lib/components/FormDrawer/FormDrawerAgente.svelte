@@ -63,21 +63,21 @@
 		datosPersonales: false,
 		datosSalud: false,
 		datosAcademicos: false,
-		recorrido: false
+		datosRecorrido: false
 	};
 	const validate = {
 		datosPersonales: true,
 		datosSalud: true,
 		datosAcademicos: true,
-		recorrido: true
+		datosRecorrido: true
 	};
 	let disabledbutton: boolean = true;
-	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'recorrido'];
+	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'datosRecorrido'];
 	const labels = {
 		datosPersonales: 'Datos Personales',
 		datosSalud: 'Datos de Salud',
 		datosAcademicos: 'Datos Academicos',
-		recorrido: 'Recorrido'
+		datosRecorrido: 'Recorrido'
 	};
 
 	let veryComplexValidators: FunctionsObject = {
@@ -204,14 +204,6 @@
 			},
 			{
 				type: 'text',
-				label: 'categoria',
-				name: 'categoria',
-				value: $agenteStore.categoria || '',
-				required: false,
-				validators: []
-			},
-			{
-				type: 'text',
 				label: 'curriculum',
 				name: 'curriculum',
 				value: $agenteStore.curriculum || '',
@@ -227,14 +219,7 @@
 					}
 				]
 			},
-			{
-				type: 'text',
-				label: 'agrupamiento',
-				name: 'agrupamiento',
-				value: $agenteStore.agrupamiento || '',
-				required: true,
-				validators: [validateEmptyInput]
-			},
+
 			{
 				type: 'select',
 				label: 'genero',
@@ -294,6 +279,42 @@
 				required: true,
 				options: superioresDirectos,
 				validators: [validateEmptyInput]
+			},
+			{
+				type: 'select',
+				label: 'Tiene hijos',
+				name: 'tieneHijos',
+				value: $agenteStore.tieneHijos,
+				required: true,
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				],
+				validators: [validateEmptyInput]
+			},
+			{
+				type: 'select',
+				label: 'Asignacion familiar',
+				name: 'asignacionFamiliar',
+				value: $agenteStore.asignacionFamiliar,
+				required: true,
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				],
+				validators: [validateEmptyInput]
+			},
+			{
+				type: 'select',
+				label: 'Beneficio de guarderia',
+				name: 'beneficioGuarderia',
+				value: $agenteStore.beneficioGuarderia,
+				required: true,
+				options: [
+					{ value: true, name: 'Si' },
+					{ value: false, name: 'No' }
+				],
+				validators: [validateEmptyInput]
 			}
 		],
 		datosSalud: [
@@ -321,7 +342,7 @@
 				name: 'medicamentos',
 				value: $agenteStore.datosSalud?.medicamentos || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'text',
@@ -329,7 +350,7 @@
 				name: 'consideracion',
 				value: $agenteStore.datosSalud?.consideracion || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'select',
@@ -341,6 +362,31 @@
 					{ value: 'IOMA', name: 'IOMA' },
 					{ value: 'otro', name: 'otro' }
 				],
+				validators: [validateEmptyInput]
+			},
+			{
+				type: 'number',
+				label: 'telefono de contacto de emergencia',
+				name: 'telefonoContactoEmergencia',
+				value: $agenteStore.datosSalud?.telefonoContactoEmergencia || '',
+				required: true,
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (value.toString().length < 8 && value.toString().length > 15)
+							return {
+								message: 'El numero de telefono debe tener entre 9  y 15 digitos',
+								status: false
+							};
+					}
+				]
+			},
+			{
+				type: 'text',
+				label: 'nombre de contacto de emergencia',
+				name: 'nombreContactoEmergencia',
+				value: $agenteStore.datosSalud?.nombreContactoEmergencia || '',
+				required: true,
 				validators: [validateEmptyInput]
 			}
 		],
@@ -374,134 +420,174 @@
 				validators: [validateEmptyInput]
 			}
 		],
-		recorrido: [
+		datosRecorrido: [
 			{
 				type: 'number',
-				label: 'Antiguedad CLS',
-				name: 'antiguedadCLS',
-				value: $agenteStore.recorrido?.antiguedadCLS || '',
+				label: 'categoria',
+				name: 'categoria',
+				value: $agenteStore.datosRecorrido?.categoria || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'agrupamiento',
+				name: 'agrupamiento',
+				value: $agenteStore.datosRecorrido?.agrupamiento || '',
+				required: false,
+				validators: []
 			},
 			{
 				type: 'number',
-				label: 'Antiguedad PPT',
-				name: 'antiguedadPPT',
-				value: $agenteStore.recorrido?.antiguedadPPT || '',
+				label: 'numero de Siape',
+				name: 'numSiape',
+				value: $agenteStore.datosRecorrido?.numSiape || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'select',
-				label: 'Planta temporaria',
-				name: 'plantaTemporaria',
-				value: $agenteStore.recorrido?.plantaTemporaria,
+				label: 'tipo de contratacion',
+				name: 'tipoContratacion',
+				value: $agenteStore.datosRecorrido?.tipoContratacion || '',
 				required: true,
 				options: [
-					{ value: true, name: 'Si' },
-					{ value: false, name: 'No' }
+					{
+						name: 'Contrato de locacion de servicios',
+						value: 'CLS'
+					},
+					{
+						name: 'Planta transitorio temporaria',
+						value: 'PTT'
+					},
+					{
+						name: 'Planta permanente',
+						value: 'PP'
+					}
 				],
 				validators: [validateEmptyInput]
 			},
 			{
-				type: 'date',
-				label: 'Ingreso a Planta temporaria',
-				name: 'ingresoPlantaTemporaria',
-				value: $agenteStore.recorrido?.ingresoPlantaTemporaria || '',
+				type: 'text',
+				label: 'referencia de baja',
+				name: 'referenciaBaja',
+				value: $agenteStore.datosRecorrido?.referenciaBaja || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
-				type: 'text',
-				label: 'Exp. tramitacion designacion',
-				name: 'expTramitacionDesignacion',
-				value: $agenteStore.recorrido?.expTramitacionDesignacion || '',
-				required: true,
-				validators: [
-					validateEmptyInput,
-					(value: any) => {
-						if (value.split('-').length !== 6)
-							return {
-								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
-								status: false
-							};
-					}
-				]
-			},
-			{
-				type: 'text',
-				label: 'Reso. designacion',
-				name: 'resoDesignacion',
-				value: $agenteStore.recorrido?.resoDesignacion || '',
-				required: true,
-				validators: [
-					validateEmptyInput,
-					(value: any) => {
-						if (value.split('-').length !== 5)
-							return {
-								message: 'No cumple con el formato de Resolucion (Tipo-Año-Nro-Ecosistema-Repa)',
-								status: false
-							};
-					}
-				]
-			},
-			{
-				type: 'number',
-				label: 'Numero SIAPE',
-				name: 'numSIAPE',
-				value: $agenteStore.recorrido?.numSIAPE || '',
-				required: true,
-				validators: [
-					validateEmptyInput,
-					(value: any) => {
-						if (value.toString().length !== 6)
-							return {
-								message: 'El numero SIAPE debe tener 6 digitos',
-								status: false
-							};
+				type: 'select',
+				label: 'obra social activa',
+				name: 'obraSocialActiva',
+				value: $agenteStore.datosRecorrido?.obraSocialActiva || '',
+				required: false,
+				validators: [],
+				options: [
+					{
+						name: 'Si',
+						value: true
+					},
+					{
+						name: 'No',
+						value: false
 					}
 				]
 			},
 			{
 				type: 'date',
-				label: 'Baja PPT',
-				name: 'bajaPTT',
-				value: $agenteStore.recorrido?.bajaPTT || '',
-				required: true,
-				validators: [validateEmptyInput]
+				label: 'fecha de alta CLS',
+				name: 'fechaAltaCLS',
+				value: $agenteStore.datosRecorrido?.fechaAltaCLS || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'date',
+				label: 'fecha de baja CLS',
+				name: 'fechaBajaCLS',
+				value: $agenteStore.datosRecorrido?.fechaBajaCLS || '',
+				required: false,
+				validators: []
 			},
 			{
 				type: 'text',
-				label: 'Exp. baja PPT',
-				name: 'expBajaPPT',
-				value: $agenteStore.recorrido?.expBajaPPT || '',
-				required: true,
-				validators: [
-					validateEmptyInput,
-					(value: any) => {
-						if (value.split('-').length !== 6)
-							return {
-								message: 'No cumple con el formato de Expediente (Tipo-Año-Nro--Ecosistema-Repa)',
-								status: false
-							};
-					}
-				]
+				label: 'expediente de alta CLS',
+				name: 'expedienteAltaCLS',
+				value: $agenteStore.datosRecorrido?.expedienteAltaCLS || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'acto de alta CLS',
+				name: 'actoAltaCLS',
+				value: $agenteStore.datosRecorrido?.actoAltaCLS || '',
+				required: false,
+				validators: []
 			},
 			{
 				type: 'date',
-				label: 'Ingreso CLS',
-				name: 'ingresoCLS',
-				value: $agenteStore.recorrido?.ingresoCLS || '',
-				required: true,
-				validators: [validateEmptyInput]
+				label: 'fecha de alta PPT',
+				name: 'fechaAltaPPT',
+				value: $agenteStore.datosRecorrido?.fechaAltaPPT || '',
+				required: false,
+				validators: []
 			},
 			{
 				type: 'date',
-				label: 'Baja CLS',
-				name: 'bajaCLS',
-				value: $agenteStore.recorrido?.bajaCLS || '',
-				required: true,
-				validators: [validateEmptyInput]
+				label: 'fecha de baja PPT',
+				name: 'fechaBajaPPT',
+				value: $agenteStore.datosRecorrido?.fechaBajaPPT || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'expediente de alta PPT',
+				name: 'expedienteAltaPTT',
+				value: $agenteStore.datosRecorrido?.expedienteAltaPTT || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'acto de alta PTT',
+				name: 'actoAltaPTT',
+				value: $agenteStore.datosRecorrido?.actoAltaPTT || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'date',
+				label: 'fecha de alta PP',
+				name: 'fechaAltaPP',
+				value: $agenteStore.datosRecorrido?.fechaAltaPP || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'date',
+				label: 'fecha de baja PP',
+				name: 'fechaBajaPP',
+				value: $agenteStore.datosRecorrido?.fechaBajaPP || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'expediente de alta PP',
+				name: 'expedienteAltaPP',
+				value: $agenteStore.datosRecorrido?.expedienteAltaPP || '',
+				required: false,
+				validators: []
+			},
+			{
+				type: 'text',
+				label: 'acto de alta PP',
+				name: 'actoAltaPP',
+				value: $agenteStore.datosRecorrido?.actoAltaPP || '',
+				required: false,
+				validators: []
 			}
 		]
 	};
@@ -513,7 +599,7 @@
 					validate.datosPersonales &&
 					validate.datosSalud &&
 					validate.datosAcademicos &&
-					validate.recorrido
+					validate.datosRecorrido
 			  )
 			: false;
 	};
@@ -526,14 +612,15 @@
 
 		value = target.value * 1 ? target.value * 1 : value;
 		agenteStore.update((agente) => {
+			console.log(agente);
 			if (components.datosPersonales.some((c) => c.name == target.name))
 				agente[target.name as string] = value;
 			if (components.datosSalud.some((c) => c.name == target.name))
 				agente.datosSalud[target.name as string] = value;
 			if (components.datosAcademicos.some((c) => c.name == target.name))
 				agente.datosAcademicos[target.name as string] = value;
-			if (components.recorrido.some((c) => c.name == target.name))
-				agente.recorrido[target.name as string] = value;
+			if (components.datosRecorrido.some((c) => c.name == target.name))
+				agente.datosRecorrido[target.name as string] = value;
 			return agente;
 		});
 	};

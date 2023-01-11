@@ -14,21 +14,32 @@ const create: Action = async ({ request }) => {
 		obraSocial: data.get('obraSocial'),
 		tipoSangre: data.get('tipoSangre'),
 		medicamentos: data.get('medicamentos'),
-		consideracion: data.get('consideracion')
+		consideracion: data.get('consideracion'),
+		telefonoContactoEmergencia: data.get('telefonoContactoEmergencia'),
+		nombreContactoEmergencia: data.get('nombreContactoEmergencia')
 	};
-	const recorrido = {
-		antiguedadCLS: data.get('antiguedadCLS') || null,
-		antiguedadPPT: data.get('antiguedadPPT') || null,
-		plantaTemporaria: data.get('plantaTemporaria') || null,
-		ingresoPlantaTemporaria: data.get('ingresoPlantaTemporaria') || null,
-		expTramitacionDesignacion: data.get('expTramitacionDesignacion') || null,
-		resoDesignacion: data.get('resoDesignacion') || null,
-		numSIAPE: data.get('numSIAPE') || null,
-		bajaPTT: data.get('bajaPTT') || null,
-		expBajaPPT: data.get('expBajaPPT') || null,
-		ingresoCLS: data.get('ingresoCLS') || null,
-		bajaCLS: data.get('bajaCLS') || null
+	const datosRecorrido = {
+		categoria: data.get('categoria') || null,
+		agrupamiento: data.get('agrupamiento') || null,
+		numSiape: data.get('numSiape') || null,
+		tipoContratacion: data.get('tipoContratacion'),
+		referenciaBaja: data.get('referenciaBaja') || null,
+		obraSocialActiva: data.get('obraSocialActiva') || null,
+		fechaAltaCLS: data.get('fechaAltaCLS') || null,
+		fechaBajaCLS: data.get('fechaBajaCLS') || null,
+		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
+		actoAltaCLS: data.get('actoAltaCLS') || null,
+		fechaAltaPTT: data.get('fechaAltaPTT') || null,
+		fechaBajaPTT: data.get('fechaBajaPTT') || null,
+		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
+		actoAltaPTT: data.get('actoAltaPTT') || null,
+		fechaAltaPP: data.get('fechaAltaPP') || null,
+		fechaBajaPP: data.get('fechaBajaPP') || null,
+		expedienteAltaPP: data.get('expedienteAltaPP') || null,
+		actoAltaPP: data.get('actoAltaPP') || null
 	};
+
+	console.log(datosRecorrido);
 
 	const { data: dataSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
@@ -39,17 +50,18 @@ const create: Action = async ({ request }) => {
 		.insert(datosAcademicos)
 		.select();
 	const { data: dataRecorrido, error: errorRecorrido }: { data: any; error: any } = await supabase
-		.from('recorrido')
-		.insert(recorrido)
+		.from('datosRecorrido')
+		.insert(datosRecorrido)
 		.select();
 
+	console.log(dataAcademico, dataSalud, dataRecorrido);
 	console.log(errorAcademico, errorSalud, errorRecorrido);
 
 	if (errorSalud || errorAcademico || errorRecorrido) {
 		if (dataSalud) await supabase.from('datosSalud').delete().eq('id', dataSalud[0].id);
 		if (dataAcademico)
 			await supabase.from('datosAcademicos').delete().eq('id', dataAcademico[0].id);
-		if (dataRecorrido) await supabase.from('recorrido').delete().eq('id', dataRecorrido[0].id);
+		if (dataRecorrido) await supabase.from('datosRecorrido').delete().eq('id', dataRecorrido[0].id);
 		return fail(400);
 	}
 
@@ -62,18 +74,19 @@ const create: Action = async ({ request }) => {
 		emailPersonal: data.get('emailPersonal'),
 		emailInstitucional: data.get('emailInstitucional'),
 		telefono: data.get('telefono'),
-		categoria: data.get('categoria'),
 		curriculum: data.get('curriculum'),
-		agrupamiento: data.get('agrupamiento'),
 		genero: data.get('genero'),
 		superiorDirecto: data.get('superiorDirecto'),
 		datosSalud: dataSalud[0].id,
 		datosAcademicos: dataAcademico[0].id,
 		equipo: data.get('equipo'),
-		recorrido: dataRecorrido[0].id,
+		datosRecorrido: dataRecorrido[0].id,
 		rol: data.get('rol'),
 		direccion: data.get('direccion'),
-		activo: data.get('activo')
+		activo: data.get('activo'),
+		tieneHijos: data.get('tieneHijos'),
+		asignacionFamiliar: data.get('asignacionFamiliar'),
+		beneficioGuarderia: data.get('beneficioGuarderia')
 	};
 
 	const { data: dataAgente, error: errorAgente } = await supabase
@@ -86,6 +99,7 @@ const create: Action = async ({ request }) => {
 	if (errorAgente) return fail(400);
 };
 
+// TODO: ACTUALIZAR CON LOS NUEVOS DATOS
 const update: Action = async ({ request }) => {
 	const data = await request.formData();
 
