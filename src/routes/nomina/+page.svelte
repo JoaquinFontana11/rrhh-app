@@ -142,11 +142,7 @@
 			icon={Plus}
 			on:click={() => {
 				agenteStore.update((n) => {
-					return {
-						datosSalud: {},
-						datosAcademicos: {},
-						datosRecorrido: {}
-					};
+					return {};
 				});
 				showDrawer = true;
 			}}

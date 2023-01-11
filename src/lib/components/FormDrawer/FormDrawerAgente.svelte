@@ -35,22 +35,22 @@
 	};
 
 	const getDirecciones = async () => {
-		const { data, error } = await supabase.from('direccion').select('id, nombre');
+		const { data, error } = await supabase.from('direccion').select('id, direccion');
 
 		direcciones = data.map((direccion) => {
 			return {
 				value: direccion.id,
-				name: direccion.nombre
+				name: direccion.direccion
 			};
 		});
 	};
 	const getEquipos = async () => {
-		const { data, error } = await supabase.from('equipo').select('id, nombre');
+		const { data, error } = await supabase.from('equipo').select('id, equipo');
 
 		equipos = data.map((equipo) => {
 			return {
 				value: equipo.id,
-				name: equipo.nombre
+				name: equipo.equipo
 			};
 		});
 	};
@@ -322,7 +322,7 @@
 				type: 'select',
 				label: 'Tipo de Sangre',
 				name: 'tipoSangre',
-				value: $agenteStore.datosSalud?.tipoSangre || '',
+				value: $agenteStore.tipoSangre || '',
 				required: true,
 				options: [
 					{ value: 'A+', name: 'A+' },
@@ -340,7 +340,7 @@
 				type: 'text',
 				label: 'medicamentos',
 				name: 'medicamentos',
-				value: $agenteStore.datosSalud?.medicamentos || '',
+				value: $agenteStore.medicamentos || '',
 				required: false,
 				validators: []
 			},
@@ -348,7 +348,7 @@
 				type: 'text',
 				label: 'consideraciones',
 				name: 'consideracion',
-				value: $agenteStore.datosSalud?.consideracion || '',
+				value: $agenteStore.consideracion || '',
 				required: false,
 				validators: []
 			},
@@ -356,7 +356,7 @@
 				type: 'select',
 				label: 'Obra Social',
 				name: 'obraSocial',
-				value: $agenteStore.datosSalud?.obraSocial || '',
+				value: $agenteStore.obraSocial || '',
 				required: true,
 				options: [
 					{ value: 'IOMA', name: 'IOMA' },
@@ -368,7 +368,7 @@
 				type: 'number',
 				label: 'telefono de contacto de emergencia',
 				name: 'telefonoContactoEmergencia',
-				value: $agenteStore.datosSalud?.telefonoContactoEmergencia || '',
+				value: $agenteStore.telefonoContactoEmergencia || '',
 				required: true,
 				validators: [
 					validateEmptyInput,
@@ -385,7 +385,7 @@
 				type: 'text',
 				label: 'nombre de contacto de emergencia',
 				name: 'nombreContactoEmergencia',
-				value: $agenteStore.datosSalud?.nombreContactoEmergencia || '',
+				value: $agenteStore.nombreContactoEmergencia || '',
 				required: true,
 				validators: [validateEmptyInput]
 			}
@@ -395,7 +395,7 @@
 				type: 'text',
 				label: 'Carrera Universitaria',
 				name: 'carreraUniversitaria',
-				value: $agenteStore.datosAcademicos?.carreraUniversitaria || '',
+				value: $agenteStore.carreraUniversitaria || '',
 				required: false,
 				validators: [validateEmptyInput]
 			},
@@ -403,7 +403,7 @@
 				type: 'text',
 				label: 'Carrera Postgrado',
 				name: 'carreraPostgrado',
-				value: $agenteStore.datosAcademicos?.carreraPostgrado || '',
+				value: $agenteStore.carreraPostgrado || '',
 				required: false,
 				validators: [validateEmptyInput]
 			},
@@ -411,7 +411,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Fianlizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.datosAcademicos?.carreraFinalizada,
+				value: $agenteStore.carreraFinalizada,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -425,7 +425,7 @@
 				type: 'number',
 				label: 'categoria',
 				name: 'categoria',
-				value: $agenteStore.datosRecorrido?.categoria || '',
+				value: $agenteStore.categoria || '',
 				required: false,
 				validators: []
 			},
@@ -433,7 +433,7 @@
 				type: 'text',
 				label: 'agrupamiento',
 				name: 'agrupamiento',
-				value: $agenteStore.datosRecorrido?.agrupamiento || '',
+				value: $agenteStore.agrupamiento || '',
 				required: false,
 				validators: []
 			},
@@ -441,7 +441,7 @@
 				type: 'number',
 				label: 'numero de Siape',
 				name: 'numSiape',
-				value: $agenteStore.datosRecorrido?.numSiape || '',
+				value: $agenteStore.numSiape || '',
 				required: false,
 				validators: []
 			},
@@ -449,7 +449,7 @@
 				type: 'select',
 				label: 'tipo de contratacion',
 				name: 'tipoContratacion',
-				value: $agenteStore.datosRecorrido?.tipoContratacion || '',
+				value: $agenteStore.tipoContratacion || '',
 				required: true,
 				options: [
 					{
@@ -471,7 +471,7 @@
 				type: 'text',
 				label: 'referencia de baja',
 				name: 'referenciaBaja',
-				value: $agenteStore.datosRecorrido?.referenciaBaja || '',
+				value: $agenteStore.referenciaBaja || '',
 				required: false,
 				validators: []
 			},
@@ -479,7 +479,7 @@
 				type: 'select',
 				label: 'obra social activa',
 				name: 'obraSocialActiva',
-				value: $agenteStore.datosRecorrido?.obraSocialActiva || '',
+				value: $agenteStore.obraSocialActiva || '',
 				required: false,
 				validators: [],
 				options: [
@@ -497,7 +497,7 @@
 				type: 'date',
 				label: 'fecha de alta CLS',
 				name: 'fechaAltaCLS',
-				value: $agenteStore.datosRecorrido?.fechaAltaCLS || '',
+				value: $agenteStore.fechaAltaCLS || '',
 				required: false,
 				validators: []
 			},
@@ -505,7 +505,7 @@
 				type: 'date',
 				label: 'fecha de baja CLS',
 				name: 'fechaBajaCLS',
-				value: $agenteStore.datosRecorrido?.fechaBajaCLS || '',
+				value: $agenteStore.fechaBajaCLS || '',
 				required: false,
 				validators: []
 			},
@@ -513,7 +513,7 @@
 				type: 'text',
 				label: 'expediente de alta CLS',
 				name: 'expedienteAltaCLS',
-				value: $agenteStore.datosRecorrido?.expedienteAltaCLS || '',
+				value: $agenteStore.expedienteAltaCLS || '',
 				required: false,
 				validators: []
 			},
@@ -521,7 +521,7 @@
 				type: 'text',
 				label: 'acto de alta CLS',
 				name: 'actoAltaCLS',
-				value: $agenteStore.datosRecorrido?.actoAltaCLS || '',
+				value: $agenteStore.actoAltaCLS || '',
 				required: false,
 				validators: []
 			},
@@ -529,7 +529,7 @@
 				type: 'date',
 				label: 'fecha de alta PPT',
 				name: 'fechaAltaPPT',
-				value: $agenteStore.datosRecorrido?.fechaAltaPPT || '',
+				value: $agenteStore.fechaAltaPPT || '',
 				required: false,
 				validators: []
 			},
@@ -537,7 +537,7 @@
 				type: 'date',
 				label: 'fecha de baja PPT',
 				name: 'fechaBajaPPT',
-				value: $agenteStore.datosRecorrido?.fechaBajaPPT || '',
+				value: $agenteStore.fechaBajaPPT || '',
 				required: false,
 				validators: []
 			},
@@ -545,7 +545,7 @@
 				type: 'text',
 				label: 'expediente de alta PPT',
 				name: 'expedienteAltaPTT',
-				value: $agenteStore.datosRecorrido?.expedienteAltaPTT || '',
+				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
 				validators: []
 			},
@@ -553,7 +553,7 @@
 				type: 'text',
 				label: 'acto de alta PTT',
 				name: 'actoAltaPTT',
-				value: $agenteStore.datosRecorrido?.actoAltaPTT || '',
+				value: $agenteStore.actoAltaPTT || '',
 				required: false,
 				validators: []
 			},
@@ -561,7 +561,7 @@
 				type: 'date',
 				label: 'fecha de alta PP',
 				name: 'fechaAltaPP',
-				value: $agenteStore.datosRecorrido?.fechaAltaPP || '',
+				value: $agenteStore.fechaAltaPP || '',
 				required: false,
 				validators: []
 			},
@@ -569,7 +569,7 @@
 				type: 'date',
 				label: 'fecha de baja PP',
 				name: 'fechaBajaPP',
-				value: $agenteStore.datosRecorrido?.fechaBajaPP || '',
+				value: $agenteStore.fechaBajaPP || '',
 				required: false,
 				validators: []
 			},
@@ -577,7 +577,7 @@
 				type: 'text',
 				label: 'expediente de alta PP',
 				name: 'expedienteAltaPP',
-				value: $agenteStore.datosRecorrido?.expedienteAltaPP || '',
+				value: $agenteStore.expedienteAltaPP || '',
 				required: false,
 				validators: []
 			},
@@ -585,7 +585,7 @@
 				type: 'text',
 				label: 'acto de alta PP',
 				name: 'actoAltaPP',
-				value: $agenteStore.datosRecorrido?.actoAltaPP || '',
+				value: $agenteStore.actoAltaPP || '',
 				required: false,
 				validators: []
 			}

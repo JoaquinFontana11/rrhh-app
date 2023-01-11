@@ -56,6 +56,8 @@ const reloadData = async (
 
 	const resSupabase = await eval(querySupabase);
 
+	console.log(resSupabase);
+
 	resSupabase.data = resSupabase.data.map((data: any) => {
 		let flattedArr: any = [];
 
@@ -63,8 +65,8 @@ const reloadData = async (
 		for (let key in data) {
 			if (typeof data[key] !== 'object' || data[key] == null) {
 				flattedArr.push([key, data[key]]);
-			} else if (key == 'superiorDirecto') {
-				flattedArr.push([key, data[key].nombreCompleto]);
+			} else if (key == 'superiorDirecto' || key == 'equipo' || key == 'direccion') {
+				flattedArr.push([key, data[key].id]);
 			} else {
 				for (let subKey in data[key]) {
 					flattedArr.push([subKey, data[key][subKey]]);

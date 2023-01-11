@@ -112,38 +112,53 @@ const update: Action = async ({ request }) => {
 		obraSocial: data.get('obraSocial'),
 		tipoSangre: data.get('tipoSangre'),
 		medicamentos: data.get('medicamentos'),
-		consideracion: data.get('consideracion')
+		consideracion: data.get('consideracion'),
+		telefonoContactoEmergencia: data.get('telefonoContactoEmergencia'),
+		nombreContactoEmergencia: data.get('nombreContactoEmergencia')
 	};
-	const recorrido = {
-		antiguedadCLS: data.get('antiguedadCLS') || null,
-		antiguedadPPT: data.get('antiguedadPPT') || null,
-		plantaTemporaria: data.get('plantaTemporaria') || null,
-		ingresoPlantaTemporaria: data.get('ingresoPlantaTemporaria') || null,
-		expTramitacionDesignacion: data.get('expTramitacionDesignacion') || null,
-		resoDesignacion: data.get('resoDesignacion') || null,
-		numSIAPE: data.get('numSIAPE') || null,
-		bajaPTT: data.get('bajaPTT') || null,
-		expBajaPPT: data.get('expBajaPPT') || null,
-		ingresoCLS: data.get('ingresoCLS') || null,
-		bajaCLS: data.get('bajaCLS') || null
+	const datosRecorrido = {
+		categoria: data.get('categoria') || null,
+		agrupamiento: data.get('agrupamiento') || null,
+		numSiape: data.get('numSiape') || null,
+		tipoContratacion: data.get('tipoContratacion'),
+		referenciaBaja: data.get('referenciaBaja') || null,
+		obraSocialActiva: data.get('obraSocialActiva') || null,
+		fechaAltaCLS: data.get('fechaAltaCLS') || null,
+		fechaBajaCLS: data.get('fechaBajaCLS') || null,
+		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
+		actoAltaCLS: data.get('actoAltaCLS') || null,
+		fechaAltaPTT: data.get('fechaAltaPTT') || null,
+		fechaBajaPTT: data.get('fechaBajaPTT') || null,
+		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
+		actoAltaPTT: data.get('actoAltaPTT') || null,
+		fechaAltaPP: data.get('fechaAltaPP') || null,
+		fechaBajaPP: data.get('fechaBajaPP') || null,
+		expedienteAltaPP: data.get('expedienteAltaPP') || null,
+		actoAltaPP: data.get('actoAltaPP') || null
 	};
+
 	const agente = {
 		DNI: data.get('DNI'),
 		CUIT: data.get('CUIT'),
+		nombreCompleto: data.get('nombreCompleto'),
 		fechaNacimiento: data.get('fechaNacimiento'),
 		domicilio: data.get('domicilio'),
 		emailPersonal: data.get('emailPersonal'),
 		emailInstitucional: data.get('emailInstitucional'),
 		telefono: data.get('telefono'),
-		categoria: data.get('categoria'),
 		curriculum: data.get('curriculum'),
-		agrupamiento: data.get('agrupamiento'),
 		genero: data.get('genero'),
+		superiorDirecto: data.get('superiorDirecto'),
 		equipo: data.get('equipo'),
 		rol: data.get('rol'),
 		direccion: data.get('direccion'),
-		activo: data.get('activo')
+		activo: data.get('activo'),
+		tieneHijos: data.get('tieneHijos'),
+		asignacionFamiliar: data.get('asignacionFamiliar'),
+		beneficioGuarderia: data.get('beneficioGuarderia')
 	};
+
+	console.log(data, data.get('DNI') * 1);
 	const { data: currentAgente, error: errorAgente }: { data: any; error: any } = await supabase
 		.from('agente')
 		.select('*')
@@ -156,7 +171,7 @@ const update: Action = async ({ request }) => {
 	const { data: currentAcademico, error: errorAcademico }: { data: any; error: any } =
 		await supabase.from('datosAcademicos').select('*').eq('id', currentAgente[0].datosAcademicos);
 	const { data: currentRecorrido, error: errorRecorrido }: { data: any; error: any } =
-		await supabase.from('recorrido').select('*').eq('id', currentAgente[0].recorrido);
+		await supabase.from('datosRecorrido').select('*').eq('id', currentAgente[0].datosRecorrido);
 
 	if (errorAgente || errorSalud || errorAcademico || errorRecorrido) {
 		return fail(400);
@@ -175,13 +190,15 @@ const update: Action = async ({ request }) => {
 		.update(datosAcademicos)
 		.eq('id', currentAcademico[0].id);
 	const { data: newDataAcademico, error: updateAcademicoError } = await supabase
-		.from('recorrido')
-		.update(recorrido)
+		.from('datosRecorrido')
+		.update(datosRecorrido)
 		.eq('id', currentRecorrido[0].id);
 	const { data: newDataRecorrido, error: updateRecorridoError } = await supabase
 		.from('agente')
 		.update(agente)
 		.eq('id', data.get('id'));
+
+	console.log(newDataAgente, newDataAcademico, newDataRecorrido, newDataSalud);
 
 	// chequeamos que todo se actualice bien sino hacemos rollback
 
