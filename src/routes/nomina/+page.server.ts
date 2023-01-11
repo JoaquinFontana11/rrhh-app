@@ -158,12 +158,10 @@ const update: Action = async ({ request }) => {
 		beneficioGuarderia: data.get('beneficioGuarderia')
 	};
 
-	console.log(data, data.get('DNI') * 1);
 	const { data: currentAgente, error: errorAgente }: { data: any; error: any } = await supabase
 		.from('agente')
 		.select('*')
 		.eq('id', data.get('id'));
-	console.log(currentAgente);
 	const { data: currentSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
 		.select('*')

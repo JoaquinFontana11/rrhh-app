@@ -76,7 +76,8 @@
 					{ value: 'academica', name: 'academica' },
 					{ value: 'salud', name: 'salud' },
 					{ value: 'teletrabajo', name: 'teletrabajo' },
-					{ value: 'vacaciones', name: 'vacaciones' }
+					{ value: 'vacaciones', name: 'vacaciones' },
+					{ value: 'otro', name: 'otro' }
 				]
 			}
 		],
@@ -231,7 +232,7 @@
 			formName="datosGenerales"
 			on:input={changeInputsGenerales}
 		/>
-		{#if tipoLicencia}
+		{#if tipoLicencia && tipoLicencia !== 'otro' && tipoLicencia !== 'ausente'}
 			<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
 				<span> datos especificos de la licencia</span>
 				<div class="flex gap-1 justify-center items-center">
