@@ -15,7 +15,8 @@
 		for (const component of components) {
 			let status: boolean = true;
 			component.validators.forEach((validator) => {
-				res = component.required ? validator(component.value) : null;
+				//res = component.required ? validator(component.value) : null;
+				res = validator(component.value);
 				status = res && !res.status ? res.status : status;
 			});
 			if (!status) return { form: formName, status };

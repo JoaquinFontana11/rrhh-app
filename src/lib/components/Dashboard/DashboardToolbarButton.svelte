@@ -4,6 +4,7 @@
 	export let name: string = 'btn';
 	export let icon: IconSource;
 	export let highlight: boolean = false;
+	export let textHighlight: boolean = false;
 	export let dropdown: boolean = false;
 	let showDropdown: boolean = false;
 </script>
@@ -25,6 +26,7 @@
 			highlight ? 'dark:text-stone-900' : 'dark:text-stone-400 dark:hover:text-stone-200'
 		}`}
 			class:highligth={highlight}
+			class:text-highligth={textHighlight}
 			on:click={() => {
 				showDropdown = !showDropdown;
 			}}><Icon src={icon} class="w-4 h-4" /> {name}</button
@@ -38,5 +40,8 @@
 <style lang="postcss">
 	.highligth {
 		@apply bg-lime-500 hover:bg-lime-600;
+	}
+	.text-highligth {
+		@apply text-lime-500 hover:text-lime-600;
 	}
 </style>

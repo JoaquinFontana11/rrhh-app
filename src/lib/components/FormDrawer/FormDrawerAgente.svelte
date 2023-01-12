@@ -16,22 +16,22 @@
 	//TODO: Modificar esto porque toma el action update cuando estas creando
 	agenteStore.subscribe((agente) => {
 		action = agente.id ? 'update' : 'create';
-		console.log(action);
 	});
 
-	const getSuperioresDorectos = async () => {
+	const getSuperioresDorectos = async (direccion: string) => {
 		const { data, error } = await supabase
 			.from('agente')
-			.select('id,nombreCompleto')
+			.select('*, direccion(*)')
 			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
 
-		superioresDirectos = data.map((superior) => {
-			return {
-				value: superior.id,
-				name: superior.nombreCompleto
-			};
-		});
-		console.log(superioresDirectos);
+		superioresDirectos = data
+			.filter((agente) => agente.direccion.id == direccion)
+			.map((superior) => {
+				return {
+					value: superior.id,
+					name: superior.nombreCompleto
+				};
+			});
 	};
 
 	const getDirecciones = async () => {
@@ -57,7 +57,7 @@
 
 	getEquipos();
 	getDirecciones();
-	getSuperioresDorectos();
+	$: getSuperioresDorectos($agenteStore.direccion);
 
 	const dropdown = {
 		datosPersonales: false,
@@ -427,15 +427,54 @@
 				name: 'categoria',
 				value: $agenteStore.categoria || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if (
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							(value <= 5 || value >= 21)
+						)
+							return {
+								message: 'La categoria debe ser un numero entre 5 y 21',
+								status: false
+							};
+					},
+					(value: any) => {
+						if (
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							(value == '' || value == null)
+						) {
+							return {
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
-				type: 'text',
+				type: 'select',
 				label: 'agrupamiento',
 				name: 'agrupamiento',
 				value: $agenteStore.agrupamiento || '',
 				required: false,
-				validators: []
+				options: [
+					{ name: 'tecnico', value: 'tecnico' },
+					{ name: 'administrativo', value: 'administrativo' },
+					{ name: 'profesional', value: 'profesional' }
+				],
+				validators: [
+					(value: any) => {
+						if (
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							(value == '' || value == null)
+						) {
+							return {
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'number',
@@ -443,7 +482,19 @@
 				name: 'numSiape',
 				value: $agenteStore.numSiape || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if (
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							(value == '' || value == null)
+						) {
+							return {
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'select',
@@ -481,7 +532,19 @@
 				name: 'obraSocialActiva',
 				value: $agenteStore.obraSocialActiva || '',
 				required: false,
-				validators: [],
+				validators: [
+					(value: any) => {
+						if (
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							(value == '' || value == null)
+						) {
+							return {
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				],
 				options: [
 					{
 						name: 'Si',
@@ -499,7 +562,17 @@
 				name: 'fechaAltaCLS',
 				value: $agenteStore.fechaAltaCLS || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						console.log('CLS ALTA', value);
+						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -515,7 +588,16 @@
 				name: 'expedienteAltaCLS',
 				value: $agenteStore.expedienteAltaCLS || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -523,21 +605,40 @@
 				name: 'actoAltaCLS',
 				value: $agenteStore.actoAltaCLS || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta PPT',
-				name: 'fechaAltaPPT',
-				value: $agenteStore.fechaAltaPPT || '',
+				label: 'fecha de alta PTT',
+				name: 'fechaAltaPTT',
+				value: $agenteStore.fechaAltaPTT || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						console.log('PTT');
+						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'date',
 				label: 'fecha de baja PPT',
-				name: 'fechaBajaPPT',
-				value: $agenteStore.fechaBajaPPT || '',
+				name: 'fechaBajaPTT',
+				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
 				validators: []
 			},
@@ -547,7 +648,16 @@
 				name: 'expedienteAltaPTT',
 				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -555,7 +665,16 @@
 				name: 'actoAltaPTT',
 				value: $agenteStore.actoAltaPTT || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -563,7 +682,16 @@
 				name: 'fechaAltaPP',
 				value: $agenteStore.fechaAltaPP || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'date',
@@ -579,7 +707,16 @@
 				name: 'expedienteAltaPP',
 				value: $agenteStore.expedienteAltaPP || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -587,12 +724,22 @@
 				name: 'actoAltaPP',
 				value: $agenteStore.actoAltaPP || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
+							return {
+								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					}
+				]
 			}
 		]
 	};
 
 	const validateForm = (e: CustomEvent) => {
+		console.log(e.detail);
 		validate[e.detail.form] = e.detail.status;
 		disabledbutton = true
 			? !(
@@ -612,15 +759,8 @@
 
 		value = target.value * 1 ? target.value * 1 : value;
 		agenteStore.update((agente) => {
+			agente[target.name as string] = value;
 			console.log(agente);
-			if (components.datosPersonales.some((c) => c.name == target.name))
-				agente[target.name as string] = value;
-			if (components.datosSalud.some((c) => c.name == target.name))
-				agente.datosSalud[target.name as string] = value;
-			if (components.datosAcademicos.some((c) => c.name == target.name))
-				agente.datosAcademicos[target.name as string] = value;
-			if (components.datosRecorrido.some((c) => c.name == target.name))
-				agente.datosRecorrido[target.name as string] = value;
 			return agente;
 		});
 	};

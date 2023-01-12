@@ -2,11 +2,13 @@
 	import {
 		Plus,
 		Eye,
+		EyeOff,
 		Refresh,
 		ArrowLeft,
 		ArrowRight,
 		Filter,
 		SortAscending,
+		SortDescending,
 		Icon,
 		Document
 	} from 'svelte-hero-icons';
@@ -108,14 +110,27 @@
 <Header />
 <Dashboard bind:showDrawer drawerContent={FormDrawerAgente}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
-		<DashboardToolbarButton name="Orden" icon={SortAscending} dropdown={true}>
+		<DashboardToolbarButton
+			name="Orden"
+			icon={$orderStore.direction ? SortAscending : SortDescending}
+			dropdown={true}
+		>
 			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
 		</DashboardToolbarButton>
-		<DashboardToolbarButton name="Agregar filtro" icon={Filter} dropdown={true}>
+		<DashboardToolbarButton
+			name="Agregar filtro"
+			icon={Filter}
+			dropdown={true}
+			textHighlight={$filterStore.length !== 0}
+		>
 			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
 
-		<DashboardToolbarButton name="Agregar Campo" icon={Eye} dropdown={true}>
+		<DashboardToolbarButton
+			name="Agregar Campo"
+			icon={$showAllStore ? Eye : EyeOff}
+			dropdown={true}
+		>
 			<DashboardToolbarShow slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
 		<div class="flex gap-1 justify-center items-center">

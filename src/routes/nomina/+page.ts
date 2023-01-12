@@ -56,8 +56,6 @@ const reloadData = async (
 
 	const resSupabase = await eval(querySupabase);
 
-	console.log(resSupabase);
-
 	resSupabase.data = resSupabase.data.map((data: any) => {
 		let flattedArr: any = [];
 

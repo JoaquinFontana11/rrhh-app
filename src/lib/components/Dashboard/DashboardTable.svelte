@@ -38,7 +38,13 @@
 							style={`${i == 0 || i == tableData.fields.length ? 'border-left: 0px' : ''}`}
 						>
 							<p class={`truncate p-2`} style={`width: ${sizes[i]}px;`}>
-								{data[field]}
+								{data[field] == null
+									? ''
+									: data[field] == true
+									? 'Si'
+									: data[field] == false
+									? 'no'
+									: data[field]}
 							</p>
 						</td>
 					{/if}
