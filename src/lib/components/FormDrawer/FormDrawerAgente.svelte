@@ -564,10 +564,20 @@
 				required: false,
 				validators: [
 					(value: any) => {
-						console.log('CLS ALTA', value);
 						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
 							return {
 								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
+								status: false
+							};
+						}
+					},
+					(value: any) => {
+						if (
+							$agenteStore.fechaBajaCLS &&
+							new Date($agenteStore.fechaBajaCLS).getTime() < new Date(value).getTime()
+						) {
+							return {
+								message: 'La fecha de alta no puede ser posterior a la fecha de baja',
 								status: false
 							};
 						}
@@ -580,8 +590,24 @@
 				name: 'fechaBajaCLS',
 				value: $agenteStore.fechaBajaCLS || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if (
+							$agenteStore.fechaAltaCLS &&
+							$agenteStore.tipoContratacion !== 'CLS' &&
+							(value == '' || value == null)
+						) {
+							return {
+								message:
+									'Si se va a actualizar el tipo de contratacion es necesario que se especifique la fecha de baja de la contratacion anterior',
+								status: false
+							};
+						}
+					}
+				]
 			},
+
+			//EX-2023-00000153- -GDEBA-TESTGDEBA
 			{
 				type: 'text',
 				label: 'expediente de alta CLS',
@@ -596,6 +622,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			},
@@ -613,6 +648,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			},
@@ -631,6 +675,17 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						if (
+							$agenteStore.fechaBajaPTT &&
+							new Date($agenteStore.fechaBajaPTT).getTime() < new Date(value).getTime()
+						) {
+							return {
+								message: 'La fecha de alta no puede ser posterior a la fecha de baja',
+								status: false
+							};
+						}
 					}
 				]
 			},
@@ -640,7 +695,21 @@
 				name: 'fechaBajaPTT',
 				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
-				validators: []
+				validators: [
+					(value: any) => {
+						if (
+							$agenteStore.fechaAltaPTT &&
+							$agenteStore.tipoContratacion !== 'PTT' &&
+							(value == '' || value == null)
+						) {
+							return {
+								message:
+									'Si se va a actualizar el tipo de contratacion es necesario que se especifique la fecha de baja de la contratacion anterior',
+								status: false
+							};
+						}
+					}
+				]
 			},
 			{
 				type: 'text',
@@ -656,6 +725,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			},
@@ -673,6 +751,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			},
@@ -687,6 +774,17 @@
 						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
 							return {
 								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
+								status: false
+							};
+						}
+					},
+					(value: any) => {
+						if (
+							$agenteStore.fechaBajaPP &&
+							new Date($agenteStore.fechaBajaPP).getTime() < new Date(value).getTime()
+						) {
+							return {
+								message: 'La fecha de alta no puede ser posterior a la fecha de baja',
 								status: false
 							};
 						}
@@ -715,6 +813,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			},
@@ -732,6 +839,15 @@
 								status: false
 							};
 						}
+					},
+					(value: any) => {
+						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
+						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value))
+							return {
+								message:
+									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
+								status: false
+							};
 					}
 				]
 			}
