@@ -6,7 +6,7 @@
 	export let highlight: boolean = false;
 	export let textHighlight: boolean = false;
 	export let dropdown: boolean = false;
-	let showDropdown: boolean = false;
+	export let showDropdown: boolean = false;
 </script>
 
 {#if !dropdown}
@@ -27,9 +27,7 @@
 		}`}
 			class:highligth={highlight}
 			class:text-highligth={textHighlight}
-			on:click={() => {
-				showDropdown = !showDropdown;
-			}}><Icon src={icon} class="w-4 h-4" /> {name}</button
+			on:click><Icon src={icon} class="w-4 h-4" /> {name}</button
 		>
 		{#if showDropdown}
 			<slot name="dropdown-content" />

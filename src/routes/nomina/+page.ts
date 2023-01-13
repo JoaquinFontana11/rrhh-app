@@ -29,7 +29,15 @@ export const load: PageLoad<{
 	// cargamos los agentes iniciales
 	const agentes = await reloadData(0, order, filter);
 	// cargamos todos los campos para filtrar
-	let { data: fields }: { data: any } = await supabase.from('agente').select('*').range(0, 1);
+	let { data: fields }: { data: any } = await supabase
+		.from('agente')
+		.select(
+			'*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)'
+		)
+		.range(0, 1);
+
+	fields = flatSupabaseResponse(fields);
+	console.log();
 	return {
 		data: agentes.data,
 		lastPage: Math.trunc((lastPage as number) / 10),
@@ -55,7 +63,7 @@ const reloadData = async (
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 
 	const resSupabase = await eval(querySupabase);
-
+	/*
 	resSupabase.data = resSupabase.data.map((data: any) => {
 		let flattedArr: any = [];
 
@@ -73,6 +81,8 @@ const reloadData = async (
 		}
 		return Object.fromEntries(flattedArr);
 	});
+	*/
+	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 	return resSupabase;
 };
 
@@ -84,3 +94,22 @@ const calcLastPage = async (order = { field: 'DNI', direction: true }, filters: 
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 	return await eval(querySupabase);
 };
+
+const flatSupabaseResponse = (resSupabaseData: any) =>
+	resSupabaseData.map((data: any) => {
+		let flattedArr: any = [];
+
+		// repasamos las claves y si hay un objeto lo llevamos un nivel por encima
+		for (let key in data) {
+			if (typeof data[key] !== 'object' || data[key] == null) {
+				flattedArr.push([key, data[key]]);
+			} else if (key == 'superiorDirecto' || key == 'equipo' || key == 'direccion') {
+				flattedArr.push([key, data[key].id]);
+			} else {
+				for (let subKey in data[key]) {
+					flattedArr.push([subKey, data[key][subKey]]);
+				}
+			}
+		}
+		return Object.fromEntries(flattedArr);
+	});

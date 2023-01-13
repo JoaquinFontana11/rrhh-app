@@ -37,6 +37,8 @@
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
+	let showDropdowns = [false, false, false];
+
 	console.log(data.data);
 
 	const transformData = (data: any[]) => {
@@ -114,6 +116,11 @@
 			name="Orden"
 			icon={$orderStore.direction ? SortAscending : SortDescending}
 			dropdown={true}
+			bind:showDropdown={showDropdowns[0]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 0 ? val : false));
+				showDropdowns[0] = !showDropdowns[0];
+			}}
 		>
 			<DashboardToolbarOrder slot="dropdown-content" fields={tableData.fields} />
 		</DashboardToolbarButton>
@@ -121,6 +128,11 @@
 			name="Agregar filtro"
 			icon={Filter}
 			dropdown={true}
+			bind:showDropdown={showDropdowns[1]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 1 ? val : false));
+				showDropdowns[1] = !showDropdowns[1];
+			}}
 			textHighlight={$filterStore.length !== 0}
 		>
 			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
@@ -130,6 +142,11 @@
 			name="Agregar Campo"
 			icon={$showAllStore ? Eye : EyeOff}
 			dropdown={true}
+			bind:showDropdown={showDropdowns[2]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 2 ? val : false));
+				showDropdowns[2] = !showDropdowns[2];
+			}}
 		>
 			<DashboardToolbarShow slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
@@ -150,7 +167,6 @@
 				}}
 			/>
 		</div>
-		<DashboardToolbarButton name="" icon={Refresh} />
 		<DashboardToolbarButton
 			name="Agregar agente"
 			highlight={true}
