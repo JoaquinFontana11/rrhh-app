@@ -25,6 +25,7 @@
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
+	import DashboardToolbarExport from '$lib/components/Dashboard/DashboardToolbarExport.svelte';
 	import type { PageData } from './$types';
 	import FormDrawerAgente from '$lib/components/FormDrawer/FormDrawerAgente.svelte';
 
@@ -37,7 +38,7 @@
 	let stopLongPolling: any;
 	let intervalsIds: any[] = [];
 
-	let showDropdowns = [false, false, false];
+	let showDropdowns = [false, false, false, false];
 
 	console.log(data.data);
 
@@ -112,6 +113,18 @@
 <Header />
 <Dashboard bind:showDrawer drawerContent={FormDrawerAgente}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
+		<DashboardToolbarButton
+			name="Exportar"
+			icon={Document}
+			dropdown={true}
+			bind:showDropdown={showDropdowns[3]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 3 ? val : false));
+				showDropdowns[3] = !showDropdowns[3];
+			}}
+		>
+			<DashboardToolbarExport slot="dropdown-content" />
+		</DashboardToolbarButton>
 		<DashboardToolbarButton
 			name="Orden"
 			icon={$orderStore.direction ? SortAscending : SortDescending}

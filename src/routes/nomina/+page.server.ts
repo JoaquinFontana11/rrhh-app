@@ -1,6 +1,7 @@
 import type { Action, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
+import XLSX from 'xlsx';
 
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
@@ -39,8 +40,6 @@ const create: Action = async ({ request }) => {
 		actoAltaPP: data.get('actoAltaPP') || null
 	};
 
-	console.log(datosRecorrido);
-
 	const { data: dataSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
 		.insert(datosSalud)
@@ -53,9 +52,6 @@ const create: Action = async ({ request }) => {
 		.from('datosRecorrido')
 		.insert(datosRecorrido)
 		.select();
-
-	console.log(dataAcademico, dataSalud, dataRecorrido);
-	console.log(errorAcademico, errorSalud, errorRecorrido);
 
 	if (errorSalud || errorAcademico || errorRecorrido) {
 		if (dataSalud) await supabase.from('datosSalud').delete().eq('id', dataSalud[0].id);
@@ -93,8 +89,6 @@ const create: Action = async ({ request }) => {
 		.from('agente')
 		.insert(agente)
 		.select();
-
-	console.log(errorAgente, dataAgente);
 
 	if (errorAgente) return fail(400);
 };
@@ -196,12 +190,32 @@ const update: Action = async ({ request }) => {
 		.update(agente)
 		.eq('id', data.get('id'));
 
-	console.log(newDataAgente, newDataAcademico, newDataRecorrido, newDataSalud);
-
 	// chequeamos que todo se actualice bien sino hacemos rollback
 
 	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError)
 		return fail(400);
 };
 
-export const actions: Actions = { create, update };
+const getDataForExport = async (options = {}) => {
+	const { data } = await supabase.from('agente').select('*');
+	return data;
+};
+
+const exportAgentesExcel: Action = async ({ request }) => {
+	const data = await request.formData();
+	console.log(data);
+
+	//	const dataExcel = [{ name: 'juan', age: 1 }];
+	const dataExcel = await getDataForExport();
+	const workSheet = XLSX.utils.json_to_sheet(dataExcel);
+	const workBook = XLSX.utils.book_new();
+
+	XLSX.utils.book_append_sheet(workBook, workSheet, 'Hoja 1');
+
+	const excel = XLSX.write(workBook, { type: 'base64' });
+	return {
+		excel
+	};
+};
+
+export const actions: Actions = { create, update, exportAgentesExcel };
