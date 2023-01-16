@@ -12,7 +12,7 @@
 		Icon,
 		Document
 	} from 'svelte-hero-icons';
-	import pageStore from '$lib/stores/pageStore';
+	import pageStore, { cantPage } from '$lib/stores/pageStore';
 	import orderStore from '$lib/stores/orderStore';
 	import filterStore from '$lib/stores/filterStore';
 	import showStore from '$lib/stores/showStore';
@@ -22,6 +22,7 @@
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
+	import DashboardToolbarSelect from '$lib/components/Dashboard/DashboardToolbarSelect.svelte';
 	import DashboardToolbarOrder from '$lib/components/Dashboard/DashboardToolbarOrder.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
@@ -84,30 +85,52 @@
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	pageStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData(val, $orderStore, $filterStore)).data);
+		tableData = transformData(
+			(await data.reloadData(val, $orderStore, $filterStore, $cantPage)).data
+		);
 		stopLongPolling = initLongPolling(val, $orderStore, $filterStore);
 	});
 	// cuando se cambia el orden tambien se recarga la pagina
 	orderStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData($pageStore, val, $filterStore)).data);
+		tableData = transformData(
+			(await data.reloadData($pageStore, val, $filterStore, $cantPage)).data
+		);
 		stopLongPolling = initLongPolling($pageStore, val, $filterStore);
 	});
 	// cuando se cambian los filtros tambien se recarga la pagina
 	filterStore.subscribe(async (val) => {
 		stopLongPolling();
-		tableData = transformData((await data.reloadData($pageStore, $orderStore, val)).data);
+		tableData = transformData(
+			(await data.reloadData($pageStore, $orderStore, val, $cantPage)).data
+		);
 		stopLongPolling = initLongPolling($pageStore, $orderStore, val);
 		const { count } = await data.calcLastPage($orderStore, val);
 		lastPage = Math.trunc(count / 10);
 	});
 	// cuando se cambian los campos a mostrar se recalcula tableData
 	showStore.subscribe(async (val) => {
-		tableData = transformData((await data.reloadData($pageStore, $orderStore, $filterStore)).data);
+		tableData = transformData(
+			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPage)).data
+		);
 	});
 	showAllStore.subscribe(async (val) => {
-		tableData = transformData((await data.reloadData($pageStore, $orderStore, $filterStore)).data);
+		tableData = transformData(
+			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPage)).data
+		);
 	});
+
+	const changeCantPage = async (e: Event) => {
+		console.log(e.target.value);
+
+		cantPage.update((n) => e.target.value * 1);
+
+		tableData = transformData(
+			(await data.reloadData($pageStore, $orderStore, $filterStore, e.target.value * 1)).data
+		);
+		const { count } = await data.calcLastPage($orderStore, $filterStore);
+		lastPage = Math.trunc((count / e.target.value) * 1);
+	};
 </script>
 
 <Header />
@@ -180,6 +203,14 @@
 				}}
 			/>
 		</div>
+		<DashboardToolbarSelect
+			options={[
+				{ name: '10', value: 10 },
+				{ name: '50', value: 50 },
+				{ name: '100', value: 100 }
+			]}
+			on:input={changeCantPage}
+		/>
 		<DashboardToolbarButton
 			name="Agregar agente"
 			highlight={true}

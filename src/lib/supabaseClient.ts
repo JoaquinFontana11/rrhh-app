@@ -6,10 +6,17 @@ export const supabase = createClient(
 	PUBLIC_SUPABASE_ANON_KEY as string
 );
 
-export const execSupabaseQuery = async (query: string, page: any, filters: any, order: any) => {
+export const execSupabaseQuery = async (
+	query: string,
+	page: any,
+	filters: any,
+	order: any,
+	cantPage: number = 10
+) => {
 	// agregamos la paginacion a la query original
 	let querySupabase = query;
-	if (page) querySupabase += `.range(${page * 10},${page * 10 + 9})`;
+	if (page || page == 0)
+		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
 	filters.map((f) => {

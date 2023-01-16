@@ -2,6 +2,7 @@ import type { PageLoad } from './$types';
 import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 import type { PostgrestResponse } from '@supabase/supabase-js';
 import notasStore from '$lib/stores/notasStore';
+
 // usamos CSR para poder usar el localStorage
 export const ssr = false;
 
@@ -23,11 +24,10 @@ export const load: PageLoad<{
 		direction: true
 	};
 	const filter = JSON.parse(localStorage.getItem('filter') as string) || [];
-
 	// contamos la cantidad maxima de registros para la paginacion
 	let { count: lastPage } = await supabase.from('agente').select('*', { count: 'exact' });
 	// cargamos los agentes iniciales
-	const agentes = await reloadData(0, order, filter);
+	const agentes = await reloadData(0, order, filter, 10);
 	// cargamos todos los campos para filtrar
 	let { data: fields }: { data: any } = await supabase
 		.from('agente')
@@ -50,13 +50,15 @@ export const load: PageLoad<{
 const reloadData = async (
 	page: number,
 	order = { field: 'DNI', direction: true },
-	filters: any[]
+	filters: any[],
+	cantPage: number
 ) => {
 	const resSupabase = await execSupabaseQuery(
 		`supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)')`,
 		page,
 		filters,
-		order
+		order,
+		cantPage
 	);
 
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
