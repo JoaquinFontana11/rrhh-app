@@ -2,6 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 	import { generateBlobExcel } from '$lib/exportExcel';
+	import { generatePDF } from '$lib/exportPDF';
 	import pageStore from '$lib/stores/pageStore';
 	import orderStore from '$lib/stores/orderStore';
 	import filterStore from '$lib/stores/filterStore';
@@ -37,11 +38,15 @@
 			});
 		}
 
-		// generamos el Blob del excel
-		const blobExcel = await generateBlobExcel(data);
+		if (exportFormat === 'pdf') {
+			generatePDF(data);
+		} else {
+			// generamos el Blob del excel
+			const blobExcel = await generateBlobExcel(data);
 
-		// descargamos el blob
-		window.location = URL.createObjectURL(blobExcel);
+			// descargamos el blob
+			window.location = URL.createObjectURL(blobExcel);
+		}
 	};
 </script>
 
