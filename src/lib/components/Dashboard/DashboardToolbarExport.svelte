@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
+	import { execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
+	import { generateBlobExcel } from '$lib/exportExcel';
+	import pageStore from '$lib/stores/pageStore';
+	import orderStore from '$lib/stores/orderStore';
+	import filterStore from '$lib/stores/filterStore';
+	import showStore from '$lib/stores/showStore';
 
 	let exportType = 'all';
 	let exportFormat = 'pdf';
@@ -7,43 +13,35 @@
 	let fieldsActive = false;
 
 	const exportData = async () => {
-		const body = new FormData();
-		body.set('type', exportType);
-		body.set('format', exportFormat);
-		body.set('filters', filtersActive + '');
-		body.set('fields', fieldsActive + '');
+		console.log(exportType, filtersActive, fieldsActive);
 
-		const res = await fetch('?/exportAgentesExcel', {
-			method: 'POST',
-			body
-		});
-		const data = await res.json();
+		// obtenemos los datos de supabase
+		const resSupabase = await execSupabaseQuery(
+			`supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)')`,
+			exportType == 'all' ? null : $pageStore,
+			filtersActive ? $filterStore : [],
+			$orderStore
+		);
 
-		const blob = b64toBlob(JSON.parse(data.data)[1]);
+		let data = flatSupabaseResponse(resSupabase.data);
 
-		window.location = URL.createObjectURL(blob);
-	};
-
-	const b64toBlob = (b64, sliceSize = 512) => {
-		const byteCharacters = atob(b64);
-		const byteArrays = [];
-
-		for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-			const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-			const byteNumbers = new Array(slice.length);
-			for (let i = 0; i < slice.length; i++) {
-				byteNumbers[i] = slice.charCodeAt(i);
-			}
-
-			const byteArray = new Uint8Array(byteNumbers);
-			byteArrays.push(byteArray);
+		//filtramos los campos
+		if (fieldsActive) {
+			data = data.map((agente) => {
+				const newAgente = {};
+				Object.entries(agente).forEach((entries) => {
+					if ($showStore.some((show) => show.field == entries[0]))
+						newAgente[entries[0]] = newAgente[entries[0]] = entries[1];
+				});
+				return newAgente;
+			});
 		}
 
-		const blob = new Blob(byteArrays, {
-			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-		});
-		return blob;
+		// generamos el Blob del excel
+		const blobExcel = await generateBlobExcel(data);
+
+		// descargamos el blob
+		window.location = URL.createObjectURL(blobExcel);
 	};
 </script>
 

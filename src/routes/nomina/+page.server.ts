@@ -1,7 +1,6 @@
 import type { Action, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
-import XLSX from 'xlsx';
 
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
@@ -196,11 +195,11 @@ const update: Action = async ({ request }) => {
 		return fail(400);
 };
 
+/*
 const getDataForExport = async (options = {}) => {
 	const { data } = await supabase.from('agente').select('*');
 	return data;
 };
-
 const exportAgentesExcel: Action = async ({ request }) => {
 	const data = await request.formData();
 	console.log(data);
@@ -217,5 +216,5 @@ const exportAgentesExcel: Action = async ({ request }) => {
 		excel
 	};
 };
-
-export const actions: Actions = { create, update, exportAgentesExcel };
+*/
+export const actions: Actions = { create, update };
