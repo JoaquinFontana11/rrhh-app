@@ -15,10 +15,14 @@ export const load: PageLoad = async ({ url }) => {
 	//const { data: licencias } = await supabase.from('licencia').select('*');
 
 	const licencias = await reloadData(0, { field: 'fechaInicio', direction: true }, [], 10);
-	const { data: fields } = await supabase
+	let { data: fields } = await supabase
 		.from('licencia')
-		.select('agente(nombreCompleto), fechaInicio, fechaFin, observaciones, autorizadoSiape')
+		.select(' fechaInicio, fechaFin, observaciones, autorizadoSiape')
 		.range(0, 1);
+
+	fields = flatSupabaseResponse(fields);
+
+	console.log(fields);
 
 	return {
 		licencias: licencias.data,

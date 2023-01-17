@@ -122,6 +122,7 @@
 		<DashboardToolbarSelect
 			options={[
 				{ name: 'Ausente con aviso', value: 'ausente' },
+				{ name: 'Academica', value: 'academica' },
 				{ name: 'Vacaciones', value: 'vacaciones' },
 				{ name: 'Teletrabajo', value: 'teletrabajo' },
 				{ name: 'Salud', value: 'salud' },
@@ -131,7 +132,18 @@
 				tipoLicenciaStore.update((n) => e.target.value);
 			}}
 		/>
-
+		<div class="flex gap-1 justify-center items-center">
+			<DashboardToolbarButton name="" icon={ArrowLeft} on:click={() => {}} />
+			<p class="dark:text-stone-400">10 / 10</p>
+			<DashboardToolbarButton name="" icon={ArrowRight} on:click={() => {}} />
+		</div>
+		<DashboardToolbarSelect
+			options={[
+				{ name: '10', value: 10 },
+				{ name: '50', value: 50 },
+				{ name: '100', value: 100 }
+			]}
+		/>
 		<DashboardToolbarButton
 			name="Agregar licencia"
 			highlight={true}
