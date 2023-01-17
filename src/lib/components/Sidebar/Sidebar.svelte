@@ -23,6 +23,7 @@
 		<SidebarButton icon={Table} tooltip="Nomina de agentes" href="/nomina" />
 		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
 		<SidebarButton icon={Newspaper} tooltip="Licencias" href="/licencias" />
+		<SidebarButton icon={Bookmark} tooltip="Presentismo (proximamente)" href="/presentismo" />
 		<SidebarButton icon={Calendar} tooltip="Calendario (proximamente)" href="/calendario" />
 	</ul>
 	<ul class="absolute bottom-2 flex flex-col gap-3">

@@ -37,9 +37,9 @@
 						<p class={`truncate p-2`} style={`width: ${sizes[i]}px;`}>
 							{data[field] == null
 								? ''
-								: data[field] == true
+								: data[field] == true && data[field] !== 1
 								? 'Si'
-								: data[field] == false
+								: data[field] == false && data[field] !== 0
 								? 'no'
 								: data[field]}
 						</p>
