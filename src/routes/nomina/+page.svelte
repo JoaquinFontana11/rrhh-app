@@ -68,11 +68,12 @@
 	const initLongPolling = (
 		page: number,
 		order: { field: string; direction: boolean },
-		filter: { field: string; filter: string; value: string }[]
+		filter: { field: string; filter: string; value: string }[],
+		cantPage: number
 	) => {
 		intervalsIds.push(
 			setInterval(async () => {
-				tableData = transformData((await data.reloadData(page, order, filter)).data);
+				tableData = transformData((await data.reloadData(page, order, filter, cantPage)).data);
 			}, 10000)
 		);
 
@@ -80,7 +81,7 @@
 	};
 
 	tableData = transformData(data.data);
-	stopLongPolling = initLongPolling(0, $orderStore, $filterStore);
+	stopLongPolling = initLongPolling(0, $orderStore, $filterStore, $cantPage);
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	pageStore.subscribe(async (val) => {
@@ -88,7 +89,7 @@
 		tableData = transformData(
 			(await data.reloadData(val, $orderStore, $filterStore, $cantPage)).data
 		);
-		stopLongPolling = initLongPolling(val, $orderStore, $filterStore);
+		stopLongPolling = initLongPolling(val, $orderStore, $filterStore, $cantPage);
 	});
 	// cuando se cambia el orden tambien se recarga la pagina
 	orderStore.subscribe(async (val) => {
@@ -96,7 +97,7 @@
 		tableData = transformData(
 			(await data.reloadData($pageStore, val, $filterStore, $cantPage)).data
 		);
-		stopLongPolling = initLongPolling($pageStore, val, $filterStore);
+		stopLongPolling = initLongPolling($pageStore, val, $filterStore, $cantPage);
 	});
 	// cuando se cambian los filtros tambien se recarga la pagina
 	filterStore.subscribe(async (val) => {
@@ -104,7 +105,7 @@
 		tableData = transformData(
 			(await data.reloadData($pageStore, $orderStore, val, $cantPage)).data
 		);
-		stopLongPolling = initLongPolling($pageStore, $orderStore, val);
+		stopLongPolling = initLongPolling($pageStore, $orderStore, val, $cantPage);
 		const { count } = await data.calcLastPage($orderStore, val);
 		lastPage = Math.trunc(count / 10);
 	});
@@ -121,13 +122,12 @@
 	});
 
 	const changeCantPage = async (e: Event) => {
-		console.log(e.target.value);
-
 		cantPage.update((n) => e.target.value * 1);
-
+		stopLongPolling();
 		tableData = transformData(
 			(await data.reloadData($pageStore, $orderStore, $filterStore, e.target.value * 1)).data
 		);
+		stopLongPolling = initLongPolling($pageStore, $orderStore, $filterStore, $cantPage);
 		const { count } = await data.calcLastPage($orderStore, $filterStore);
 		lastPage = Math.trunc((count / e.target.value) * 1);
 	};

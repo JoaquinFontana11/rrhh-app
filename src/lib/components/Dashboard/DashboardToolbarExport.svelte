@@ -7,6 +7,7 @@
 	import orderStore from '$lib/stores/orderStore';
 	import filterStore from '$lib/stores/filterStore';
 	import showStore from '$lib/stores/showStore';
+	import { cantPage } from '$lib/stores/pageStore';
 
 	let exportType = 'all';
 	let exportFormat = 'pdf';
@@ -21,7 +22,8 @@
 			`supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)')`,
 			exportType == 'all' ? null : $pageStore,
 			filtersActive ? $filterStore : [],
-			$orderStore
+			$orderStore,
+			$cantPage
 		);
 
 		let data = flatSupabaseResponse(resSupabase.data);

@@ -14,8 +14,6 @@
 
 	let components: IComponentObject = {};
 
-	console.log(props);
-	console.log(agentes);
 	components = {
 		datosGenerales: [
 			{
@@ -55,7 +53,7 @@
 			{
 				type: 'select',
 				label: 'autorizado por Siape',
-				name: 'aultorizadoSiape',
+				name: 'autorizadoSiape',
 				value: '',
 				required: false,
 				validators: [validateEmptyInput],
