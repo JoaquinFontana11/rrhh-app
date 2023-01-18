@@ -38,6 +38,7 @@
 		"@supabase/auth-helpers-sveltekit": "^0.8.6",
 		"@supabase/supabase-js": "^2.2.2",
 		"@sveltejs/adapter-node": "^1.1.1",
+		"brie": "^3.0.4",
 		"i": "^0.3.7",
 		"jspdf": "^2.5.1",
 		"jspdf-autotable": "^3.5.28",

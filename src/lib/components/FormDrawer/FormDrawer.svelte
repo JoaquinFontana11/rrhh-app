@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { FunctionsObject, IComponentObject } from '$lib/types';
 	import { agenteStore } from '$lib/stores/agenteStore';
+	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
 
 	export let components: IComponentObject;
 	export let action: string;
 	export let disabled: boolean = true;
 	export let extraValidations: FunctionsObject | boolean = false;
+
+	let dispacher = createEventDispatcher();
 
 	let loading = false;
 	let error = { message: [], status: false };
@@ -43,13 +46,20 @@
 				);
 			}
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
-			console.log([...formData]);
-			await fetch(`?/${action}`, {
+			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData
 			});
+
+			if (res.status == 400) {
+				dispacher('invalid', {
+					data: (await res.json()).error.message
+				});
+			} else {
+				dispacher('valid');
+			}
 		} catch (err) {
-			console.log(err);
+			console.log('ERORR', err);
 		} finally {
 			loading = false;
 		}

@@ -1,5 +1,7 @@
 import type { Actions, Action } from './$types';
 import { supabase } from '$lib/supabaseClient';
+import licenciasRuleEngine from '$lib/server/ruleEngine';
+import { error } from '@sveltejs/kit';
 
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
@@ -35,21 +37,36 @@ const create: Action = async ({ request }) => {
 		periodo: data.get('periodo')
 	};
 
-	console.log(datosAcademicos, datosSalud, datosTeletrabajo, datosVacaciones);
-	console.log(
-		objetoLleno(datosAcademicos),
-		objetoLleno(datosSalud),
-		objetoLleno(datosTeletrabajo),
-		objetoLleno(datosVacaciones)
-	);
+	const date = new Date();
+	// ejecutamos el motor de reglas para validar la licencia
+	if (licencia.tipo == 'ausente') {
+		// obtenemos todos los ausentes con aviso en lo que va del año
+		const { data: dataAusentes } = await supabase
+			.from('licencia')
+			.select('*')
+			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
+			.eq('agente', licencia.agente);
+
+		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
+
+		console.log(flags);
+
+		const reject = Object.entries(flags).some((flag) => !flag[1]);
+
+		console.log(Object.entries(flags).filter((flag) => !flag[1]));
+
+		if (reject)
+			throw error(400, {
+				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
+			});
+	}
 
 	if (objetoLleno(datosAcademicos)) {
-		let { data, error }: { data: any; error: any } = await supabase
+		let { data }: { data: any; error: any } = await supabase
 			.from('licenciaAcademica')
 			.insert(datosAcademicos)
 			.select();
 
-		console.log(error);
 		licencia.datosAcademicos = data[0].id;
 	}
 	if (objetoLleno(datosSalud)) {
@@ -74,8 +91,7 @@ const create: Action = async ({ request }) => {
 		licencia.datosTeletrabajo = data[0].id;
 	}
 
-	const { error } = await supabase.from('licencia').insert(licencia);
-	console.log(error, licencia);
+	await supabase.from('licencia').insert(licencia);
 };
 
 const objetoLleno = (obj) => {

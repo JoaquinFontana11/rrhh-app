@@ -1,26 +1,33 @@
 <script lang="ts">
-	import { Icon, ChevronDown } from 'svelte-hero-icons';
+	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
 	import type { IComponentObject } from '$lib/types';
 	import FormDrawer from '../FormDrawer.svelte';
 	import FormDrawerInputGroup from '../FormDrawerInputGroup.svelte';
 	import { validateEmptyInput } from '../validators';
-	import { supabase } from '$lib/supabaseClient';
 
 	export let props: any;
 
 	let agentes = props.drawerContentProps || [];
-	let agenteId: number;
-	let tipoLicencia: string = '';
+	let showErrors: boolean = false;
+	let errorsMessage: { error: string; description: string }[] = [];
+
+	let licencia = {
+		agente: 0,
+		tipo: '',
+		fechaInicio: '',
+		fechaFin: '',
+		observaciones: '',
+		autorizadoSiape: ''
+	};
 
 	let components: IComponentObject = {};
-
-	components = {
+	$: components = {
 		datosGenerales: [
 			{
 				type: 'select',
 				label: 'agente',
 				name: 'agente',
-				value: agenteId,
+				value: licencia.agente * 1,
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -30,23 +37,41 @@
 				type: 'date',
 				label: 'fecha de inicio',
 				name: 'fechaInicio',
-				value: '',
+				value: licencia.fechaInicio,
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: any) => {
+						if (new Date(value).getTime() > new Date(licencia.fechaFin).getTime())
+							return {
+								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'date',
 				label: 'fecha de fin',
 				name: 'fechaFin',
-				value: '',
+				value: licencia.fechaFin,
 				required: true,
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value) => {
+						if (new Date(value).getTime() < new Date(licencia.fechaInicio).getTime())
+							return {
+								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
+								status: false
+							};
+					}
+				]
 			},
 			{
 				type: 'text',
 				label: 'observaciones',
 				name: 'observaciones',
-				value: '',
+				value: licencia.observaciones,
 				required: false,
 				validators: [validateEmptyInput]
 			},
@@ -54,7 +79,7 @@
 				type: 'select',
 				label: 'autorizado por Siape',
 				name: 'autorizadoSiape',
-				value: '',
+				value: licencia.autorizadoSiape == 'true',
 				required: false,
 				validators: [validateEmptyInput],
 				options: [
@@ -66,7 +91,7 @@
 				type: 'select',
 				label: 'tipo',
 				name: 'tipo',
-				value: tipoLicencia,
+				value: licencia.tipo,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -192,10 +217,25 @@
 
 	const changeInputsGenerales = (e: Event) => {
 		const target = e.target as HTMLInputElement;
-		tipoLicencia = target.name == 'tipo' ? target.value : tipoLicencia;
+		licencia[target.name] = target.value;
+	};
+
+	const showValidations = (e: CustomEvent) => {
+		const dataErrors = JSON.parse(e.detail.data);
+
+		console.log(dataErrors);
+
+		showErrors = true;
+		errorsMessage = [];
+		// TODO: invertir el orden de los mensjes
+		Object.entries(dataErrors.flags).forEach((flag) => {
+			if (flag[1]) return;
+			errorsMessage.push(dataErrors.messages[flag[0]]);
+		});
 	};
 </script>
 
+{JSON.stringify(licencia)}
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
 	<!--
 	<div class="flex m-2 relative">
@@ -224,22 +264,46 @@
 
 		{#if agenteId}
 	-->
-	<FormDrawer {components} action="create" disabled={false}>
+	<FormDrawer
+		{components}
+		action="create"
+		disabled={false}
+		on:invalid={showValidations}
+		on:valid={() => {
+			showErrors = false;
+		}}
+	>
 		<FormDrawerInputGroup
 			bind:components={components.datosGenerales}
 			formName="datosGenerales"
 			on:input={changeInputsGenerales}
+			validateAllInputs={false}
 		/>
-		{#if tipoLicencia && tipoLicencia !== 'otro' && tipoLicencia !== 'ausente'}
+		{#if licencia.tipo && licencia.tipo !== 'otro' && licencia.tipo !== 'ausente'}
 			<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
 				<span> datos especificos de la licencia</span>
 				<div class="flex gap-1 justify-center items-center">
 					<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
 				</div>
 			</div>
-			<FormDrawerInputGroup bind:components={components[tipoLicencia]} formName={tipoLicencia} />
+			<FormDrawerInputGroup bind:components={components[licencia.tipo]} formName={licencia.tipo} />
 		{/if}
 	</FormDrawer>
+	{#if showErrors}
+		<div class=" w-full p-3 m-5 flex flex-col gap-5">
+			{#each errorsMessage as error}
+				<div
+					class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
+				>
+					<Icon src={ExclamationCircle} class="text-rose-500 w-6 h-6" />
+					<div class="w-5/6">
+						<p class="text-stone-700 dark:text-stone-200 text-sm">{error.error}</p>
+						<p class="text-stone-500 text-sm">{error.description}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
 	<!--
 
 			{/if}
