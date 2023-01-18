@@ -26,6 +26,7 @@ export const load: PageLoad<{
 	const filter = JSON.parse(localStorage.getItem('filter') as string) || [];
 	// contamos la cantidad maxima de registros para la paginacion
 	let { count: lastPage } = await supabase.from('agente').select('*', { count: 'exact' });
+
 	// cargamos los agentes iniciales
 	const agentes = await reloadData(0, order, filter, 10);
 	// cargamos todos los campos para filtrar
