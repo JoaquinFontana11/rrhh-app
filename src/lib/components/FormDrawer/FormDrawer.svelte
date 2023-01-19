@@ -26,7 +26,7 @@
 					component.validators.forEach((validator) => {
 						//res = component.required ? validator(component.value) : null;
 						res = validator(component.value);
-						if (res && res.message) error.message.push(res.message);
+						if (res && res.message) error.message.push(`${component.name}: ${res.message}`);
 						error.status = res && !res.status ? res.status : status;
 					});
 					if (!status) return;

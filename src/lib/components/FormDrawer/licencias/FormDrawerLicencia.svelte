@@ -28,7 +28,8 @@
 		fechaFin: '',
 		observaciones: '',
 		autorizadoSiape: '',
-		ultimaMateria: ''
+		ultimaMateria: '',
+		periodo: 1
 	};
 
 	let components: IComponentObject = {};
@@ -122,7 +123,7 @@
 				name: 'observaciones',
 				value: licencia.observaciones,
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'select',
@@ -158,7 +159,7 @@
 				type: 'select',
 				label: 'periodo',
 				name: 'periodo',
-				value: '',
+				value: licencia.periodo,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [

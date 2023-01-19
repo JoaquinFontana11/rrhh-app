@@ -36,7 +36,8 @@ const create: Action = async ({ request }) => {
 		fechaAltaPP: data.get('fechaAltaPP') || null,
 		fechaBajaPP: data.get('fechaBajaPP') || null,
 		expedienteAltaPP: data.get('expedienteAltaPP') || null,
-		actoAltaPP: data.get('actoAltaPP') || null
+		actoAltaPP: data.get('actoAltaPP') || null,
+		antiguedadExterna: data.get('antiguedadExterna') || null
 	};
 
 	const { data: dataSalud, error: errorSalud }: { data: any; error: any } = await supabase
@@ -127,7 +128,8 @@ const update: Action = async ({ request }) => {
 		fechaAltaPP: data.get('fechaAltaPP') || null,
 		fechaBajaPP: data.get('fechaBajaPP') || null,
 		expedienteAltaPP: data.get('expedienteAltaPP') || null,
-		actoAltaPP: data.get('actoAltaPP') || null
+		actoAltaPP: data.get('actoAltaPP') || null,
+		antiguedadExterna: data.get('antiguedadExterna') || null
 	};
 
 	const agente = {
@@ -154,7 +156,7 @@ const update: Action = async ({ request }) => {
 	const { data: currentAgente, error: errorAgente }: { data: any; error: any } = await supabase
 		.from('agente')
 		.select('*')
-		.eq('id', data.get('id'));
+		.eq('DNI', data.get('DNI'));
 	const { data: currentSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
 		.select('*')
@@ -171,26 +173,29 @@ const update: Action = async ({ request }) => {
 	// actualizamos los datos
 	// TODO: estaria bueno hacer esto una transaccion, pero por el momento no se puede hacer con supabase
 	// una alternativa es usar funciones PLSQL pero por el momento estan el alpha en supabase
-	const { data: newDataAgente, error: updateAgenteError } = await supabase
+	const { data: newDataSalud, error: updateSaludError } = await supabase
 		.from('datosSalud')
 		.update(datosSalud)
 		.eq('id', currentSalud[0].id);
 
-	const { data: newDataSalud, error: updateSaludError } = await supabase
+	const { data: newDataAcademico, error: updateAcademicoError } = await supabase
 		.from('datosAcademicos')
 		.update(datosAcademicos)
 		.eq('id', currentAcademico[0].id);
-	const { data: newDataAcademico, error: updateAcademicoError } = await supabase
+	const { data: newDataRecorrido, error: updateRecorridoError } = await supabase
 		.from('datosRecorrido')
 		.update(datosRecorrido)
 		.eq('id', currentRecorrido[0].id);
-	const { data: newDataRecorrido, error: updateRecorridoError } = await supabase
+
+	// eliminamos el DNI momentaneamente para no afectar la clave primaria
+	const { error: updateAgenteError } = await supabase
 		.from('agente')
 		.update(agente)
-		.eq('id', data.get('id'));
+		.eq('id', currentAgente[0].id);
 
 	// chequeamos que todo se actualice bien sino hacemos rollback
 
+	//	console.log('me quiero morir', updateRecorridoError, updateAgenteError, updateAcademicoError);
 	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError)
 		return fail(400);
 };

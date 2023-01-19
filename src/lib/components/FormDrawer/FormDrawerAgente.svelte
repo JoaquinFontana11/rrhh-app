@@ -82,7 +82,6 @@
 
 	let veryComplexValidators: FunctionsObject = {
 		datosAcademicos: (components: IComponent) => {
-			console.log(components[2].value, components[0].value);
 			return components[2].value && components[0].value === ''
 				? { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true }
 				: { message: '', status: false };
@@ -397,7 +396,7 @@
 				name: 'carreraUniversitaria',
 				value: $agenteStore.carreraUniversitaria || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'text',
@@ -405,7 +404,7 @@
 				name: 'carreraPostgrado',
 				value: $agenteStore.carreraPostgrado || '',
 				required: false,
-				validators: [validateEmptyInput]
+				validators: []
 			},
 			{
 				type: 'select',
@@ -850,6 +849,14 @@
 							};
 					}
 				]
+			},
+			{
+				type: 'number',
+				label: 'antiguedad externa',
+				name: 'antiguedadExterna',
+				value: $agenteStore.antiguedadExterna,
+				required: false,
+				validators: []
 			}
 		]
 	};

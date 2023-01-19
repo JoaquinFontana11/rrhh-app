@@ -1,5 +1,5 @@
 import brie from 'brie';
-import { diffDays } from '$lib/helpers';
+import { diffDays, diffMonths } from '$lib/helpers';
 // modificamos los datos del ausente con aviso para trabajarlos de mejor forma
 const ausenteDataFormat = (rawData) => {
 	return {
@@ -26,8 +26,34 @@ const academicoDataFormat = (rawData) => {
 	};
 };
 
+const vacacionesDataFormat = (rawData) => {
+	console.log(rawData);
+	const recorrido = rawData.agente.datosRecorrido;
+	let antiguedad = recorrido.antiguedadExterna;
+	console.log(recorrido);
+
+	if (recorrido.fechaBajaPTT) {
+		antiguedad += diffMonths(recorrido.fechaBajaPTT, recorrido.fechaAltaPTT);
+	} else if (recorrido.fechaAltaPTT) {
+		antiguedad += diffMonths(new Date().toDateString(), recorrido.fechaAltaPTT);
+	}
+
+	if (recorrido.fechaBajaPP) {
+		antiguedad += diffMonths(recorrido.fechaBajaPP, recorrido.fechaAltaPP);
+	} else if (recorrido.fechaAltaPP) {
+		antiguedad += diffMonths(new Date().toDateString(), recorrido.fechaAltaPP);
+	}
+
+	console.log(antiguedad);
+
+	return {};
+};
+
+const vacacionesRulesFactory = (data) => {
+	return {};
+};
+
 const academicoRulesFactory = (data) => {
-	console.log(data);
 	return {
 		diasPreExamenMaximos: {
 			criteria: [
@@ -55,8 +81,6 @@ const academicoRulesFactory = (data) => {
 };
 
 const ausenteRulesFactory = (data) => {
-	console.log(data);
-	console.log(new Date(data.ausenteActual.fechaInicio).getMonth());
 	return {
 		ausentesMaximos: {
 			criteria: [
@@ -116,5 +140,7 @@ export default {
 	ausenteRules: (data) =>
 		passRules(ausenteDataFormat(data), ausenteRulesFactory(ausenteDataFormat(data))),
 	academicoRules: (data) =>
-		passRules(academicoDataFormat(data), academicoRulesFactory(academicoDataFormat(data)))
+		passRules(academicoDataFormat(data), academicoRulesFactory(academicoDataFormat(data))),
+	vacacionesRules: (data) =>
+		passRules(vacacionesDataFormat(data), vacacionesRulesFactory(vacacionesDataFormat(data)))
 };

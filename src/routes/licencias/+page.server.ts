@@ -2,6 +2,7 @@ import type { Actions, Action } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import licenciasRuleEngine from '$lib/server/ruleEngine';
 import { error } from '@sveltejs/kit';
+import type { PostgrestResponse } from '@supabase/supabase-js';
 
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
@@ -59,7 +60,7 @@ const create: Action = async ({ request }) => {
 	}
 
 	if (licencia.tipo == 'academica') {
-		// obtenemos todos los ausentes con aviso en lo que va del año
+		// obtenemos todas las licencias academicas en lo que va del año
 		let { data: dataAcademica } = await supabase
 			.from('licencia')
 			.select('*, datosAcademicos(*)')
@@ -69,6 +70,37 @@ const create: Action = async ({ request }) => {
 
 		dataAcademica = dataAcademica || [];
 		const flags = licenciasRuleEngine.academicoRules({ licencia, dataAcademica });
+
+		console.log(flags);
+
+		const reject = Object.entries(flags).some((flag) => !flag[1]);
+
+		if (reject)
+			throw error(400, {
+				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
+			});
+	}
+
+	if (licencia.tipo == 'vacaciones') {
+		// obtenemos todas las vacaciones en lo que va del año
+		let { data: dataVacaciones } = await supabase
+			.from('licencia')
+			.select('*, datosVacaciones(*)')
+			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
+			.eq('agente', licencia.agente)
+			.eq('tipo', 'vacaciones');
+
+		let { data: agente }: { data: any } = await supabase
+			.from('agente')
+			.select('*, datosRecorrido(*)')
+			.eq('id', licencia.agente);
+
+		dataVacaciones = dataVacaciones || [];
+		const flags = licenciasRuleEngine.vacacionesRules({
+			licencia,
+			dataVacaciones,
+			agente: agente[0]
+		});
 
 		console.log(flags);
 
