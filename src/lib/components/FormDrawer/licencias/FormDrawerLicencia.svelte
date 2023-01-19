@@ -3,21 +3,32 @@
 	import type { IComponentObject } from '$lib/types';
 	import FormDrawer from '../FormDrawer.svelte';
 	import FormDrawerInputGroup from '../FormDrawerInputGroup.svelte';
+	import FormDrawerInputGroupButton from '../FormDrawerInputGroupButton.svelte';
 	import { validateEmptyInput } from '../validators';
+	import { diffDays } from '$lib/helpers';
 
 	export let props: any;
 
 	let agentes = props.drawerContentProps || [];
 	let showErrors: boolean = false;
 	let errorsMessage: { error: string; description: string }[] = [];
+	let disabledButton = true;
+	let showForm = true;
+
+	let validateForm = false;
+	let validateForms = {
+		datosGenerales: false,
+		academica: true
+	};
 
 	let licencia = {
-		agente: 0,
+		agente: 1,
 		tipo: '',
 		fechaInicio: '',
 		fechaFin: '',
 		observaciones: '',
-		autorizadoSiape: ''
+		autorizadoSiape: '',
+		ultimaMateria: ''
 	};
 
 	let components: IComponentObject = {};
@@ -47,6 +58,25 @@
 								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
 								status: false
 							};
+					},
+					(value: any) => {
+						if (
+							licencia.ultimaMateria == 'true' &&
+							diffDays(licencia.fechaFin, licencia.fechaInicio) != 11
+						)
+							return {
+								message:
+									'Si es la ultima materia, se deben asignar 10 dias preexamen (una direfencia de 10 dias entre la fecha de inicio y la de fin)',
+								status: false
+							};
+					},
+					(value: any) => {
+						if (licencia.tipo == 'ausente' && licencia.fechaFin !== licencia.fechaInicio)
+							return {
+								message:
+									'Si el tipo de licencia es ausente con aviso, la fecha de fin y de inicio debe ser la misma',
+								status: false
+							};
 					}
 				]
 			},
@@ -62,6 +92,25 @@
 						if (new Date(value).getTime() < new Date(licencia.fechaInicio).getTime())
 							return {
 								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
+								status: false
+							};
+					},
+					(value: any) => {
+						if (
+							licencia.ultimaMateria == 'true' &&
+							diffDays(licencia.fechaFin, licencia.fechaInicio) != 11
+						)
+							return {
+								message:
+									'Si es la ultima materia, se deben asignar 10 dias preexamen (una direfencia de 10 dias entre la fecha de inicio y la de fin)',
+								status: false
+							};
+					},
+					(value: any) => {
+						if (licencia.tipo == 'ausente' && licencia.fechaFin !== licencia.fechaInicio)
+							return {
+								message:
+									'Si el tipo de licencia es ausente con aviso, la fecha de fin y de inicio debe ser la misma',
 								status: false
 							};
 					}
@@ -134,7 +183,7 @@
 				type: 'select',
 				label: 'ultima materia',
 				name: 'ultimaMateria',
-				value: '',
+				value: licencia.ultimaMateria == 'true',
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -223,8 +272,6 @@
 	const showValidations = (e: CustomEvent) => {
 		const dataErrors = JSON.parse(e.detail.data);
 
-		console.log(dataErrors);
-
 		showErrors = true;
 		errorsMessage = [];
 		// TODO: invertir el orden de los mensjes
@@ -233,60 +280,63 @@
 			errorsMessage.push(dataErrors.messages[flag[0]]);
 		});
 	};
+
+	const runValidators = (e: CustomEvent) => {
+		validateForms[e.detail.form] = e.detail.status;
+		disabledButton = true ? !(validateForms.datosGenerales && validateForms.academica) : false;
+		validateForm = !disabledButton;
+	};
 </script>
 
-{JSON.stringify(licencia)}
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
 	<!--
-	<div class="flex m-2 relative">
 
-			<label class=" block  mr-8 text-sm font-medium text-stone-900 dark:text-stone-400 w-2/4"
-			>seleccione un agente
-		</label>
-		
-		<select
-		bind:value={agenteId}
-		class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500 "
-		>
-		{#each agentes as agente}
-		<option value={agente.id}>{agente.emailPersonal}</option>
-		{/each}
-	</select>
-</div>
--->
-	<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
-		<span> datos generales de la licencia</span>
-		<div class="flex gap-1 justify-center items-center">
-			<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
+		<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
+			<span> datos generales de la licencia</span>
+			<div class="flex gap-1 justify-center items-center">
+				<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
+			</div>
 		</div>
-	</div>
-	<!--
-
-		{#if agenteId}
 	-->
+
 	<FormDrawer
 		{components}
 		action="create"
-		disabled={false}
+		disabled={disabledButton || showForm}
 		on:invalid={showValidations}
 		on:valid={() => {
 			showErrors = false;
 		}}
-	>
-		<FormDrawerInputGroup
-			bind:components={components.datosGenerales}
-			formName="datosGenerales"
-			on:input={changeInputsGenerales}
-			validateAllInputs={false}
+		><FormDrawerInputGroupButton
+			on:click={() => {
+				showForm = !showForm;
+			}}
+			label="Datos generales de la licencia"
+			validate={validateForm}
 		/>
-		{#if licencia.tipo && licencia.tipo !== 'otro' && licencia.tipo !== 'ausente'}
-			<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
-				<span> datos especificos de la licencia</span>
-				<div class="flex gap-1 justify-center items-center">
-					<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
+		{#if showForm}
+			<FormDrawerInputGroup
+				bind:components={components.datosGenerales}
+				formName="datosGenerales"
+				on:input={changeInputsGenerales}
+				validateAllInputs={true}
+				on:destroy={runValidators}
+			/>
+			{#if licencia.tipo && licencia.tipo !== 'otro' && licencia.tipo !== 'ausente'}
+				<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
+					<span> datos especificos de la licencia</span>
+					<div class="flex gap-1 justify-center items-center">
+						<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
+					</div>
 				</div>
-			</div>
-			<FormDrawerInputGroup bind:components={components[licencia.tipo]} formName={licencia.tipo} />
+				<FormDrawerInputGroup
+					bind:components={components[licencia.tipo]}
+					formName={licencia.tipo}
+					on:input={changeInputsGenerales}
+					validateAllInputs={true}
+					on:destroy={runValidators}
+				/>
+			{/if}
 		{/if}
 	</FormDrawer>
 	{#if showErrors}
@@ -304,8 +354,28 @@
 			{/each}
 		</div>
 	{/if}
-	<!--
-
-			{/if}
-		-->
 </div>
+<!--
+
+	{#each formNames as formName}
+	<FormDrawerInputGroupButton
+				on:click={() => {
+					dropdown[formName] = !dropdown[formName];
+				}}
+				label={labels[formName]}
+				validate={validate[formName]}
+				/>
+				{#if dropdown[formName]}
+				<div class=" w-auto divide-y divide-gray-100  dark:bg-stone-900 mt-3" transition:fly>
+					<FormDrawerInputGroup
+						bind:components={components[formName]}
+						on:destroy={validateForm}
+						on:input={changeInput}
+						{formName}
+						validateAllInputs={!validate[formName]}
+						/>
+					</div>
+			{/if}
+		{/each}
+
+				-->

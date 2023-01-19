@@ -855,7 +855,6 @@
 	};
 
 	const validateForm = (e: CustomEvent) => {
-		console.log(e.detail);
 		validate[e.detail.form] = e.detail.status;
 		disabledbutton = true
 			? !(

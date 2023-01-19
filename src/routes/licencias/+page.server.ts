@@ -45,15 +45,34 @@ const create: Action = async ({ request }) => {
 			.from('licencia')
 			.select('*')
 			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
-			.eq('agente', licencia.agente);
-
+			.eq('agente', licencia.agente)
+			.eq('tipo', 'ausente');
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
+
+		console.log(flags);
+		const reject = Object.entries(flags).some((flag) => !flag[1]);
+
+		if (reject)
+			throw error(400, {
+				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
+			});
+	}
+
+	if (licencia.tipo == 'academica') {
+		// obtenemos todos los ausentes con aviso en lo que va del año
+		let { data: dataAcademica } = await supabase
+			.from('licencia')
+			.select('*, datosAcademicos(*)')
+			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
+			.eq('agente', licencia.agente)
+			.eq('tipo', 'academica');
+
+		dataAcademica = dataAcademica || [];
+		const flags = licenciasRuleEngine.academicoRules({ licencia, dataAcademica });
 
 		console.log(flags);
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
-
-		console.log(Object.entries(flags).filter((flag) => !flag[1]));
 
 		if (reject)
 			throw error(400, {
@@ -62,7 +81,7 @@ const create: Action = async ({ request }) => {
 	}
 
 	if (objetoLleno(datosAcademicos)) {
-		let { data }: { data: any; error: any } = await supabase
+		let { data, error }: { data: any; error: any } = await supabase
 			.from('licenciaAcademica')
 			.insert(datosAcademicos)
 			.select();
