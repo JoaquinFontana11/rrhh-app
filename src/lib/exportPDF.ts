@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import jsPDF, { AcroFormPasswordField } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 export const generatePDF = (data: Array<Object>) => {
@@ -13,7 +13,9 @@ export const generatePDF = (data: Array<Object>) => {
 		});
 		body.push(arrayData);
 	});
-	const pdf = new jsPDF('l', 'mm', [largo * 2.5, 500]);
+	const pdf = new jsPDF();
+	pdf.text('Hola que tal', '100', '100');
+	pdf.addPage([largo * 2.5, 500], 'l');
 
 	autoTable(pdf, {
 		head: [header],

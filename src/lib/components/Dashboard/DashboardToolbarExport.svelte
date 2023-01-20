@@ -27,14 +27,20 @@
 		);
 
 		let data = flatSupabaseResponse(resSupabase.data);
-
 		//filtramos los campos
 		if (fieldsActive) {
 			data = data.map((agente) => {
 				const newAgente = {};
 				Object.entries(agente).forEach((entries) => {
-					if ($showStore.some((show) => show.field == entries[0]))
+					if ($showStore.some((show) => show.field == entries[0])) {
+						entries[1] =
+							entries[0] === 'equipo' ||
+							entries[0] === 'direccion' ||
+							entries[0] === 'superiorDirecto'
+								? entries[1].value
+								: entries[1];
 						newAgente[entries[0]] = newAgente[entries[0]] = entries[1];
+					}
 				});
 				return newAgente;
 			});

@@ -12,7 +12,7 @@
 
 	let modulo = '/nomina';
 	let notes = data.data?.filter((note) => note.modulo == modulo);
-
+	let showDropdown = false;
 	const addNote = (e: CustomEvent) => {
 		data.data?.push(e.detail.note);
 		notes = data.data?.filter((note) => note.modulo == modulo);
@@ -39,7 +39,16 @@
 			]}
 			on:input={filterNotes}
 		/>
-		<DashboardToolbarButton name="Agregar nota" icon={Plus} highlight={true} dropdown={true}>
+		<DashboardToolbarButton
+			name="Agregar nota"
+			icon={Plus}
+			highlight={true}
+			dropdown={true}
+			bind:showDropdown
+			on:click={() => {
+				showDropdown = !showDropdown;
+			}}
+		>
 			<DashboardToolbarNote slot="dropdown-content" on:create-note={addNote} />
 		</DashboardToolbarButton>
 	</div>

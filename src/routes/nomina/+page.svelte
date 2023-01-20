@@ -46,6 +46,16 @@
 	const transformData = (data: any[]) => {
 		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
+		console.log(
+			'headers: ',
+			Object.entries(data[0])
+				.map((entries) => entries[0])
+				.filter(
+					(header) =>
+						$showStore.some((fieldAllow: { field: string }) => fieldAllow.field == header) ||
+						$showAllStore
+				)
+		);
 		return {
 			headers: Object.entries(data[0])
 				.map((entries) => entries[0])
@@ -82,6 +92,9 @@
 
 	tableData = transformData(data.data);
 	stopLongPolling = initLongPolling(0, $orderStore, $filterStore, $cantPage);
+	data.fields = data.fields.filter((field) => {
+		return field !== 'id' && field !== 'created_at' ? field : '';
+	});
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	pageStore.subscribe(async (val) => {
@@ -107,7 +120,7 @@
 		);
 		stopLongPolling = initLongPolling($pageStore, $orderStore, val, $cantPage);
 		const { count } = await data.calcLastPage($orderStore, val);
-		lastPage = Math.trunc(count / 10);
+		lastPage = Math.trunc(count / $cantPage);
 	});
 	// cuando se cambian los campos a mostrar se recalcula tableData
 	showStore.subscribe(async (val) => {
@@ -171,7 +184,7 @@
 			}}
 			textHighlight={$filterStore.length !== 0}
 		>
-			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
+			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} specialIds={{}} />
 		</DashboardToolbarButton>
 
 		<DashboardToolbarButton

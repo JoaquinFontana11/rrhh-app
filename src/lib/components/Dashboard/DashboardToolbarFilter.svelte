@@ -2,6 +2,7 @@
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
 	import filterStore from '$lib/stores/filterStore';
+	import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 
 	export let fields: string[] = [];
 
@@ -16,10 +17,21 @@
 		gte: '>=',
 		ilike: 'contiene'
 	};
+	let valueId: number;
 
 	filterStore.subscribe((val) => {
 		localStorage.setItem('filter', JSON.stringify(val));
 	});
+
+	const searchId = async (table: string, column: string, value: string) => {
+		let { data: id }: { data: any } = await supabase
+			.from(table)
+			.select('id')
+			.eq(column, value)
+			.range(0, 1);
+		console.log(id);
+		return id[0] ? id[0].id : -1;
+	};
 </script>
 
 <div
@@ -57,11 +69,16 @@
 	<span class="text-stone-400 text-sm dark:text-stone-600">formato de fecha: yyyy-mm-dd</span>
 	<button
 		class="bg-lime-500 rounded-lg p-1"
-		on:click={() => {
+		on:click={async () => {
+			if (field === 'equipo' || field === 'direccion' || field === 'superiorDirecto') {
+				const column =
+					field === 'equipo' ? 'equipo' : field === 'direccion' ? 'acronimo' : 'nombreCompleto';
+				value = await searchId(field === 'superiorDirecto' ? 'agente' : field, column, value);
+			}
 			filterStore.update((filterStoreValue) => {
 				if (!value) return filterStoreValue;
 				filterStoreValue = filterStoreValue.filter((f) => f.field !== field);
-
+				console.log('COSA: ', value);
 				filterStoreValue.push({
 					field,
 					filter,
