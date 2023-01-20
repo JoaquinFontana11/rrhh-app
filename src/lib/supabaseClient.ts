@@ -29,7 +29,6 @@ export const execSupabaseQuery = async (
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 
 	// ejecutamos la query y la aplanamos
-	console.log(querySupabase);
 	const res = await eval(querySupabase);
 
 	return res;

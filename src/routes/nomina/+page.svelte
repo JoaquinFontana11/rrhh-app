@@ -41,21 +41,9 @@
 
 	let showDropdowns = [false, false, false, false];
 
-	console.log(data.data);
-
 	const transformData = (data: any[]) => {
 		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
-		console.log(
-			'headers: ',
-			Object.entries(data[0])
-				.map((entries) => entries[0])
-				.filter(
-					(header) =>
-						$showStore.some((fieldAllow: { field: string }) => fieldAllow.field == header) ||
-						$showAllStore
-				)
-		);
 		return {
 			headers: Object.entries(data[0])
 				.map((entries) => entries[0])

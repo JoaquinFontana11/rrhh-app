@@ -71,12 +71,14 @@ const create: Action = async ({ request }) => {
 	}
 	if (licencia.tipo == 'ausente') {
 		// obtenemos todos los ausentes con aviso en lo que va del año
-		const { data: dataAusentes } = await supabase
+		let { data: dataAusentes } = await supabase
 			.from('licencia')
 			.select('*')
 			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
 			.eq('agente', licencia.agente)
 			.eq('tipo', 'ausente');
+
+		dataAusentes = dataAusentes || [];
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
 
 		console.log(flags);

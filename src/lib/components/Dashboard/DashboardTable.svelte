@@ -9,7 +9,6 @@
 	const headerResize = (node: HTMLElement) => {
 		sizes[tableData.headers.findIndex((e: string) => e == node.textContent)] = node.clientWidth;
 	};
-	console.log('DashboardTable: ', tableData);
 </script>
 
 <table class="overflow-auto">

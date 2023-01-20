@@ -2,15 +2,19 @@ import brie from 'brie';
 import { diffDays, diffMonths } from '$lib/helpers';
 // modificamos los datos del ausente con aviso para trabajarlos de mejor forma
 const ausenteDataFormat = (rawData) => {
+	console.log(rawData.dataAusentes);
 	return {
 		ausentesTotales: rawData.dataAusentes.length,
-		ultimoAusente: new Date(
-			rawData.dataAusentes.sort((ausente1, ausente2) => {
-				if (ausente1.fechaInicio > ausente2.fechaInicio) return -1;
-				if (ausente1.fechaInicio < ausente2.fechaInicio) return 1;
-				return 0;
-			})[0]?.fechaInicio || 100
-		).getMonth(),
+		ultimoAusente:
+			rawData.dataAusentes.length !== 0
+				? new Date(
+						rawData.dataAusentes.sort((ausente1, ausente2) => {
+							if (ausente1.fechaInicio > ausente2.fechaInicio) return -1;
+							if (ausente1.fechaInicio < ausente2.fechaInicio) return 1;
+							return 0;
+						})[0].fechaInicio
+				  ).getMonth()
+				: -1,
 		ausenteActual: rawData.licencia
 	};
 };
@@ -203,6 +207,7 @@ const academicoRulesFactory = (data) => {
 };
 
 const ausenteRulesFactory = (data) => {
+	console.log(data);
 	return {
 		ausentesMaximos: {
 			criteria: [
