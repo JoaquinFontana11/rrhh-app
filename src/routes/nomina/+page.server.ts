@@ -199,27 +199,4 @@ const update: Action = async ({ request }) => {
 	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError)
 		return fail(400);
 };
-
-/*
-const getDataForExport = async (options = {}) => {
-	const { data } = await supabase.from('agente').select('*');
-	return data;
-};
-const exportAgentesExcel: Action = async ({ request }) => {
-	const data = await request.formData();
-	console.log(data);
-
-	//	const dataExcel = [{ name: 'juan', age: 1 }];
-	const dataExcel = await getDataForExport();
-	const workSheet = XLSX.utils.json_to_sheet(dataExcel);
-	const workBook = XLSX.utils.book_new();
-
-	XLSX.utils.book_append_sheet(workBook, workSheet, 'Hoja 1');
-
-	const excel = XLSX.write(workBook, { type: 'base64' });
-	return {
-		excel
-	};
-};
-*/
 export const actions: Actions = { create, update };
