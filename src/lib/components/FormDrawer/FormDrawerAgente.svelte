@@ -24,6 +24,8 @@
 			.select('*, direccion(*)')
 			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
 
+		console.log(data);
+
 		superioresDirectos = data
 			.filter((agente) => agente.direccion.id == direccion)
 			.map((superior) => {

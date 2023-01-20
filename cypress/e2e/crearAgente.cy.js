@@ -26,7 +26,7 @@ describe('creacion de agente', () => {
 		cy.get('select[name=genero]').select('Masculino');
 		cy.get('select[name=activo]').select('Si');
 		cy.get('select[name=equipo]').select('Analisis y Desarrollo de Sistemas');
-		cy.get('select[name=direccion]').select('Direccion de Ingenieria de Procesos');
+		cy.get('select[name=direccion]').select('Direccion Povincial de Mejora Administrativa');
 		cy.get('input[name=rol]').type('empleado');
 		cy.get('select[name=superiorDirecto]').select('TEST');
 		cy.get('select[name=tieneHijos]').select('No');
@@ -44,6 +44,9 @@ describe('creacion de agente', () => {
 
 		// datos recorrido
 		cy.get('select[name=tipoContratacion]').select('Contrato de locacion de servicios');
+		cy.get('input[name=fechaAltaCLS]').type('2023-01-01');
+		cy.get('input[name=expedienteAltaCLS]').type('EX-2023-26041414- -TESTGDEBA-GDEBA');
+		cy.get('input[name=actoAltaCLS]').type('EX-2023-27051515-TESTGDEBA-GDEBA');
 
 		// validamos todo again
 		cy.get('form button[type="button"]').click({ multiple: true });
