@@ -22,14 +22,14 @@
 				let resExtraValidations;
 				for (const component of components[key]) {
 					let res;
-					let status: boolean = true;
+					let status: boolean = false;
 					component.validators.forEach((validator) => {
 						//res = component.required ? validator(component.value) : null;
 						res = validator(component.value);
 						if (res && res.message) error.message.push(`${component.name}: ${res.message}`);
-						error.status = res && !res.status ? res.status : status;
+						error.status = res && !res.status ? !res.status : status;
 					});
-					if (!status) return;
+					if (error.status) return;
 				}
 				resExtraValidations = extraValidations[key]
 					? extraValidations[key](components[key])
@@ -37,20 +37,26 @@
 				if (resExtraValidations.status) {
 					error.message.push(resExtraValidations.message);
 					error.status = resExtraValidations.status;
+					console.log('validaciones extra: ', error.status, error.message);
 					return;
 				}
 				await Promise.all(
 					components[key].map((component) => {
-						formData.append(component.name, component.value);
+						console.log('Componente de formData: ', component.name, component.value);
+						component.name === 'equipo' ||
+						component.name === 'direccion' ||
+						component.name === 'superiorDirecto'
+							? formData.append(component.name, component.value.id)
+							: formData.append(component.name, component.value);
 					})
 				);
 			}
+			console.log('formData: ', [...formData]);
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData
 			});
-
 			if (res.status == 400) {
 				dispacher('invalid', {
 					data: (await res.json()).error.message

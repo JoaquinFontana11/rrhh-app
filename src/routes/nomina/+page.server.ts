@@ -89,7 +89,7 @@ const create: Action = async ({ request }) => {
 		.from('agente')
 		.insert(agente)
 		.select();
-
+	console.log(errorAgente);
 	if (errorAgente) return fail(400);
 };
 

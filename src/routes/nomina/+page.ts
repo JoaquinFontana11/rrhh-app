@@ -38,7 +38,6 @@ export const load: PageLoad<{
 		.range(0, 1);
 
 	fields = flatSupabaseResponse(fields);
-	console.log();
 	return {
 		data: agentes.data,
 		lastPage: Math.trunc((lastPage as number) / 10),

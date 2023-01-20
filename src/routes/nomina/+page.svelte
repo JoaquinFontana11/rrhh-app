@@ -46,16 +46,6 @@
 	const transformData = (data: any[]) => {
 		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
-		console.log(
-			'headers: ',
-			Object.entries(data[0])
-				.map((entries) => entries[0])
-				.filter(
-					(header) =>
-						$showStore.some((fieldAllow: { field: string }) => fieldAllow.field == header) ||
-						$showAllStore
-				)
-		);
 		return {
 			headers: Object.entries(data[0])
 				.map((entries) => entries[0])
@@ -95,6 +85,7 @@
 	data.fields = data.fields.filter((field) => {
 		return field !== 'id' && field !== 'created_at' ? field : '';
 	});
+	console.log(tableData);
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	pageStore.subscribe(async (val) => {
