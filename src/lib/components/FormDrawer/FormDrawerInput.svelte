@@ -139,7 +139,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.error {
 		@apply border-rose-500 text-rose-500;
 	}
