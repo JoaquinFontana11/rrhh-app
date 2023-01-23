@@ -58,8 +58,9 @@ const reloadData = async (
 	}')`;
 
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
-
+	console.log(resSupabase.data);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
+
 	return resSupabase;
 };
 

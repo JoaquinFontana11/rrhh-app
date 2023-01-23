@@ -29,7 +29,14 @@
 		observaciones: '',
 		autorizadoSiape: '',
 		ultimaMateria: '',
-		periodo: 1
+		periodo: 1,
+		concepto: '',
+		mailAutorizado: false,
+		comunicacionInicio: false,
+		comunicacionFin: false,
+		comunicoInicioA: '',
+		comunicoFinA: '',
+		conectadoTeams: false
 	};
 
 	let components: IComponentObject = {};
@@ -169,12 +176,13 @@
 			}
 		],
 		ausente: [],
+		otro: [],
 		salud: [
 			{
 				type: 'text',
 				label: 'concepto',
 				name: 'concepto',
-				value: '',
+				value: licencia.concepto,
 				required: true,
 				validators: [validateEmptyInput]
 			}
@@ -198,7 +206,7 @@
 				type: 'select',
 				label: 'mail autorizado',
 				name: 'mailAutorizado',
-				value: '',
+				value: licencia.mailAutorizado,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -210,7 +218,7 @@
 				type: 'select',
 				label: 'comunicacion inicio',
 				name: 'comunicacionInicio',
-				value: '',
+				value: licencia.comunicacionInicio,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -222,7 +230,7 @@
 				type: 'select',
 				label: 'comunicacion fin',
 				name: 'comunicacionFin',
-				value: '',
+				value: licencia.comunicacionFin,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -234,7 +242,7 @@
 				type: 'select',
 				label: 'comunico inicio a',
 				name: 'comunicoInicioA',
-				value: '',
+				value: licencia.comunicoInicioA,
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -244,7 +252,7 @@
 				type: 'select',
 				label: 'comunico fin a',
 				name: 'comunicoFinA',
-				value: '',
+				value: licencia.comunicoFinA,
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -254,7 +262,7 @@
 				type: 'select',
 				label: 'conectado a teams',
 				name: 'conectadoATeams',
-				value: '',
+				value: licencia.conectadoTeams,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -267,7 +275,13 @@
 
 	const changeInputsGenerales = (e: Event) => {
 		const target = e.target as HTMLInputElement;
-		licencia[target.name] = target.value;
+		let value: string | number | boolean = target.value;
+		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
+
+		value = target.value * 1 ? target.value * 1 : value;
+		licencia[target.name] = value;
+		console.log(target.value);
+		console.log(licencia);
 	};
 
 	const showValidations = (e: CustomEvent) => {

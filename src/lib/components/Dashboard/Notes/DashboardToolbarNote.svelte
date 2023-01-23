@@ -18,6 +18,7 @@
 >
 	<label class="dark:text-stone-400">Nivel de alerta</label>
 	<select
+		name="alerta"
 		bind:value={nivel}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -27,6 +28,7 @@
 	</select>
 	<label class="dark:text-stone-400">Modulo al que pertenece</label>
 	<select
+		name="modulo"
 		bind:value={modulo}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -35,11 +37,13 @@
 	</select>
 	<label class="dark:text-stone-400">Contenido de la nota</label>
 	<textarea
+		name="contenido"
 		bind:value={contenido}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	/>
 	<button
 		class="bg-lime-500 rounded-lg p-1 hover:bg-lime-400 flex justify-center items-center"
+		type="button"
 		on:click={async () => {
 			if (loading) return;
 			loading = true;

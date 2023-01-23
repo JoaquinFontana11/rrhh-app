@@ -3,6 +3,7 @@
 	import { agenteStore } from '$lib/stores/agenteStore';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
+	import { validateAllNomina, validateAllLicencia } from '$lib/helpers';
 
 	export let components: IComponentObject;
 	export let action: string;
@@ -15,43 +16,20 @@
 	let error = { message: [], status: false };
 	const handlerSubmit = async (e: Event) => {
 		if (loading) return;
+		error = { message: [], status: false };
 		loading = true;
-		const formData = new FormData();
+		let formData = new FormData();
 		try {
-			for (const key in components) {
-				let resExtraValidations;
-				for (const component of components[key]) {
-					let res;
-					let status: boolean = false;
-					component.validators.forEach((validator) => {
-						//res = component.required ? validator(component.value) : null;
-						res = validator(component.value);
-						if (res && res.message) error.message.push(`${component.name}: ${res.message}`);
-						error.status = res && !res.status ? !res.status : status;
-					});
-					if (error.status) return;
-				}
-				resExtraValidations = extraValidations[key]
-					? extraValidations[key](components[key])
-					: { status: false };
-				if (resExtraValidations.status) {
-					error.message.push(resExtraValidations.message);
-					error.status = resExtraValidations.status;
-					console.log('validaciones extra: ', error.status, error.message);
-					return;
-				}
-				await Promise.all(
-					components[key].map((component) => {
-						console.log('Componente de formData: ', component.name, component.value);
-						component.name === 'equipo' ||
-						component.name === 'direccion' ||
-						component.name === 'superiorDirecto'
-							? formData.append(component.name, component.value.id)
-							: formData.append(component.name, component.value);
-					})
-				);
-			}
-			console.log('formData: ', [...formData]);
+			const response: any = components.datosPersonales
+				? await validateAllNomina(components, extraValidations)
+				: await validateAllLicencia(components, extraValidations);
+			if (response.status) {
+				formData = response.data;
+			} else error = response.data;
+			console.log('formData: ', formData);
+			console.log('error: ', error);
+
+			if (error.status) return;
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
