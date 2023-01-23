@@ -11,10 +11,7 @@ const factoryValidators = (type: string | null = null) => {
 				message: 'No se cumple el formato de email',
 				status: false
 			};
-		return {
-			message: '',
-			status: true
-		};
+		return undefined;
 	};
 };
 

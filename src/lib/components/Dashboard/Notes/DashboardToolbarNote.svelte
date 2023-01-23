@@ -42,6 +42,7 @@
 	<label class="dark:text-stone-400" for="nivel">Nivel de alerta</label>
 	<select
 		id="nivel"
+		name="alerta"
 		bind:value={nivel}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -52,6 +53,7 @@
 	<label class="dark:text-stone-400" for="modulo">Modulo al que pertenece</label>
 	<select
 		id="modulo"
+		name="modulo"
 		bind:value={modulo}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -61,6 +63,7 @@
 	<label class="dark:text-stone-400" for="contenido">Contenido de la nota</label>
 	<textarea
 		id="contenido"
+		name="contenido"
 		bind:value={contenido}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	/>

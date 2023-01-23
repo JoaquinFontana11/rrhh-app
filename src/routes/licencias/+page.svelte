@@ -38,7 +38,7 @@
 				);
 			}, 10000)
 		);
-
+		console.log('tableData: ', tableData);
 		return () => intervalsIds.forEach((id) => clearInterval(id));
 	};
 

@@ -2,6 +2,7 @@ import brie from 'brie';
 import { diffDays, diffMonths } from '$lib/helpers';
 // modificamos los datos del ausente con aviso para trabajarlos de mejor forma
 const ausenteDataFormat = (rawData) => {
+	console.log('DATA PARSED', rawData);
 	return {
 		ausentesTotales: rawData.dataAusentes.length,
 		ultimoAusente:
@@ -222,7 +223,9 @@ const ausenteRulesFactory = (data) => {
 					has: {
 						trait: 'ultimoAusente',
 						comparison: 'below',
-						value: new Date(data.ausenteActual.fechaInicio).getMonth() - 1
+						value: new Date(data.ausenteActual.fechaInicio).getMonth()
+							? new Date(data.ausenteActual.fechaInicio).getMonth() - 1
+							: 0
 					}
 				}
 			]
@@ -231,13 +234,15 @@ const ausenteRulesFactory = (data) => {
 };
 
 const passRules = (data, rules) => {
+	console.log('ultData:', data);
+	console.log('rules', rules.ausentesMismoMes.criteria);
 	brie.setup({
 		data: data,
 		features: rules
 	});
 
 	const flags = brie.getAll();
-
+	console.log('flags: ', flags);
 	return flags;
 };
 
