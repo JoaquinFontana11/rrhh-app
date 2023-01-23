@@ -904,7 +904,7 @@
 
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
-		if (typeof value == 'string') value = parseInt(value);
+		if (typeof value == 'string' && parseInt(value)) value = parseInt(value);
 
 		agenteStore.update((agente) => {
 			agente[target.name as string] = value;
