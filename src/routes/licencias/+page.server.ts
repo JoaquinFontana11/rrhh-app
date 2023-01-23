@@ -147,7 +147,7 @@ const create: Action = async ({ request }) => {
 	await supabase.from('licencia').insert(licencia);
 };
 
-const objetoLleno = (obj) => {
+const objetoLleno = (obj: object) => {
 	return !Object.values(obj).some((value) => value == undefined || value == '');
 };
 

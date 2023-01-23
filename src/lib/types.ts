@@ -34,6 +34,69 @@ type Nota = {
 	id: number;
 	created_at: number;
 };
+
+type LicenciaSupabase = {
+	id: number;
+	created_at: string;
+	agente: number | AgenteSupabase;
+	fechaInicio: string;
+	fechaFin: string;
+	tipo: 'ausente' | 'vacaciones' | 'otro' | 'teletrabajo' | 'academica' | 'salud';
+	observaciones: string;
+	autorizadoSiape: boolean;
+	datosAcademicos:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				ultimaMateria: boolean;
+		  };
+	datosSalud:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				concepto: string;
+		  };
+	datosTeletrabajo:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				mailAutorizado: boolean;
+				comunicoInicio: boolean;
+				comunicoInicioA: number;
+				comunicoFin: boolean;
+				comunicoFinA: number;
+				conectadoATeams: boolean;
+		  };
+	datosVacaciones:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				periodo: number;
+		  };
+};
+type FlatLicenciaSupabase = {
+	id: number;
+	created_at: string;
+	agente: number | AgenteSupabase;
+	fechaInicio: string;
+	fechaFin: string;
+	tipo: 'ausente' | 'vacaciones' | 'otro' | 'teletrabajo' | 'academica' | 'salud';
+	observaciones: string;
+	autorizadoSiape: boolean;
+	ultimaMateria: boolean;
+	concepto: string;
+	mailAutorizado: boolean;
+	comunicoInicio: boolean;
+	comunicoInicioA: number;
+	comunicoFin: boolean;
+	comunicoFinA: number;
+	conectadoATeams: boolean;
+	periodo: number;
+};
 type FlatAgenteSupabase = {
 	id: number;
 	created_at: string;
@@ -179,7 +242,15 @@ type EquipoSupabase = {
 	equipo: string;
 	created_at: string;
 };
-export type { Nota, AgenteSupabase, DireccionSupabase, EquipoSupabase, FlatAgenteSupabase };
+export type {
+	Nota,
+	AgenteSupabase,
+	DireccionSupabase,
+	EquipoSupabase,
+	FlatAgenteSupabase,
+	LicenciaSupabase,
+	FlatLicenciaSupabase
+};
 
 // tipos utilizados para los stores
 export type Filter = {

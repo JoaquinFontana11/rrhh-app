@@ -7,30 +7,40 @@
 	import DashboardToolbarSelect from '$lib/components/Dashboard/DashboardToolbarSelect.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/licencias/DashboardToolbarFilter.svelte';
 	import FormDrawerLicencia from '$lib/components/FormDrawer/licencias/FormDrawerLicencia.svelte';
-	import tipoLicenciaStore from '$lib/stores/licencias/tipoLicenciaStore';
-	import filterLicenciaStore from '$lib/stores/licencias/filterLicenciaStore';
+	/*
+
+	import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
+	import filterLicenciaStore from '$lib/stores/licencias_old/filterLicenciaStore';
+	*/
+	import { tipoLicenciaStore, filterStore } from '$lib/stores/licenciaStore';
+
 	import type { PageData } from './$types';
-	import pageLicenciaStore, { cantLicenciaPage } from '$lib/stores/licencias/pageLicenciaStore';
+	import pageLicenciaStore, { cantLicenciaPage } from '$lib/stores/licencias_old/pageLicenciaStore';
+
+	type TableData = {
+		headers: string[];
+		fields: string[];
+		data: any[];
+	};
 
 	export let data: PageData;
 
 	let lastPage = data.lastPage;
 
 	let showDrawer = false;
-	let tableData: any;
-	let intervalsIds: any = [];
-	let stopLongPolling: any;
+	let tableData: TableData = { headers: [], fields: [], data: [] };
+	let intervalsIds: any[] = [];
+	let stopLongPolling: Function;
 	let showDropdowns = [false];
 	let licenceOrder = { field: 'fechaInicio', direction: true };
 
 	const initLongPolling = (
 		page: number,
 		order: { field: string; direction: boolean },
-		filter: { field: string; filter: string; value: string }[],
+		filter: { field: string; filter: string; value: string | number }[],
 		cantLicenciaPage: number,
 		tipoLicencia: string = 'ausente'
 	) => {
-		console.log(cantLicenciaPage);
 		intervalsIds.push(
 			setInterval(async () => {
 				tableData = transformData(
@@ -38,7 +48,6 @@
 				);
 			}, 10000)
 		);
-		console.log('tableData: ', tableData);
 		return () => intervalsIds.forEach((id) => clearInterval(id));
 	};
 
@@ -56,7 +65,7 @@
 	stopLongPolling = initLongPolling(
 		$pageLicenciaStore,
 		licenceOrder,
-		[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+		[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 		$cantLicenciaPage,
 		$tipoLicenciaStore
 	);
@@ -69,7 +78,7 @@
 				await data.reloadData(
 					val,
 					licenceOrder,
-					[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+					[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 					$cantLicenciaPage,
 					$tipoLicenciaStore
 				)
@@ -79,7 +88,7 @@
 		stopLongPolling = initLongPolling(
 			val,
 			licenceOrder,
-			[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 			$cantLicenciaPage,
 			$tipoLicenciaStore
 		);
@@ -94,7 +103,7 @@
 				await data.reloadData(
 					$pageLicenciaStore,
 					licenceOrder,
-					[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: val }],
+					[...$filterStore, { field: 'tipo', filter: 'eq', value: val }],
 					$cantLicenciaPage,
 					val
 				)
@@ -103,14 +112,13 @@
 		stopLongPolling = initLongPolling(
 			$pageLicenciaStore,
 			licenceOrder,
-			[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: val }],
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: val }],
 			$cantLicenciaPage,
 			val
 		);
 	});
 
-	filterLicenciaStore.subscribe(async (val) => {
-		console.log('filterLicenciaStore');
+	filterStore.subscribe(async (val) => {
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -119,7 +127,7 @@
 					licenceOrder,
 					[...val, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 					$cantLicenciaPage,
-					val
+					$tipoLicenciaStore
 				)
 			).data
 		);
@@ -133,15 +141,17 @@
 	});
 
 	const changeCantLicenciaPage = async (e: Event) => {
-		cantLicenciaPage.update((n) => e.target.value * 1);
+		const target = e.target as HTMLSelectElement;
+		const value = target.value;
+		cantLicenciaPage.update((n) => parseInt(value));
 		stopLongPolling();
 		tableData = transformData(
 			(
 				await data.reloadData(
 					$pageLicenciaStore,
 					licenceOrder,
-					[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
-					e.target.value * 1,
+					[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+					parseInt(value),
 					$tipoLicenciaStore
 				)
 			).data
@@ -149,16 +159,21 @@
 		stopLongPolling = initLongPolling(
 			$pageLicenciaStore,
 			licenceOrder,
-			[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 			$cantLicenciaPage
 		);
-		console.log($filterLicenciaStore);
 		const { count } = await data.calcLastPage(
 			licenceOrder,
-			[...$filterLicenciaStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
 			$tipoLicenciaStore
 		);
-		lastPage = Math.trunc((count / e.target.value) * 1);
+		lastPage = Math.trunc(count / parseInt(value));
+	};
+
+	const updateTipoLicencia = (e: Event) => {
+		const target = e.target as HTMLSelectElement;
+
+		tipoLicenciaStore.update((n) => target.value);
 	};
 </script>
 
@@ -175,7 +190,7 @@
 				showDropdowns[0] = !showDropdowns[0];
 				console.log(showDropdowns);
 			}}
-			textHighlight={$filterLicenciaStore.length !== 0}
+			textHighlight={$filterStore.length !== 0}
 		>
 			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
@@ -189,9 +204,7 @@
 				{ name: 'Salud', value: 'salud' },
 				{ name: 'Otro', value: 'otro' }
 			]}
-			on:input={(e) => {
-				tipoLicenciaStore.update((n) => e.target.value);
-			}}
+			on:input={updateTipoLicencia}
 		/>
 		<div class="flex gap-1 justify-center items-center">
 			<DashboardToolbarButton

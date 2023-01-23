@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
-	import filterLicenciaStore from '$lib/stores/licencias/filterLicenciaStore';
+	import filterLicenciaStore from '$lib/stores/licencias_old/filterLicenciaStore';
 	import type { Filter } from '$lib/types';
 
 	type Simbols = {

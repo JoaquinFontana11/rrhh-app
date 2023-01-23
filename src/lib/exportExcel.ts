@@ -1,8 +1,6 @@
 import { utils, write } from 'xlsx';
 
-export const generateBlobExcel = async (data) => {
-	console.log(data);
-
+export const generateBlobExcel = async (data: any) => {
 	const workSheet = utils.json_to_sheet(data);
 	const workBook = utils.book_new();
 
@@ -13,7 +11,7 @@ export const generateBlobExcel = async (data) => {
 	return b64toBlob(excel);
 };
 
-const b64toBlob = (b64, sliceSize = 512) => {
+const b64toBlob = (b64: string, sliceSize = 512) => {
 	const byteCharacters = atob(b64);
 	const byteArrays = [];
 

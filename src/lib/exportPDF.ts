@@ -6,7 +6,7 @@ export const generatePDF = (data: Array<Object>) => {
 	let largo = header.reduce((acumulator, key) => acumulator + key.length, 0);
 
 	const body: Array<Array<any>> = [];
-	data.forEach((elem) => {
+	data.forEach((elem: { [key: string]: any }) => {
 		let arrayData: Array<any> = [];
 		Object.keys(elem).forEach((keys) => {
 			arrayData.push(elem[keys]);
@@ -14,7 +14,7 @@ export const generatePDF = (data: Array<Object>) => {
 		body.push(arrayData);
 	});
 	const pdf = new jsPDF();
-	pdf.text('Hola que tal', '100', '100');
+	pdf.text('Hola que tal', 100, 100);
 	pdf.addPage([largo * 2.5, 500], 'l');
 
 	autoTable(pdf, {

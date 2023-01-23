@@ -1,34 +1,53 @@
 import type { PageLoad } from './$types';
 import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 import notasStore from '$lib/stores/notasStore';
-import tipoLicenciaStore from '$lib/stores/licencias/tipoLicenciaStore';
+import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
+import type { PostgrestResponse } from '@supabase/postgrest-js';
+import type { AgenteSupabase, Nota, FlatLicenciaSupabase } from '$lib/types';
 
 export const ssr = false;
 
 export const load: PageLoad = async ({ url }) => {
-	const { data }: { data: any } = await supabase
+	// cargamos las notas
+	const resSupabaseNotas: PostgrestResponse<Nota> = await supabase
 		.from('notas')
 		.select('*')
 		.ilike('modulo', `%${url.pathname}%`);
-	notasStore.update((n) => data);
 
-	const { data: agentes } = await supabase.from('agente').select('*');
-	//const { data: licencias } = await supabase.from('licencia').select('*');
-	let { count: lastPage } = await supabase
+	const notas = resSupabaseNotas.data as any;
+	if (resSupabaseNotas.data) notasStore.update((n) => notas);
+
+	// cargamos los agentes
+	const resSupabaseAgentes: PostgrestResponse<AgenteSupabase> = await supabase
+		.from('agente')
+		.select('*');
+	const agentes = resSupabaseAgentes.data;
+
+	// contamos la cantidad maxima de licencias (inicialmente ausentes con aviso)
+	const resSupabaseCountLicencias: PostgrestResponse<any> = await supabase
 		.from('licencia')
 		.select('*', { count: 'exact' })
 		.eq('tipo', 'ausente');
-	console.log(tipoLicenciaStore);
-	const licencias = await reloadData(0, { field: 'fechaInicio', direction: true }, [], 10);
-	let { data: fields } = await supabase
+	const lastPage = resSupabaseCountLicencias.count;
+
+	// cargamos todas las licencias
+	const resSupabaseLicencias: any = await reloadData(
+		0,
+		{ field: 'fechaInicio', direction: true },
+		[],
+		10
+	);
+	const licencias: FlatLicenciaSupabase[] = resSupabaseLicencias.data;
+
+	// cargamos los campos para filtrar
+	const resSupabaseFields: PostgrestResponse<any> = await supabase
 		.from('licencia')
 		.select(' fechaInicio, fechaFin, observaciones, autorizadoSiape')
 		.range(0, 1);
-
-	fields = flatSupabaseResponse(fields);
+	const fields = flatSupabaseResponse(resSupabaseFields.data);
 
 	return {
-		licencias: licencias.data,
+		licencias: licencias,
 		agentes,
 		lastPage: Math.trunc((lastPage as number) / 10),
 		reloadData,
@@ -44,7 +63,6 @@ const reloadData = async (
 	cantPage: number,
 	tipo: string = 'ausente'
 ) => {
-	console.log(cantPage);
 	const query = `supabase.from('licencia').select(' fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
 		tipo == 'academica'
 			? ', datosAcademicos(*)'
@@ -58,7 +76,6 @@ const reloadData = async (
 	}')`;
 
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
-	console.log(resSupabase.data);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 
 	return resSupabase;
