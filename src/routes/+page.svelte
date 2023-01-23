@@ -1,7 +1,37 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-
-	export let data: PageData;
+	import { Icon, User, Newspaper } from 'svelte-hero-icons';
 </script>
 
-<p>contenido del tablero</p>
+<div class="flex flex-col gap-10 justify-center items-center w-full h-full">
+	<div>
+		<h1 class="text-center text-4xl font-bold dark:text-stone-200">
+			Bienvenidx al portal de administracion de RRHH!
+		</h1>
+		<p class="text-center text-lg font-medium text-stone-700 dark:text-stone-400">
+			Seleccione uno de los siguientes modulos para comenzar a trabajar!
+		</p>
+	</div>
+	<div class="flex gap-10">
+		<a
+			href="/nomina"
+			class="p-5 shadow-lg rounded-md w-72 flex flex-col items-center gap-2 dark:shadow-none dark:border dark:border-stone-600 hover:-translate-y-1 hover:shadow-xl duration-75 dark:hover:bg-stone-800"
+		>
+			<Icon src={User} class="w-8 h-8 text-lime-500" />
+			<h2 class="dark:text-stone-400">Nomina</h2>
+			<p class="text-center text-sm text-stone-600">
+				En este modulo vas a poder administrar todos los datos de los agentes, filtrarlos y generar
+				reportes
+			</p>
+		</a>
+		<a
+			href="/licencias"
+			class="p-5 shadow-lg rounded-md w-72 flex flex-col items-center gap-2 dark:shadow-none dark:border dark:border-stone-600 hover:-translate-y-1 hover:shadow-xl duration-75 dark:hover:bg-stone-800"
+		>
+			<Icon src={Newspaper} class="w-8 h-8 text-lime-500" />
+			<h2 class="dark:text-stone-400">Licencias</h2>
+			<p class="text-center text-sm text-stone-600">
+				En este modulo vas a poder gestionar todas las licencias de los agentes
+			</p>
+		</a>
+	</div>
+</div>

@@ -18,7 +18,9 @@
 <nav
 	class="z-50 bg-white border-r border-gray-200 flex flex-col gap-10 px-4 w-14  items-center  dark:bg-stone-900 dark:border-stone-800"
 >
-	<Icon src={Chip} class="w-8 h-8 text-lime-500 mt-3" />
+	<a href="/">
+		<Icon src={Chip} class="w-8 h-8 text-lime-500 mt-3" />
+	</a>
 	<ul class="flex flex-col gap-4 absolute top-1/2 -translate-y-1/2">
 		<SidebarButton icon={Table} tooltip="Nomina de agentes" href="/nomina" />
 		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
