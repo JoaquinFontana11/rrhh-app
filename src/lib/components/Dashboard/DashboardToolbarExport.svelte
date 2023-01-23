@@ -4,14 +4,6 @@
 	import { generateBlobExcel } from '$lib/exportExcel';
 	import { generatePDF } from '$lib/exportPDF';
 
-	/*
-	import pageStore from '$lib/stores/old_stores_delete/pageStore';
-	import orderStore from '$lib/stores/old_stores_delete/orderStore';
-	import filterStore from '$lib/stores/old_stores_delete/filterStore';
-	import showStore from '$lib/stores/old_stores_delete/showStore';
-	import { cantPage } from '$lib/stores/old_stores_delete/pageStore';
-*/
-
 	import {
 		pageStore,
 		orderStore,

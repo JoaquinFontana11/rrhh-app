@@ -13,25 +13,23 @@
 	let modulo = 'nomina';
 	let loading = false;
 
-	const createNote = () => {
-		async () => {
-			if (loading) return;
-			loading = true;
-			const res: PostgrestResponse<Nota> = await supabase
-				.from('notas')
-				.insert({ modulo, nivel, contenido })
-				.select();
+	const createNote = async () => {
+		if (loading) return;
+		loading = true;
+		const res: PostgrestResponse<Nota> = await supabase
+			.from('notas')
+			.insert({ modulo, nivel, contenido })
+			.select();
 
-			let note: Nota;
-			if (res.data) {
-				note = res.data[0];
-				dispatcher('create-note', {
-					note
-				});
-			}
+		let note: Nota;
+		if (res.data) {
+			note = res.data[0];
+			dispatcher('create-note', {
+				note
+			});
+		}
 
-			loading = false;
-		};
+		loading = false;
 	};
 </script>
 

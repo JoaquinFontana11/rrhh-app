@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FunctionsObject, IComponentObject } from '$lib/types';
-	import { agenteStore } from '$lib/stores/old_stores_delete/agenteStore';
+	import { agenteStore } from '$lib/stores/nominaStores';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
 	import { validateAllNomina, validateAllLicencia } from '$lib/helpers';
