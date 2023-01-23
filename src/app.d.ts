@@ -13,3 +13,5 @@ declare namespace App {
 	}
 	// interface Platform {}
 }
+
+declare module 'svelte-spinner';

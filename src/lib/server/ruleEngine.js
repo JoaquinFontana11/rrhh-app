@@ -2,7 +2,6 @@ import brie from 'brie';
 import { diffDays, diffMonths } from '$lib/helpers';
 // modificamos los datos del ausente con aviso para trabajarlos de mejor forma
 const ausenteDataFormat = (rawData) => {
-	console.log(rawData.dataAusentes);
 	return {
 		ausentesTotales: rawData.dataAusentes.length,
 		ultimoAusente:
@@ -56,8 +55,6 @@ const vacacionesDataFormat = (rawData) => {
 		(vacas) => vacas.datosVacaciones.periodo == 1
 	);
 
-	console.log(vacacionesTomadasEsteAño, vacacionesPrimerPeriodo);
-
 	return {
 		antiguedadTotal: antiguedad,
 		diasVacaciones:
@@ -75,7 +72,6 @@ const vacacionesDataFormat = (rawData) => {
 };
 
 const vacacionesRulesFactory = (data) => {
-	console.log('DATA PARSED', data);
 	return {
 		cantidadMaximaVacaciones: {
 			criteria: [

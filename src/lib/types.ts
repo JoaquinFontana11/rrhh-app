@@ -24,3 +24,225 @@ interface FunctionsObject {
 }
 
 export type { IComponent, IComponentObject, FunctionsObject, IOption };
+
+// tipos para las tablas que estan en supabase
+
+type Nota = {
+	modulo: string;
+	nivel: string;
+	contenido: string;
+	id: number;
+	created_at: number;
+};
+type FlatAgenteSupabase = {
+	id: number;
+	created_at: string;
+	DNI: number;
+	CUIT: number;
+	nombreCompleto: string;
+	fechaNacimiento: string;
+	domicilio: string;
+	emailPersonal: string;
+	emailInstitucional: string;
+	telefono: number;
+	curriculum: string;
+	genero: string;
+	activo: boolean;
+	equipo: string;
+	direccion: string;
+	rol: string;
+	superiorDirecto: string;
+	tieneHijos: boolean;
+	asignacionFamiliar: boolean;
+	beneficioGuarderia: boolean;
+	tipoSangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | '0+' | '0-';
+	medicamentos: string;
+	consideracion: string;
+	obraSocial: string;
+	telefonoContactoEmergencia: number;
+	nombreContactoEmergencia: string;
+	carreraUniversitaria: string;
+	carreraPostgrado: string;
+	carreraFinalizada: boolean;
+	categoria: number;
+	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiape: number;
+	tipoContratacion: 'CLS' | 'PTT' | 'PP';
+	referenciaBaja: string;
+	obraSocialActiva: boolean;
+	fechaAltaCLS: string;
+	fechaBajaCLS: string;
+	expedienteAltaCLS: string;
+	actoAltaCLS: string;
+	fechaAltaPTT: string;
+	fechaBajaPTT: string;
+	expedienteAltaPTT: string;
+	actoAltaPTT: string;
+	fechaAltaPP: string;
+	fechaBajaPP: string;
+	expedienteAltaPP: string;
+	actoAltaPP: string;
+	antiguedadExterna: number;
+};
+
+type AgenteSupabase = {
+	id: number;
+	created_at: string;
+	DNI: number;
+	CUIT: number;
+	nombreCompleto: string;
+	fechaNacimiento: string;
+	domicilio: string;
+	emailPersonal: string;
+	emailInstitucional: string;
+	telefono: number;
+	curriculum: string;
+	genero: string;
+	activo: boolean;
+	equipo:
+		| number
+		| {
+				id: number;
+				equipo: string;
+				created_at: string;
+		  };
+	direccion:
+		| number
+		| {
+				id: number;
+				acronimo: string;
+				direccion: string;
+				created_at: string;
+		  };
+	rol: string;
+	superiorDirecto: number | AgenteSupabase;
+	tieneHijos: boolean;
+	asignacionFamiliar: boolean;
+	beneficioGuarderia: boolean;
+	datosSalud:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				tipoSangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | '0+' | '0-';
+				medicamentos: string;
+				consideracion: string;
+				obraSocial: string;
+				telefonoContactoEmergencia: number;
+				nombreContactoEmergencia: string;
+		  };
+	datosAcademicos:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				carreraUniversitaria: string;
+				carreraPostgrado: string;
+				carreraFinalizada: boolean;
+		  };
+	datosRecorrido:
+		| number
+		| {
+				id: number;
+				created_at: string;
+				categoria: number;
+				agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
+				numSiape: number;
+				tipoContratacion: 'CLS' | 'PTT' | 'PP';
+				referenciaBaja: string;
+				obraSocialActiva: boolean;
+				fechaAltaCLS: string;
+				fechaBajaCLS: string;
+				expedienteAltaCLS: string;
+				actoAltaCLS: string;
+				fechaAltaPTT: string;
+				fechaBajaPTT: string;
+				expedienteAltaPTT: string;
+				actoAltaPTT: string;
+				fechaAltaPP: string;
+				fechaBajaPP: string;
+				expedienteAltaPP: string;
+				actoAltaPP: string;
+				antiguedadExterna: number;
+		  };
+};
+
+type DireccionSupabase = {
+	id: number;
+	acronimo: string;
+	direccion: string;
+	created_at: string;
+};
+
+type EquipoSupabase = {
+	id: number;
+	equipo: string;
+	created_at: string;
+};
+export type { Nota, AgenteSupabase, DireccionSupabase, EquipoSupabase, FlatAgenteSupabase };
+
+// tipos utilizados para los stores
+export type Filter = {
+	field: string;
+	filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
+	value: string | number;
+};
+
+export type Order = {
+	field: string;
+	direction: boolean;
+};
+
+export type Show = {
+	field: string;
+};
+
+export type Agente = {
+	id: number | null;
+	DNI: number;
+	CUIT: number;
+	nombreCompleto: string;
+	fechaNacimiento: string;
+	domicilio: string;
+	emailPersonal: string;
+	emailInstitucional: string;
+	telefono: number;
+	curriculum: string;
+	genero: string;
+	activo: boolean;
+	equipo: number;
+	direccion: number;
+	rol: string;
+	superiorDirecto: number;
+	tieneHijos: boolean;
+	asignacionFamiliar: boolean;
+	beneficioGuarderia: boolean;
+	tipoSangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | '0+' | '0-';
+	medicamentos: string;
+	consideracion: string;
+	obraSocial: string;
+	telefonoContactoEmergencia: number;
+	nombreContactoEmergencia: string;
+	carreraUniversitaria: string;
+	carreraPostgrado: string;
+	carreraFinalizada: boolean;
+	categoria: number;
+	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiape: number;
+	tipoContratacion: 'CLS' | 'PTT' | 'PP';
+	referenciaBaja: string;
+	obraSocialActiva: boolean;
+	fechaAltaCLS: string;
+	fechaBajaCLS: string;
+	expedienteAltaCLS: string;
+	actoAltaCLS: string;
+	fechaAltaPTT: string;
+	fechaBajaPTT: string;
+	expedienteAltaPTT: string;
+	actoAltaPTT: string;
+	fechaAltaPP: string;
+	fechaBajaPP: string;
+	expedienteAltaPP: string;
+	actoAltaPP: string;
+	antiguedadExterna: number;
+};

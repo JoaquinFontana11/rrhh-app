@@ -1,15 +1,27 @@
 <script lang="ts">
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
-	import filterStore from '$lib/stores/filterStore';
+	import { filterStore } from '$lib/stores/nominaStores';
 	import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
+	import type { Filter } from '$lib/types';
+	import type { PostgrestResponse } from '@supabase/supabase-js';
+
+	type Simbols = {
+		[key: string]: string;
+		lt: string;
+		lte: string;
+		eq: string;
+		gt: string;
+		gte: string;
+		ilike: string;
+	};
 
 	export let fields: string[] = [];
 
 	let field: string;
-	let filter: string;
-	let value: string | number | boolean;
-	let simbols = {
+	let filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
+	let value: string | number;
+	let simbols: Simbols = {
 		lt: '<',
 		lte: '<=',
 		eq: '=',
@@ -17,20 +29,22 @@
 		gte: '>=',
 		ilike: 'contiene'
 	};
-	let valueId: number;
 
 	filterStore.subscribe((val) => {
 		localStorage.setItem('filter', JSON.stringify(val));
 	});
 
-	const searchId = async (table: string, column: string, value: string) => {
-		let { data: id }: { data: any } = await supabase
+	const filterField = (field: string) => (f: Filter) => f.field !== field;
+
+	const searchId = async (table: string, column: string, value: string | number | boolean) => {
+		let res: PostgrestResponse<any> = await supabase
 			.from(table)
 			.select('id')
 			.eq(column, value)
 			.range(0, 1);
-		console.log(id);
-		return id[0] ? id[0].id : -1;
+
+		if (!res.data) return;
+		return res.data[0] ? res.data[0].id : -1;
 	};
 </script>
 
@@ -38,8 +52,9 @@
 	class="absolute flex flex-col gap-2 bg-white p-5 z-50 rounded-lg shadow-lg left-1/2 -translate-x-1/2 dark:bg-stone-800"
 	transition:fly
 >
-	<label class="dark:text-stone-400">Campo</label>
+	<label class="dark:text-stone-400" for="campo">Campo</label>
 	<select
+		id="campo"
 		bind:value={field}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -47,8 +62,9 @@
 			<option>{field}</option>
 		{/each}
 	</select>
-	<label class="dark:text-stone-400">Filtro</label>
+	<label class="dark:text-stone-400" for="filtro">Filtro</label>
 	<select
+		id="filtro"
 		bind:value={filter}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -60,8 +76,9 @@
 		<option value="ilike">contiene a</option>
 	</select>
 
-	<label class="dark:text-stone-400">Valor</label>
+	<label class="dark:text-stone-400" for="valor">Valor</label>
 	<input
+		id="valor"
 		type="text"
 		bind:value
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
@@ -77,8 +94,7 @@
 			}
 			filterStore.update((filterStoreValue) => {
 				if (!value) return filterStoreValue;
-				filterStoreValue = filterStoreValue.filter((f) => f.field !== field);
-				console.log('COSA: ', value);
+				filterStoreValue = filterStoreValue.filter(filterField(field));
 				filterStoreValue.push({
 					field,
 					filter,
@@ -107,7 +123,7 @@
 				class="mr-2"
 				on:click={() => {
 					filterStore.update((filterStoreValue) => {
-						return filterStoreValue.filter((f) => f.field !== filterValue.field);
+						return filterStoreValue.filter(filterField(filterValue.field));
 					});
 				}}
 			>

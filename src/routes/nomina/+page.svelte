@@ -4,20 +4,32 @@
 		Eye,
 		EyeOff,
 		Refresh,
+		Filter as filterIcon,
 		ArrowLeft,
 		ArrowRight,
-		Filter,
 		SortAscending,
 		SortDescending,
 		Icon,
 		Document
 	} from 'svelte-hero-icons';
-	import pageStore, { cantPage } from '$lib/stores/pageStore';
-	import orderStore from '$lib/stores/orderStore';
-	import filterStore from '$lib/stores/filterStore';
-	import showStore from '$lib/stores/showStore';
-	import { agenteStore } from '$lib/stores/agenteStore';
-	import { showAllStore } from '$lib/stores/showStore';
+	/*
+	import pageStore, { cantPage } from '$lib/stores/old_stores_delete/pageStore';
+	import orderStore from '$lib/stores/old_stores_delete/orderStore';
+	import filterStore from '$lib/stores/old_stores_delete/filterStore';
+	import showStore from '$lib/stores/old_stores_delete/showStore';
+	import { agenteStore } from '$lib/stores/old_stores_delete/agenteStore';
+	import { showAllStore } from '$lib/stores/old_stores_delete/showStore';
+*/
+	import {
+		pageStore,
+		cantPageStore,
+		orderStore,
+		filterStore,
+		showStore,
+		agenteStore,
+		showAllStore
+	} from '$lib/stores/nominaStores';
+
 	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardTable from '$lib/components/Dashboard/DashboardTable.svelte';
@@ -27,18 +39,27 @@
 	import DashboardToolbarFilter from '$lib/components/Dashboard/DashboardToolbarFilter.svelte';
 	import DashboardToolbarShow from '$lib/components/Dashboard/DashboardToolbarShow.svelte';
 	import DashboardToolbarExport from '$lib/components/Dashboard/DashboardToolbarExport.svelte';
-	import type { PageData } from './$types';
 	import FormDrawerAgente from '$lib/components/FormDrawer/FormDrawerAgente.svelte';
+	import type { PageData } from './$types';
+	import type { Filter } from '$lib/types';
+
+	type TableData = {
+		headers: string[];
+		fields: string[];
+		data: any[];
+	};
 
 	export let data: PageData;
 
 	let lastPage = data.lastPage;
 	let showDrawer = false;
-	// TODO: definir bien el tipo
-	let tableData: any = [];
-	let stopLongPolling: any;
+	let tableData: TableData = {
+		headers: [],
+		fields: [],
+		data: []
+	};
+	let stopLongPolling: Function;
 	let intervalsIds: any[] = [];
-
 	let showDropdowns = [false, false, false, false];
 
 	const transformData = (data: any[]) => {
@@ -66,7 +87,7 @@
 	const initLongPolling = (
 		page: number,
 		order: { field: string; direction: boolean },
-		filter: { field: string; filter: string; value: string }[],
+		filter: Filter[],
 		cantPage: number
 	) => {
 		intervalsIds.push(
@@ -79,7 +100,7 @@
 	};
 
 	tableData = transformData(data.data);
-	stopLongPolling = initLongPolling(0, $orderStore, $filterStore, $cantPage);
+	stopLongPolling = initLongPolling(0, $orderStore, $filterStore, $cantPageStore);
 	data.fields = data.fields.filter((field) => {
 		return field !== 'id' && field !== 'created_at' ? field : '';
 	});
@@ -88,49 +109,52 @@
 	pageStore.subscribe(async (val) => {
 		stopLongPolling();
 		tableData = transformData(
-			(await data.reloadData(val, $orderStore, $filterStore, $cantPage)).data
+			(await data.reloadData(val, $orderStore, $filterStore, $cantPageStore)).data
 		);
-		stopLongPolling = initLongPolling(val, $orderStore, $filterStore, $cantPage);
+		stopLongPolling = initLongPolling(val, $orderStore, $filterStore, $cantPageStore);
 	});
 	// cuando se cambia el orden tambien se recarga la pagina
 	orderStore.subscribe(async (val) => {
 		stopLongPolling();
 		tableData = transformData(
-			(await data.reloadData($pageStore, val, $filterStore, $cantPage)).data
+			(await data.reloadData($pageStore, val, $filterStore, $cantPageStore)).data
 		);
-		stopLongPolling = initLongPolling($pageStore, val, $filterStore, $cantPage);
+		stopLongPolling = initLongPolling($pageStore, val, $filterStore, $cantPageStore);
 	});
 	// cuando se cambian los filtros tambien se recarga la pagina
 	filterStore.subscribe(async (val) => {
 		stopLongPolling();
 		tableData = transformData(
-			(await data.reloadData($pageStore, $orderStore, val, $cantPage)).data
+			(await data.reloadData($pageStore, $orderStore, val, $cantPageStore)).data
 		);
-		stopLongPolling = initLongPolling($pageStore, $orderStore, val, $cantPage);
+		stopLongPolling = initLongPolling($pageStore, $orderStore, val, $cantPageStore);
 		const { count } = await data.calcLastPage($orderStore, val);
-		lastPage = Math.trunc(count / $cantPage);
+		lastPage = Math.trunc(count / $cantPageStore);
 	});
 	// cuando se cambian los campos a mostrar se recalcula tableData
 	showStore.subscribe(async (val) => {
 		tableData = transformData(
-			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPage)).data
+			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPageStore)).data
 		);
 	});
 	showAllStore.subscribe(async (val) => {
 		tableData = transformData(
-			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPage)).data
+			(await data.reloadData($pageStore, $orderStore, $filterStore, $cantPageStore)).data
 		);
 	});
 
 	const changeCantPage = async (e: Event) => {
-		cantPage.update((n) => e.target.value * 1);
+		const target = e.target as HTMLSelectElement;
+		const value = parseInt(target.value);
+
+		cantPageStore.update((n) => value);
 		stopLongPolling();
 		tableData = transformData(
-			(await data.reloadData($pageStore, $orderStore, $filterStore, e.target.value * 1)).data
+			(await data.reloadData($pageStore, $orderStore, $filterStore, value)).data
 		);
-		stopLongPolling = initLongPolling($pageStore, $orderStore, $filterStore, $cantPage);
+		stopLongPolling = initLongPolling($pageStore, $orderStore, $filterStore, $cantPageStore);
 		const { count } = await data.calcLastPage($orderStore, $filterStore);
-		lastPage = Math.trunc((count / e.target.value) * 1);
+		lastPage = Math.trunc(count / value);
 	};
 </script>
 
@@ -163,7 +187,7 @@
 		</DashboardToolbarButton>
 		<DashboardToolbarButton
 			name="Agregar filtro"
-			icon={Filter}
+			icon={filterIcon}
 			dropdown={true}
 			bind:showDropdown={showDropdowns[1]}
 			on:click={() => {
@@ -172,7 +196,7 @@
 			}}
 			textHighlight={$filterStore.length !== 0}
 		>
-			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} specialIds={{}} />
+			<DashboardToolbarFilter slot="dropdown-content" fields={data.fields} />
 		</DashboardToolbarButton>
 
 		<DashboardToolbarButton

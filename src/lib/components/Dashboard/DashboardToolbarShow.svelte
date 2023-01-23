@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
-	import showStore from '$lib/stores/showStore';
-	import { showAllStore } from '$lib/stores/showStore';
+	import { showStore } from '$lib/stores/nominaStores';
+	import { showAllStore } from '$lib/stores/nominaStores';
 
 	export let fields: string[] = [];
 
@@ -14,14 +14,17 @@
 	showAllStore.subscribe((val: boolean) => {
 		localStorage.setItem('showAll', val.toString());
 	});
+
+	const filterField = (f: { field: string }) => f.field !== field;
 </script>
 
 <div
 	class="absolute flex flex-col gap-2 bg-white p-5 z-50 rounded-lg shadow-lg left-1/2 -translate-x-1/2 dark:bg-stone-800"
 	transition:fly
 >
-	<label class="dark:text-stone-400">Campo</label>
+	<label class="dark:text-stone-400" for="campo">Campo</label>
 	<select
+		id="campo"
 		bind:value={field}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
 	>
@@ -34,7 +37,7 @@
 		on:click={() => {
 			showStore.update((showStoreValue) => {
 				if (!field) return showStoreValue;
-				showStoreValue = showStoreValue.filter((f) => f.field !== field);
+				showStoreValue = showStoreValue.filter(filterField);
 
 				showStoreValue.push({
 					field

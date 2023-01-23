@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { SvelteComponent } from 'svelte';
 	import DashboardDrawer from './DashboardDrawer.svelte';
 	import DashboardToolbar from './DashboardToolbar.svelte';
 
 	export let showDrawer = false;
-	export let drawerContent: any | null;
+	export let drawerContent: ConstructorOfATypedSvelteComponent | null = null;
 	export let drawerContentProps: any | null = {};
 </script>
 
@@ -29,14 +30,6 @@
 		>
 			<slot name="dashboard-content" />
 		</div>
-		<!--
-
-		<DashboardTable {tableData}>
-			<slot name="table-extras"></slot>
-			<th slot="row-extra-header" />
-			<button slot="row-extra-cell">x</button>
-		</DashboardTable>
-	-->
 	</div>
 </div>
 

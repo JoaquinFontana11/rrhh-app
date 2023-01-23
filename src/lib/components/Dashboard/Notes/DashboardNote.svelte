@@ -2,7 +2,8 @@
 	import { Icon, X, CheckCircle, Exclamation, ExclamationCircle } from 'svelte-hero-icons';
 	import { createEventDispatcher } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
-	export let note: any;
+	import type { Nota } from '$lib/types';
+	export let note: Nota;
 
 	const dispatcher = createEventDispatcher();
 </script>

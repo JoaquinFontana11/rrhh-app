@@ -4,28 +4,45 @@
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from './FormDrawerInputGroupButton.svelte';
 	import { validateEmptyInput, validateInputEmail } from './validators';
-	import type { FunctionsObject, IComponent, IComponentObject, IOption } from '$lib/types';
-	import { agenteStore } from '$lib/stores/agenteStore';
+	//import { agenteStore } from '$lib/stores/agenteStore';
+	import { agenteStore } from '$lib/stores/nominaStores';
 	import { supabase } from '$lib/supabaseClient';
+
+	import type { PostgrestResponse } from '@supabase/supabase-js';
+	import type {
+		FunctionsObject,
+		IComponent,
+		IComponentObject,
+		IOption,
+		AgenteSupabase,
+		DireccionSupabase,
+		EquipoSupabase
+	} from '$lib/types';
 
 	let action = 'create';
 	let direcciones: IOption[] = [];
 	let equipos: IOption[] = [];
 	let superioresDirectos: IOption[] = [];
 
-	//TODO: Modificar esto porque toma el action update cuando estas creando
 	agenteStore.subscribe((agente) => {
-		action = agente.id ? 'update' : 'create';
+		action = Object.keys(agente).includes('id') ? 'update' : 'create';
 	});
 
-	const getSuperioresDorectos = async (direccion: string) => {
-		const { data, error } = await supabase
+	const getSuperioresDorectos = async (direccion: string | number) => {
+		const res: PostgrestResponse<AgenteSupabase> = await supabase
 			.from('agente')
 			.select('*, direccion(*)')
 			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
 
-		superioresDirectos = data
-			.filter((agente) => agente.direccion.id == direccion)
+		if (!res.data) return;
+
+		let agentes: AgenteSupabase[] = res.data;
+
+		superioresDirectos = agentes
+			.filter((agente) => {
+				const direccionAgente = agente.direccion as DireccionSupabase;
+				return direccionAgente.id == direccion;
+			})
 			.map((superior) => {
 				return {
 					value: superior.id,
@@ -35,9 +52,13 @@
 	};
 
 	const getDirecciones = async () => {
-		const { data, error } = await supabase.from('direccion').select('id, direccion');
+		const res: PostgrestResponse<DireccionSupabase> = await supabase
+			.from('direccion')
+			.select('id, direccion');
 
-		direcciones = data.map((direccion) => {
+		if (!res.data) return;
+
+		direcciones = res.data.map((direccion) => {
 			return {
 				value: direccion.id,
 				name: direccion.direccion
@@ -45,9 +66,13 @@
 		});
 	};
 	const getEquipos = async () => {
-		const { data, error } = await supabase.from('equipo').select('id, equipo');
+		const res: PostgrestResponse<EquipoSupabase> = await supabase
+			.from('equipo')
+			.select('id, equipo');
 
-		equipos = data.map((equipo) => {
+		if (!res.data) return;
+
+		equipos = res.data.map((equipo) => {
 			return {
 				value: equipo.id,
 				name: equipo.equipo
@@ -59,13 +84,13 @@
 	getDirecciones();
 	$: getSuperioresDorectos($agenteStore.direccion);
 
-	const dropdown = {
+	const dropdown: { [key: string]: any } = {
 		datosPersonales: false,
 		datosSalud: false,
 		datosAcademicos: false,
 		datosRecorrido: false
 	};
-	const validate = {
+	const validate: { [key: string]: any } = {
 		datosPersonales: true,
 		datosSalud: true,
 		datosAcademicos: true,
@@ -73,7 +98,7 @@
 	};
 	let disabledbutton: boolean = true;
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'datosRecorrido'];
-	const labels = {
+	const labels: { [key: string]: any } = {
 		datosPersonales: 'Datos Personales',
 		datosSalud: 'Datos de Salud',
 		datosAcademicos: 'Datos Academicos',
@@ -879,10 +904,10 @@
 
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
-		value = target.value * 1 ? target.value * 1 : value;
+		if (typeof value == 'string') value = parseInt(value);
+
 		agenteStore.update((agente) => {
 			agente[target.name as string] = value;
-			console.log(agente);
 			return agente;
 		});
 	};

@@ -7,25 +7,29 @@
 	import DashboardToolbarNote from '$lib/components/Dashboard/Notes/DashboardToolbarNote.svelte';
 	import DashboardNotes from '$lib/components/Dashboard/Notes/DashboardNotes.svelte';
 	import type { PageData } from './$types';
+	import type { Nota } from '$lib/types';
 
 	export let data: PageData;
-
 	let modulo = '/nomina';
-	let notes = data.data?.filter((note) => note.modulo == modulo);
+
+	let notesData: Nota[] = data.data as Nota[];
+	let notes: Nota[] = notesData.filter((note) => note.modulo == modulo);
+
 	let showDropdown = false;
 	const addNote = (e: CustomEvent) => {
 		data.data?.push(e.detail.note);
-		notes = data.data?.filter((note) => note.modulo == modulo);
+		notes = notesData.filter((note) => note.modulo == modulo);
 	};
 
 	const filterNotes = (e: Event) => {
-		modulo = e.target.value;
-		notes = data.data?.filter((note) => note.modulo == modulo);
+		const target = e.target as HTMLSelectElement;
+		modulo = target.value;
+		notes = notesData.filter((note) => note.modulo == modulo);
 	};
 
 	const deleteNote = (e: CustomEvent) => {
-		data.data = data.data.filter((note) => note.id !== e.detail.id);
-		notes = data.data?.filter((note) => note.modulo == modulo);
+		notesData = notesData.filter((note) => note.id !== e.detail.id);
+		notesData = notesData.filter((note) => note.modulo == modulo);
 	};
 </script>
 

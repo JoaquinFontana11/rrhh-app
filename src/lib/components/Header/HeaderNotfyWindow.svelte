@@ -3,9 +3,10 @@
 	import HeaderNotifySmallCard from './HeaderNotifySmallCard.svelte';
 
 	import notasStore from '$lib/stores/notasStore';
+	import type { Nota } from '$lib/types';
 
-	let notas: any = [];
-	notasStore.subscribe((val) => {
+	let notas: Nota[] = [];
+	notasStore.subscribe((val: Nota[]) => {
 		notas = val;
 	});
 </script>

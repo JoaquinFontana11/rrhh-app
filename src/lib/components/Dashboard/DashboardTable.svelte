@@ -1,13 +1,35 @@
 <script lang="ts">
 	import { watchResize } from 'svelte-watch-resize';
 
+	type TableData = {
+		headers: string[];
+		fields: string[];
+		data: { [key: string]: any }[];
+	};
+
 	// TODO: crear un tipo para la clase de data que recibe la tabla
-	export let tableData: any = {};
+	export let tableData: TableData = {
+		headers: [],
+		fields: [],
+		data: []
+	};
 	// ancho de cada columna
-	let sizes = tableData.headers.map((e: number) => 40);
+	let sizes = tableData.headers.map((e: string) => 40);
 
 	const headerResize = (node: HTMLElement) => {
 		sizes[tableData.headers.findIndex((e: string) => e == node.textContent)] = node.clientWidth;
+	};
+
+	const formatSomeValues = (data: { [key: string]: any }, key: string): string => {
+		const value: any = data[key];
+
+		if (key == 'equipo' || key == 'direccion' || key == 'superiorDirecto') {
+			return value;
+		}
+
+		if (typeof value == 'boolean') return value == true ? 'Si' : 'No';
+
+		return value == null ? '' : value;
 	};
 </script>
 
@@ -38,15 +60,7 @@
 							style={`${i == 0 || i == tableData.fields.length ? 'border-left: 0px' : ''}`}
 						>
 							<p class={`truncate p-2`} style={`width: ${sizes[i]}px;`}>
-								{data[field] == null
-									? ''
-									: data[field] == true && data[field] !== 1
-									? 'Si'
-									: data[field] == false && data[field] !== 0
-									? 'no'
-									: field == 'equipo' || field == 'direccion' || field == 'superiorDirecto'
-									? data[field].value
-									: data[field]}
+								{formatSomeValues(data, field)}
 							</p>
 						</td>
 					{/if}

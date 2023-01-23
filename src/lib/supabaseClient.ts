@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/auth-helpers-sveltekit';
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import type { Filter } from './types';
 
 export const supabase = createClient(
 	PUBLIC_SUPABASE_URL as string,
@@ -19,7 +20,7 @@ export const execSupabaseQuery = async (
 		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
-	filters.map((f) => {
+	filters.map((f: Filter) => {
 		querySupabase += `.${f.filter}('${f.field}', '${
 			f.filter == 'ilike' ? `%${f.value}%` : f.value
 		}')`;

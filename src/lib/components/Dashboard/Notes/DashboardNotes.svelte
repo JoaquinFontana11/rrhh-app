@@ -2,10 +2,12 @@
 	import { flip } from 'svelte/animate';
 	import DashboardNote from './DashboardNote.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import type { Nota } from '$lib/types';
 
 	const dispatcher = createEventDispatcher();
 
-	export let notes;
+	export let notes: Nota[];
+
 	const clearNotes = (e: CustomEvent) => {
 		notes = notes.filter((note) => note.id !== e.detail.id);
 		dispatcher('delete-note', { id: e.detail.id });

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import orderStore from '$lib/stores/orderStore';
+	import { orderStore } from '$lib/stores/nominaStores';
 
 	export let fields: string[] = [];
 	let field: string = $orderStore.field;
-	let direction: string = $orderStore.direction;
+	let direction: boolean = $orderStore.direction;
 
 	orderStore.subscribe((val) => {
 		localStorage.setItem('order', JSON.stringify(val));
@@ -19,8 +19,9 @@
 		no tenes orden
 	{/if}
 
-	<label class="dark:text-stone-400">Campo</label>
+	<label class="dark:text-stone-400" for="campo">Campo</label>
 	<select
+		id="campo"
 		bind:value={field}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	>
@@ -28,8 +29,9 @@
 			<option>{field}</option>
 		{/each}
 	</select>
-	<label class="dark:text-stone-400">Orden</label>
+	<label class="dark:text-stone-400" for="orden">Orden</label>
 	<select
+		id="orden"
 		bind:value={direction}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	>

@@ -12,7 +12,7 @@
 		alerta: 'border-yellow-500',
 		peligro: 'border-red-500'
 	};
-	let icon = {
+	let icon: { [key: string]: any } = {
 		ok: CheckCircle,
 		warn: Exclamation,
 		alert: ExclamationCircle

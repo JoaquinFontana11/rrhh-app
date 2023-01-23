@@ -18,7 +18,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	const validateInput = (e: Event) => {
+	const validateInput = (e: Event | null = null) => {
 		let res;
 		errors = [];
 		validators.forEach((validator) => {
