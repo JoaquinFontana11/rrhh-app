@@ -10,6 +10,13 @@ export const load: PageLoad = async () => {
 	const res: PostgrestResponse<Nota> = await supabase.from('notas').select('*');
 
 	return {
-		data: res.data
+		data: res.data,
+		reload: reload
 	};
+};
+
+const reload = async () => {
+	const res: PostgrestResponse<Nota> = await supabase.from('notas').select('*');
+
+	return res.data;
 };

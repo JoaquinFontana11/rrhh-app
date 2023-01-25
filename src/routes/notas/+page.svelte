@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Icon, Plus } from 'svelte-hero-icons';
+	import { Plus } from 'svelte-hero-icons';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -32,6 +32,10 @@
 		notesData = notesData.filter((note) => note.id !== e.detail.id);
 		notesData = notesData.filter((note) => note.modulo == modulo);
 	};
+	const updateNotes = async (e: CustomEvent) => {
+		notesData = await data.reload();
+		notes = notesData.filter((note) => note.modulo == modulo);
+	};
 </script>
 
 <Header />
@@ -57,5 +61,10 @@
 			<DashboardToolbarNote slot="dropdown-content" on:create-note={addNote} />
 		</DashboardToolbarButton>
 	</div>
-	<DashboardNotes slot="dashboard-content" bind:notes on:delete-note={deleteNote} />
+	<DashboardNotes
+		slot="dashboard-content"
+		bind:notes
+		on:delete-note={deleteNote}
+		on:update-notes={updateNotes}
+	/>
 </Dashboard>
