@@ -4,7 +4,7 @@
 	import { supabase } from '$lib/supabaseClient';
 	import type { Nota } from '$lib/types';
 	export let note: Nota;
-
+	console.log('renderizado: ', note);
 	const dispatcher = createEventDispatcher();
 </script>
 

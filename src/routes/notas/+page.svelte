@@ -26,14 +26,17 @@
 		const target = e.target as HTMLSelectElement;
 		modulo = target.value;
 		notes = notesData.filter((note) => note.modulo == modulo);
+		console.log(notes);
 	};
 
 	const deleteNote = (e: CustomEvent) => {
 		notesData = notesData.filter((note) => note.id !== e.detail.id);
 		notesData = notesData.filter((note) => note.modulo == modulo);
 	};
-	const updateNotes = async (e: CustomEvent) => {
-		notesData = await data.reload();
+
+	const refreshNotes = async (e: CustomEvent) => {
+		data.data = await data.reload();
+		notesData = data.data as Nota[];
 		notes = notesData.filter((note) => note.modulo == modulo);
 	};
 </script>
@@ -65,6 +68,6 @@
 		slot="dashboard-content"
 		bind:notes
 		on:delete-note={deleteNote}
-		on:update-notes={updateNotes}
+		on:refresh={refreshNotes}
 	/>
 </Dashboard>
