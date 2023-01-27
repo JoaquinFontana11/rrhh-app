@@ -57,7 +57,6 @@
 			if (licencia1.day > licencia2.day) return 1;
 			return -1;
 		});
-		console.log(licenciasCompletas);
 
 		let actualDay = -1;
 
