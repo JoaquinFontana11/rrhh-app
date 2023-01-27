@@ -1,10 +1,18 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	export let color: string = 'black';
 	export let content: string;
+
+	const distpach = createEventDispatcher();
+
+	const onClick = (e: Event) => {
+		distpach('click-item', { content });
+	};
 </script>
 
 <div class="flex justify-start items-center gap-1 w-full">
-	<div
+	<button
 		class="rounded-full w-2 h-2 bg-rose-500"
 		class:red={color == 'red'}
 		class:yellow={color == 'yellow'}
@@ -12,6 +20,7 @@
 		class:green={color == 'green'}
 		class:indigo={color == 'indigo'}
 		class:orange={color == 'orange'}
+		on:click={onClick}
 	/>
 	<p class="text-sm font-light dark:text-stone-200">{content}</p>
 </div>
