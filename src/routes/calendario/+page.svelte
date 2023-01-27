@@ -27,23 +27,30 @@
 	};
 
 	const reloadItems = (month: number) => {
-		let licencias = data.data
-			.filter((licencia) => {
-				return new Date(licencia.fechaInicio).getMonth() == month;
-			})
-			.map((licencia) => {
-				return {
-					day: new Date(licencia.fechaInicio).getDate(),
-					tipo: licencia.tipo
-				};
-			})
-			.sort((licencia1, licencia2) => {
-				if (licencia1.day > licencia2.day) return 1;
-				return -1;
-			});
-		let actualDay = -1;
+		let licencias = data.data.filter((licencia) => {
+			return new Date(licencia.fechaInicio).getMonth() == month;
+		});
+		let licenciasCompletas: { day: number; tipo: string }[] = [];
 
 		licencias.forEach((licencia) => {
+			for (
+				let i = new Date(licencia.fechaInicio).getDate() + 1;
+				i <= new Date(licencia.fechaFin).getDate() + 1;
+				i++
+			) {
+				licenciasCompletas.push({ day: i, tipo: licencia.tipo });
+			}
+		});
+
+		licenciasCompletas = licenciasCompletas.sort((licencia1, licencia2) => {
+			if (licencia1.day > licencia2.day) return 1;
+			return -1;
+		});
+		console.log(licenciasCompletas);
+
+		let actualDay = -1;
+
+		licenciasCompletas.forEach((licencia) => {
 			if (actualDay < licencia.day) {
 				actualDay = licencia.day;
 				calendarItems[licencia.day] = [];
