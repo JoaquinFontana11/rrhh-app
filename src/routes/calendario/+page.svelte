@@ -28,16 +28,27 @@
 
 	const reloadItems = (month: number) => {
 		let licencias = data.data.filter((licencia) => {
-			return new Date(licencia.fechaInicio).getMonth() == month;
+			const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
+			const licenciaMonthFin = new Date(licencia.fechaFin).getMonth();
+			return (
+				licenciaMonthInicio == month ||
+				(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
+			);
 		});
 		let licenciasCompletas: { day: number; tipo: string }[] = [];
 
 		licencias.forEach((licencia) => {
-			for (
-				let i = new Date(licencia.fechaInicio).getDate() + 1;
-				i <= new Date(licencia.fechaFin).getDate() + 1;
-				i++
-			) {
+			// si la fecha de fin es en otro mes se recorre hasta fin de mes
+			// si la fecha de inicio es en el mes anterior se arranca desde el principio
+			const licenciaTerminaPosterior = new Date(licencia.fechaFin).getMonth() > month;
+			const licenciaIniciaAnterior = new Date(licencia.fechaInicio).getMonth() < month;
+
+			const fechaInicio = licenciaIniciaAnterior ? 1 : new Date(licencia.fechaInicio).getDate() + 1;
+			const fechaFin = licenciaTerminaPosterior
+				? new Date(year, month, 0).getDate()
+				: new Date(licencia.fechaFin).getDate() + 1;
+
+			for (let i = fechaInicio; i <= fechaFin; i++) {
 				licenciasCompletas.push({ day: i, tipo: licencia.tipo });
 			}
 		});

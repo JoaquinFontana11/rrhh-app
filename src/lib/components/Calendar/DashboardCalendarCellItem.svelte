@@ -13,7 +13,7 @@
 		class:indigo={color == 'indigo'}
 		class:orange={color == 'orange'}
 	/>
-	<p class="text-sm font-light">{content}</p>
+	<p class="text-sm font-light dark:text-stone-200">{content}</p>
 </div>
 
 <style lang="postcss">
