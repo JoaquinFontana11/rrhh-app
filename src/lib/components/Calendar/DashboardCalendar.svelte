@@ -3,6 +3,13 @@
 
 	export let month: number;
 	export let year: number;
+	export let items: {
+		[key: number]: any;
+		day: {
+			color: string;
+			content: string;
+		}[];
+	};
 
 	let monthDays: number[][];
 	let firstDay: string;
@@ -85,7 +92,10 @@
 			<tr>
 				{#each [0, 1, 2, 3, 4, 5, 6] as column}
 					<td class="border border-stone-200 dark:border-stone-700">
-						<DashboardCalendarCell day={monthDays[row][column] > 0 ? monthDays[row][column] : ''} />
+						<DashboardCalendarCell
+							day={monthDays[row][column] > 0 ? monthDays[row][column] : ''}
+							items={items[monthDays[row][column]] ? items[monthDays[row][column]] : []}
+						/>
 					</td>
 				{/each}
 			</tr>

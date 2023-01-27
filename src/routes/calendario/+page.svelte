@@ -9,13 +9,59 @@
 
 	let month: number = new Date().getMonth();
 	let year: number = new Date().getFullYear();
-	let licencias = data.data;
 
 	const updateMonth = (e: Event) => {
 		const target = e.target as HTMLSelectElement;
 
 		month = parseInt(target.value);
 	};
+
+	let calendarItems: any = {};
+	const colors: { [key: string]: string } = {
+		ausente: 'yellow',
+		salud: 'green',
+		vacaciones: 'orange',
+		otro: 'red',
+		academica: 'indigo',
+		teletrabajo: 'sky'
+	};
+
+	const reloadItems = (month: number) => {
+		let licencias = data.data
+			.filter((licencia) => {
+				return new Date(licencia.fechaInicio).getMonth() == month;
+			})
+			.map((licencia) => {
+				return {
+					day: new Date(licencia.fechaInicio).getDate(),
+					tipo: licencia.tipo
+				};
+			})
+			.sort((licencia1, licencia2) => {
+				if (licencia1.day > licencia2.day) return 1;
+				return -1;
+			});
+		let actualDay = -1;
+
+		licencias.forEach((licencia) => {
+			if (actualDay < licencia.day) {
+				actualDay = licencia.day;
+				calendarItems[licencia.day] = [];
+			}
+			calendarItems[actualDay].push(licencia.tipo);
+		});
+
+		Object.entries(calendarItems).forEach(([day, tipos]: any) => {
+			calendarItems[day] = [];
+			['salud', 'otro', 'ausente', 'teletrabajo', 'vacaciones', 'academica'].forEach((tipo) => {
+				let countTipo = tipos.filter((t: string) => t == tipo).length;
+				if (countTipo == 0) return;
+				calendarItems[day].push({ color: colors[tipo], content: `${countTipo} - ${tipo}` });
+			});
+		});
+	};
+
+	$: reloadItems(month);
 </script>
 
 <Header />
@@ -40,5 +86,5 @@
 		/>
 	</div>
 
-	<DashboardCalendar slot="dashboard-content" bind:month {year} />
+	<DashboardCalendar slot="dashboard-content" bind:month {year} items={calendarItems} />
 </Dashboard>
