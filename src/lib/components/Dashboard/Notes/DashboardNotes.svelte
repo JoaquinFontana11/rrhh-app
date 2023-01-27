@@ -1,43 +1,87 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import DashboardNote from './DashboardNote.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import type { Nota } from '$lib/types';
+	import { dndzone } from 'svelte-dnd-action';
+	import { supabase } from '$lib/supabaseClient';
+	import { watchResize } from 'svelte-watch-resize';
 
 	const dispatcher = createEventDispatcher();
 
 	export let notes: Nota[];
+	let notesObj: { [key: string]: any } = {
+		ok: notes.filter((note) => note.nivel == 'ok'),
+		warn: notes.filter((note) => note.nivel == 'warn'),
+		alert: notes.filter((note) => note.nivel == 'alert')
+	};
+	console.log('Notas: ', notesObj);
 
 	const clearNotes = (e: CustomEvent) => {
 		notes = notes.filter((note) => note.id !== e.detail.id);
 		dispatcher('delete-note', { id: e.detail.id });
+	};
+
+	const flipDurationMs = 200;
+	const type = 'light';
+
+	const handleSort = async (e: CustomEvent) => {
+		const target = e.target as HTMLDivElement;
+		const type: string = target.id;
+		notesObj[type] = e.detail.items;
+	};
+	const handleSortFinalize = async (e: CustomEvent) => {
+		const target = e.target as HTMLDivElement;
+		const type: string = target.id;
+		notesObj[type] = e.detail.items;
+		const arrayIds: Array<number> = e.detail.items.map((note: Nota) => note.id);
+
+		await supabase.from('notas').update({ nivel: type }).in('id', arrayIds).select();
+		dispatcher('refresh', {});
+	};
+	$: notesObj = {
+		ok: notes.filter((note) => note.nivel == 'ok'),
+		warn: notes.filter((note) => note.nivel == 'warn'),
+		alert: notes.filter((note) => note.nivel == 'alert')
 	};
 </script>
 
 <div class="flex h-full w-full">
 	<div
 		class="pt-10 bg-lime-500/20 dark:bg-stone-900   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		use:dndzone={{ items: notesObj.ok, flipDurationMs, type }}
+		on:consider={handleSort}
+		on:finalize={handleSortFinalize}
+		id="ok"
 	>
-		{#each notes.filter((note) => note.nivel == 'ok') as note (note.id)}
-			<div animate:flip={{ duration: 300 }} class="w-full flex justify-center">
+		{#each notesObj.ok as note (note.id)}
+			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote {note} on:delete-note={clearNotes} />
 			</div>
 		{/each}
 	</div>
 	<div
 		class="pt-10 bg-yellow-500/20 dark:bg-stone-900 dark:border-l dark:border-r dark:border-stone-800   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		use:dndzone={{ items: notesObj.warn, flipDurationMs, type }}
+		on:consider={handleSort}
+		on:finalize={handleSortFinalize}
+		id="warn"
 	>
-		{#each notes.filter((note) => note.nivel == 'warn') as note (note.id)}
-			<div animate:flip={{ duration: 300 }} class="w-full flex justify-center">
+		{#each notesObj.warn as note (note.id)}
+			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote {note} on:delete-note={clearNotes} />
 			</div>
 		{/each}
 	</div>
 	<div
 		class="pt-10 bg-rose-500/20 dark:bg-stone-900   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		use:dndzone={{ items: notesObj.alert, flipDurationMs, type }}
+		on:consider={handleSort}
+		on:finalize={handleSortFinalize}
+		id="alert"
 	>
-		{#each notes.filter((note) => note.nivel == 'alert') as note (note.id)}
-			<div animate:flip={{ duration: 300 }} class="w-full flex justify-center">
+		{#each notesObj.alert as note (note.id)}
+			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote {note} on:delete-note={clearNotes} />
 			</div>
 		{/each}
