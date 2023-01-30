@@ -30,7 +30,9 @@ export const execSupabaseQuery = async (
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 
 	// ejecutamos la query y la aplanamos
+	console.log(querySupabase);
 	const res = await eval(querySupabase);
+	console.log(res);
 
 	return res;
 };
@@ -51,6 +53,11 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 				flattedArr.push([key, { id: data[key].id, value: data[key].acronimo }]);
 			} else {
 				for (let subKey in data[key]) {
+					if (subKey === 'direccion') {
+						data[key][subKey].value = data[key][subKey].acronimo;
+					} else if (subKey === 'equipo') {
+						data[key][subKey].value = data[key][subKey].equipo;
+					}
 					flattedArr.push([subKey, data[key][subKey]]);
 				}
 			}

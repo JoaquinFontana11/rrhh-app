@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
-	import filterLicenciaStore from '$lib/stores/licencias_old/filterLicenciaStore';
+	// import filterStore from '$lib/stores/licencias_old/filterStore';
+	import { filterStore } from '$lib/stores/licenciaStore';
 	import type { Filter } from '$lib/types';
+	import type { PostgrestResponse } from '@supabase/supabase-js';
+	import { supabase } from '$lib/supabaseClient';
 
 	type Simbols = {
 		lt: string;
@@ -27,13 +30,28 @@
 		ilike: 'contiene'
 	};
 
-	filterLicenciaStore.subscribe((val) => {
+	filterStore.subscribe((val) => {
 		localStorage.setItem('filter-licencia', JSON.stringify(val));
 	});
+
+	const searchId = async (table: string, column: string, value: string | number | boolean) => {
+		console.log(field, column, value);
+		let res: PostgrestResponse<any> = await supabase.from(table).select('id').eq(column, value);
+		let prueba: PostgrestResponse<any> = await supabase
+			.from('agente')
+			.select('id')
+			.eq(field, res.data[0].id);
+
+		console.log(res.data);
+		console.log(prueba);
+		if (!res.data) return;
+		return res.data[0] ? res.data[0].id : -1;
+	};
 
 	const filterField = (f: Filter) => f.field !== field;
 
 	const getSimbol = (index: string) => simbols[index as keyof Simbols];
+	console.log(fields);
 </script>
 
 <div
@@ -74,8 +92,18 @@
 	<span class="text-stone-400 text-sm dark:text-stone-600">formato de fecha: yyyy-mm-dd</span>
 	<button
 		class="bg-lime-500 rounded-lg p-1"
-		on:click={() => {
-			filterLicenciaStore.update((filterStoreValue) => {
+		on:click={async () => {
+			if (field === 'equipo' || field === 'direccion') {
+				const column = field === 'equipo' ? 'equipo' : 'acronimo';
+				value = await searchId(field, column, value);
+			}
+			field =
+				field === 'equipo' || field === 'direccion' || field === 'nombreCompleto'
+					? `agente.${field}`
+					: field;
+			console.log(field);
+			filterStore.update((filterStoreValue) => {
+				console.log(field, filter, value);
 				if (!value) return filterStoreValue;
 				filterStoreValue = filterStoreValue.filter(filterField);
 
@@ -84,13 +112,14 @@
 					filter,
 					value
 				});
+				console.log(filterStoreValue);
 				return filterStoreValue;
 			});
 		}}>Agregar filtro</button
 	>
 
 	<p class="dark:text-stone-400">Filtros activos</p>
-	{#each $filterLicenciaStore as filterValue}
+	{#each $filterStore as filterValue}
 		<div class="flex justify-between bg-lime-100 p-1 rounded-lg gap-2">
 			<p class="flex justify-center grow gap-5">
 				<span>
@@ -106,7 +135,8 @@
 			<button
 				class="mr-2"
 				on:click={() => {
-					filterLicenciaStore.update((filterStoreValue) => {
+					filterStore.update((filterStoreValue) => {
+						console.log(filterStoreValue.filter);
 						return filterStoreValue.filter(filterField);
 					});
 				}}

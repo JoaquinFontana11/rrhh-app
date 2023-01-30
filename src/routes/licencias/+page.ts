@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 import notasStore from '$lib/stores/notasStore';
-import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
 import type { PostgrestResponse } from '@supabase/postgrest-js';
 import type { AgenteSupabase, Nota, FlatLicenciaSupabase } from '$lib/types';
 
@@ -42,7 +41,7 @@ export const load: PageLoad = async ({ url }) => {
 	// cargamos los campos para filtrar
 	const resSupabaseFields: PostgrestResponse<any> = await supabase
 		.from('licencia')
-		.select(' fechaInicio, fechaFin, observaciones, autorizadoSiape')
+		.select('id, fechaInicio, fechaFin, observaciones, autorizadoSiape')
 		.range(0, 1);
 	const fields = flatSupabaseResponse(resSupabaseFields.data);
 
@@ -52,7 +51,12 @@ export const load: PageLoad = async ({ url }) => {
 		lastPage: Math.trunc((lastPage as number) / 10),
 		reloadData,
 		calcLastPage,
-		fields: Object.entries(fields[0]).map((entries) => entries[0])
+		fields: [
+			...Object.entries(fields[0]).map((entries) => entries[0]),
+			'equipo',
+			'direccion',
+			'nombreCompleto'
+		]
 	};
 };
 
@@ -63,20 +67,23 @@ const reloadData = async (
 	cantPage: number,
 	tipo: string = 'ausente'
 ) => {
-	const query = `supabase.from('licencia').select(' fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
+	const query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
 		tipo == 'academica'
-			? ', datosAcademicos(*)'
+			? ', datosAcademicos(ultimaMateria)'
 			: tipo == 'salud'
-			? ', datosSalud(*)'
+			? ', datosSalud(concepto)'
 			: tipo == 'teletrabajo'
-			? ', datosTeletrabajo(*)'
+			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
 			: tipo == 'vacaciones'
-			? ', datosVacaciones(*)'
+			? ', datosVacaciones(periodo)'
 			: ''
 	}')`;
 
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
+	console.log(resSupabase.data);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
+	resSupabase.data = resSupabase.data.filter((data) => data.agente !== null);
+	console.log(resSupabase.data);
 
 	return resSupabase;
 };
@@ -87,7 +94,7 @@ const calcLastPage = async (
 	tipo: string = 'ausente'
 ) => {
 	console.log(tipo);
-	let query = `supabase.from('licencia').select(' fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
+	let query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
 		tipo == 'academica'
 			? ', datosAcademicos(*)'
 			: tipo == 'salud'

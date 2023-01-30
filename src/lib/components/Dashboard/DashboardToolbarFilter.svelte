@@ -37,12 +37,14 @@
 	const filterField = (field: string) => (f: Filter) => f.field !== field;
 
 	const searchId = async (table: string, column: string, value: string | number | boolean) => {
+		console.log(field, column, value);
 		let res: PostgrestResponse<any> = await supabase
 			.from(table)
 			.select('id')
 			.eq(column, value)
 			.range(0, 1);
 
+		console.log(res.data);
 		if (!res.data) return;
 		return res.data[0] ? res.data[0].id : -1;
 	};
@@ -87,6 +89,7 @@
 	<button
 		class="bg-lime-500 rounded-lg p-1"
 		on:click={async () => {
+			console.log(field, value);
 			if (field === 'equipo' || field === 'direccion' || field === 'superiorDirecto') {
 				const column =
 					field === 'equipo' ? 'equipo' : field === 'direccion' ? 'acronimo' : 'nombreCompleto';

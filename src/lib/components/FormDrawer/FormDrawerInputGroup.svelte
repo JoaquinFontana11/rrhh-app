@@ -53,6 +53,7 @@
 			on:input
 			validators={component.validators}
 			runValidate={validateAllInputs}
+			disabled={component.disabled}
 		/>
 	{/each}
 </div>

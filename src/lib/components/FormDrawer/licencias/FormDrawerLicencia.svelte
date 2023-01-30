@@ -6,6 +6,7 @@
 	import FormDrawerInputGroupButton from '../FormDrawerInputGroupButton.svelte';
 	import { validateEmptyInput } from '../validators';
 	import { diffDays } from '$lib/helpers';
+	import { LicenciaStore } from '$lib/stores/licenciaStore';
 
 	export let props: any;
 
@@ -14,7 +15,13 @@
 	let errorsMessage: { error: string; description: string }[] = [];
 	let disabledButton = true;
 	let showForm = true;
+	let action = 'create';
 
+	LicenciaStore.subscribe((licencia) => {
+		console.log(licencia);
+		action = Object.keys(licencia).includes('nombreCompleto') ? 'update' : 'create';
+		console.log(action);
+	});
 	let validateForm = false;
 	let validateForms = {
 		datosGenerales: false,
@@ -46,7 +53,7 @@
 				type: 'select',
 				label: 'agente',
 				name: 'agente',
-				value: licencia.agente * 1,
+				value: $LicenciaStore.agente || 1,
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -56,12 +63,12 @@
 				type: 'date',
 				label: 'fecha de inicio',
 				name: 'fechaInicio',
-				value: licencia.fechaInicio,
+				value: $LicenciaStore.fechaInicio || '',
 				required: true,
 				validators: [
 					validateEmptyInput,
 					(value: any) => {
-						if (new Date(value).getTime() > new Date(licencia.fechaFin).getTime())
+						if (new Date(value).getTime() > new Date($LicenciaStore.fechaFin).getTime())
 							return {
 								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
 								status: false
@@ -69,8 +76,8 @@
 					},
 					(value: any) => {
 						if (
-							licencia.ultimaMateria == 'true' &&
-							diffDays(licencia.fechaFin, licencia.fechaInicio) != 11
+							$LicenciaStore.ultimaMateria == 'true' &&
+							diffDays($LicenciaStore.fechaFin, $LicenciaStore.fechaInicio) != 11
 						)
 							return {
 								message:
@@ -79,7 +86,10 @@
 							};
 					},
 					(value: any) => {
-						if (licencia.tipo == 'ausente' && licencia.fechaFin !== licencia.fechaInicio)
+						if (
+							$LicenciaStore.tipo == 'ausente' &&
+							$LicenciaStore.fechaFin !== $LicenciaStore.fechaInicio
+						)
 							return {
 								message:
 									'Si el tipo de licencia es ausente con aviso, la fecha de fin y de inicio debe ser la misma',
@@ -92,12 +102,12 @@
 				type: 'date',
 				label: 'fecha de fin',
 				name: 'fechaFin',
-				value: licencia.fechaFin,
+				value: $LicenciaStore.fechaFin || '',
 				required: true,
 				validators: [
 					validateEmptyInput,
 					(value) => {
-						if (new Date(value).getTime() < new Date(licencia.fechaInicio).getTime())
+						if (new Date(value).getTime() < new Date($LicenciaStore.fechaInicio).getTime())
 							return {
 								message: 'La fecha de inicio debe ser igual o anterior a la fecha de fin',
 								status: false
@@ -105,8 +115,8 @@
 					},
 					(value: any) => {
 						if (
-							licencia.ultimaMateria == 'true' &&
-							diffDays(licencia.fechaFin, licencia.fechaInicio) != 11
+							$LicenciaStore.ultimaMateria == 'true' &&
+							diffDays($LicenciaStore.fechaFin, $LicenciaStore.fechaInicio) != 11
 						)
 							return {
 								message:
@@ -115,7 +125,10 @@
 							};
 					},
 					(value: any) => {
-						if (licencia.tipo == 'ausente' && licencia.fechaFin !== licencia.fechaInicio)
+						if (
+							$LicenciaStore.tipo == 'ausente' &&
+							$LicenciaStore.fechaFin !== $LicenciaStore.fechaInicio
+						)
 							return {
 								message:
 									'Si el tipo de licencia es ausente con aviso, la fecha de fin y de inicio debe ser la misma',
@@ -128,7 +141,7 @@
 				type: 'text',
 				label: 'observaciones',
 				name: 'observaciones',
-				value: licencia.observaciones,
+				value: $LicenciaStore.observaciones || '',
 				required: false,
 				validators: []
 			},
@@ -136,7 +149,7 @@
 				type: 'select',
 				label: 'autorizado por Siape',
 				name: 'autorizadoSiape',
-				value: licencia.autorizadoSiape == 'true',
+				value: $LicenciaStore.autorizadoSiape || false,
 				required: false,
 				validators: [validateEmptyInput],
 				options: [
@@ -148,7 +161,7 @@
 				type: 'select',
 				label: 'tipo',
 				name: 'tipo',
-				value: licencia.tipo,
+				value: $LicenciaStore.tipo || '',
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -158,7 +171,8 @@
 					{ value: 'teletrabajo', name: 'teletrabajo' },
 					{ value: 'vacaciones', name: 'vacaciones' },
 					{ value: 'otro', name: 'otro' }
-				]
+				],
+				disabled: action === 'create' ? false : true
 			}
 		],
 		vacaciones: [
@@ -166,7 +180,7 @@
 				type: 'select',
 				label: 'periodo',
 				name: 'periodo',
-				value: licencia.periodo,
+				value: $LicenciaStore.periodo || 1,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -182,7 +196,7 @@
 				type: 'text',
 				label: 'concepto',
 				name: 'concepto',
-				value: licencia.concepto,
+				value: $LicenciaStore.concepto || '',
 				required: true,
 				validators: [validateEmptyInput]
 			}
@@ -192,7 +206,7 @@
 				type: 'select',
 				label: 'ultima materia',
 				name: 'ultimaMateria',
-				value: licencia.ultimaMateria == 'true',
+				value: $LicenciaStore.ultimaMateria || false,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -206,7 +220,7 @@
 				type: 'select',
 				label: 'mail autorizado',
 				name: 'mailAutorizado',
-				value: licencia.mailAutorizado,
+				value: $LicenciaStore.mailAutorizado || false,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -218,7 +232,7 @@
 				type: 'select',
 				label: 'comunicacion inicio',
 				name: 'comunicacionInicio',
-				value: licencia.comunicacionInicio,
+				value: $LicenciaStore.comunicacionInicio || false,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -230,7 +244,7 @@
 				type: 'select',
 				label: 'comunicacion fin',
 				name: 'comunicacionFin',
-				value: licencia.comunicacionFin,
+				value: $LicenciaStore.comunicacionFin || false,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -242,7 +256,7 @@
 				type: 'select',
 				label: 'comunico inicio a',
 				name: 'comunicoInicioA',
-				value: licencia.comunicoInicioA,
+				value: $LicenciaStore.comunicoInicioA || '',
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -252,7 +266,7 @@
 				type: 'select',
 				label: 'comunico fin a',
 				name: 'comunicoFinA',
-				value: licencia.comunicoFinA,
+				value: $LicenciaStore.comunicoFinA || '',
 				validators: [validateEmptyInput],
 				options: agentes.map((agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
@@ -262,7 +276,7 @@
 				type: 'select',
 				label: 'conectado a teams',
 				name: 'conectadoATeams',
-				value: licencia.conectadoTeams,
+				value: $LicenciaStore.conectadoATeams || false,
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
@@ -279,9 +293,14 @@
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
 		value = target.value * 1 ? target.value * 1 : value;
-		licencia[target.name] = value;
+
+		LicenciaStore.update((licencia) => {
+			licencia[target.name as string] = value;
+			return licencia;
+		});
+
 		console.log(target.value);
-		console.log(licencia);
+		console.log($LicenciaStore);
 	};
 
 	const showValidations = (e: CustomEvent) => {
@@ -304,19 +323,9 @@
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
-	<!--
-
-		<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
-			<span> datos generales de la licencia</span>
-			<div class="flex gap-1 justify-center items-center">
-				<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
-			</div>
-		</div>
-	-->
-
 	<FormDrawer
 		{components}
-		action="create"
+		{action}
 		disabled={disabledButton || showForm}
 		on:invalid={showValidations}
 		on:valid={() => {
@@ -337,7 +346,7 @@
 				validateAllInputs={true}
 				on:destroy={runValidators}
 			/>
-			{#if licencia.tipo && licencia.tipo !== 'otro' && licencia.tipo !== 'ausente'}
+			{#if $LicenciaStore.tipo && $LicenciaStore.tipo !== 'otro' && $LicenciaStore.tipo !== 'ausente'}
 				<div class=" flex w-full justify-center mt-4 mb-4 dark:text-stone-400">
 					<span> datos especificos de la licencia</span>
 					<div class="flex gap-1 justify-center items-center">
@@ -345,8 +354,8 @@
 					</div>
 				</div>
 				<FormDrawerInputGroup
-					bind:components={components[licencia.tipo]}
-					formName={licencia.tipo}
+					bind:components={components[$LicenciaStore.tipo]}
+					formName={$LicenciaStore.tipo}
 					on:input={changeInputsGenerales}
 					validateAllInputs={true}
 					on:destroy={runValidators}
@@ -370,27 +379,3 @@
 		</div>
 	{/if}
 </div>
-<!--
-
-	{#each formNames as formName}
-	<FormDrawerInputGroupButton
-				on:click={() => {
-					dropdown[formName] = !dropdown[formName];
-				}}
-				label={labels[formName]}
-				validate={validate[formName]}
-				/>
-				{#if dropdown[formName]}
-				<div class=" w-auto divide-y divide-gray-100  dark:bg-stone-900 mt-3" transition:fly>
-					<FormDrawerInputGroup
-						bind:components={components[formName]}
-						on:destroy={validateForm}
-						on:input={changeInput}
-						{formName}
-						validateAllInputs={!validate[formName]}
-						/>
-					</div>
-			{/if}
-		{/each}
-
-				-->

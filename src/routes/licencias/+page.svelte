@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowLeft, ArrowRight, Filter, Plus } from 'svelte-hero-icons';
+	import { ArrowLeft, ArrowRight, Filter, Plus, Icon, Document } from 'svelte-hero-icons';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -12,10 +12,11 @@
 	import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
 	import filterLicenciaStore from '$lib/stores/licencias_old/filterLicenciaStore';
 	*/
-	import { tipoLicenciaStore, filterStore } from '$lib/stores/licenciaStore';
+	import { tipoLicenciaStore, filterStore, LicenciaStore } from '$lib/stores/licenciaStore';
 
 	import type { PageData } from './$types';
 	import pageLicenciaStore, { cantLicenciaPage } from '$lib/stores/licencias_old/pageLicenciaStore';
+	import { supabase } from '$lib/supabaseClient';
 
 	type TableData = {
 		headers: string[];
@@ -109,6 +110,7 @@
 				)
 			).data
 		);
+		console.log(tableData);
 		stopLongPolling = initLongPolling(
 			$pageLicenciaStore,
 			licenceOrder,
@@ -119,6 +121,7 @@
 	});
 
 	filterStore.subscribe(async (val) => {
+		console.log('Filter Store: ', val);
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -236,9 +239,39 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
+				LicenciaStore.update((n) => {
+					return {};
+				});
 				showDrawer = true;
 			}}
 		/>
 	</div>
-	<DashboardTable {tableData} slot="dashboard-content" />
+	<DashboardTable {tableData} slot="dashboard-content">
+		<th
+			slot="row-extra-header"
+			class="h-8  bg-stone-100 font-medium dark:bg-stone-800 dark:text-stone-300"
+		/>
+
+		<td
+			slot="row-extra-cell"
+			class=" dark:border-stone-800 dark:text-stone-400 border-t border-b border-r border-stone-100"
+			let:rowData
+			><button
+				on:click={async () => {
+					const data = await supabase
+						.from('agente')
+						.select('id')
+						.eq('nombreCompleto', rowData.nombreCompleto)
+						.limit(1)
+						.single();
+					rowData.agente = data.data?.id;
+					LicenciaStore.update((n) => rowData);
+					console.log(rowData);
+					showDrawer = true;
+				}}
+				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"
+				><Icon src={Document} class="w-4 h-4" /></button
+			></td
+		>
+	</DashboardTable>
 </Dashboard>

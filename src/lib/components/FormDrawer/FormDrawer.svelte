@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { FunctionsObject, IComponentObject } from '$lib/types';
 	import { agenteStore } from '$lib/stores/nominaStores';
+	import { LicenciaStore } from '$lib/stores/licenciaStore';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
 	import { validateAllNomina, validateAllLicencia } from '$lib/helpers';
@@ -31,6 +32,10 @@
 
 			if (error.status) return;
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
+			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
+			console.log($LicenciaStore);
+			console.log(action);
+			console.log([...formData]);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData
