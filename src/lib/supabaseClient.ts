@@ -20,9 +20,8 @@ export const execSupabaseQuery = async (
 		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
-	console.log(filters);
+
 	filters.map((f: Filter) => {
-		console.log(f.value);
 		querySupabase +=
 			typeof f.value === 'object'
 				? `.${f.filter}('${f.field}', [${f.value}])`
@@ -33,9 +32,7 @@ export const execSupabaseQuery = async (
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
 
 	// ejecutamos la query y la aplanamos
-	console.log(querySupabase);
 	const res = await eval(querySupabase);
-	console.log(res);
 
 	return res;
 };

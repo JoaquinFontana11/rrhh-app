@@ -296,9 +296,6 @@
 			licencia[target.name as string] = value;
 			return licencia;
 		});
-
-		console.log(target.value);
-		console.log($LicenciaStore);
 	};
 
 	const showValidations = (e: CustomEvent) => {

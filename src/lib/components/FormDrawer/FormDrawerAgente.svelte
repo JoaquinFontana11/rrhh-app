@@ -692,7 +692,6 @@
 				required: false,
 				validators: [
 					(value: any) => {
-						console.log('PTT');
 						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
 							return {
 								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',

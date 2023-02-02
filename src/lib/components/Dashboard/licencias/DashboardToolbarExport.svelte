@@ -48,7 +48,6 @@
 		if (!resSupabase.data) return;
 
 		let data = flatSupabaseResponse(resSupabase.data);
-		console.log(data);
 
 		if (exportFormat === 'pdf') {
 			generatePDF(data);

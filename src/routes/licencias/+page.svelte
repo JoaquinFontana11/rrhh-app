@@ -48,7 +48,6 @@
 				tableData = transformData(
 					(await data.reloadData(page, order, filter, cantLicenciaPage, tipoLicencia)).data
 				);
-				console.log(tableData);
 			}, 10000)
 		);
 		return () => intervalsIds.forEach((id) => clearInterval(id));
@@ -74,7 +73,6 @@
 	);
 
 	pageLicenciaStore.subscribe(async (val) => {
-		console.log('pageLicenciaStore');
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -98,7 +96,6 @@
 
 	// cada vez que actualizamos el tipo de licencia recargamos las licencias
 	tipoLicenciaStore.subscribe(async (val) => {
-		console.log('tipoLicenciaStore');
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -216,7 +213,6 @@
 			on:click={() => {
 				showDropdowns = showDropdowns.map((val, i) => (i == 0 ? val : false));
 				showDropdowns[0] = !showDropdowns[0];
-				console.log(showDropdowns);
 			}}
 			textHighlight={$filterStore.length !== 0}
 		>
@@ -291,7 +287,7 @@
 						.single();
 					rowData.agente = data.data?.id;
 					LicenciaStore.update((n) => rowData);
-					console.log(rowData);
+
 					showDrawer = true;
 				}}
 				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"

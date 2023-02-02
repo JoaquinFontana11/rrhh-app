@@ -32,12 +32,10 @@
 	});
 
 	const filterField = (f: Filter) => {
-		console.log(`${f.field}   ,   ${field}`);
 		f.field !== field;
 	};
 
 	const getSimbol = (index: string) => simbols[index as keyof Simbols];
-	console.log(fields);
 </script>
 
 <div
@@ -88,7 +86,7 @@
 					filter,
 					value
 				});
-				console.log(filterStoreValue);
+
 				return filterStoreValue;
 			});
 		}}>Agregar filtro</button
@@ -112,7 +110,6 @@
 				class="mr-2"
 				on:click={() => {
 					filterStore.update((filterStoreValue) => {
-						console.log(filterStoreValue.filter);
 						return filterStoreValue.filter(filterField);
 					});
 				}}

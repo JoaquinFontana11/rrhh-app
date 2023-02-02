@@ -2,7 +2,6 @@ import brie from 'brie';
 import { diffDays, diffMonths } from '$lib/helpers';
 // modificamos los datos del ausente con aviso para trabajarlos de mejor forma
 const ausenteDataFormat = (rawData) => {
-	console.log('DATA PARSED', rawData);
 	return {
 		ausentesTotales: rawData.dataAusentes.length,
 		ultimoAusente:
@@ -204,7 +203,6 @@ const academicoRulesFactory = (data) => {
 };
 
 const ausenteRulesFactory = (data) => {
-	console.log(data);
 	return {
 		ausentesMaximos: {
 			criteria: [

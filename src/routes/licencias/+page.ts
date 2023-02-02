@@ -93,7 +93,6 @@ const calcLastPage = async (
 	filters: any[],
 	tipo: string = 'ausente'
 ) => {
-	console.log(tipo);
 	let query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
 		tipo == 'academica'
 			? ', datosAcademicos(ultimaMateria)'
@@ -105,14 +104,14 @@ const calcLastPage = async (
 			? ', datosVacaciones(periodo)'
 			: ''
 	}', {count: 'exact'})`;
-	console.log(query);
+
 	filters.map((f) => {
 		query += `.${f.filter}('${f.field}', '${f.value}')`;
 	});
 	query += `.order('${order.field}', {ascending: ${order.direction}})`;
-	console.log(query);
+
 	const resSupabase = await eval(query);
-	console.log(resSupabase);
+
 	return resSupabase;
 };
 

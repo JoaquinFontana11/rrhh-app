@@ -83,7 +83,6 @@ const create: Action = async ({ request }) => {
 		dataAusentes = dataAusentes || [];
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
 
-		console.log(flags);
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
 		if (reject)
@@ -103,8 +102,6 @@ const create: Action = async ({ request }) => {
 
 		dataAcademica = dataAcademica || [];
 		const flags = licenciasRuleEngine.academicoRules({ licencia, dataAcademica });
-
-		console.log(flags);
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
@@ -135,8 +132,6 @@ const create: Action = async ({ request }) => {
 			datosVacacionesActual: datosVacaciones,
 			agente: agente[0]
 		});
-
-		console.log(flags);
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
@@ -195,22 +190,11 @@ const update: Action = async ({ request }) => {
 		.limit(1)
 		.single();
 
-	console.log('----------------------------------');
-	console.log(currentLicencia);
-	console.log('----------------------------------');
-	console.log(errorLicencia);
-	console.log('----------------------------------');
-
 	if (errorLicencia) {
 		return fail(400);
 	}
 
-	console.log('----------------------------------');
-	console.log(currentLicencia);
-	console.log('----------------------------------');
-
 	if (currentLicencia.tipo === 'academica') {
-		console.log('entre a academica');
 		const { data: currentDatosAcademicos, error: errorDatosAcademicos }: PostgrestResponse<any> =
 			await supabase
 				.from('licenciaAcademica')
@@ -233,7 +217,6 @@ const update: Action = async ({ request }) => {
 		}
 		licencia.datosAcademicos = currentDatosAcademicos.id;
 	} else if (currentLicencia.tipo === 'salud') {
-		console.log('entre a salud');
 		const { data: currentDatosSalud, error: errorDatosSalud }: PostgrestResponse<any> =
 			await supabase
 				.from('licenciaSalud')
@@ -256,7 +239,6 @@ const update: Action = async ({ request }) => {
 		}
 		licencia.datosSalud = currentDatosSalud.id;
 	} else if (currentLicencia.tipo === 'teletrabajo') {
-		console.log('entre a teletrabajo');
 		const { data: currentDatosTeletrabajo, error: errorDatosTeletrabajo }: PostgrestResponse<any> =
 			await supabase
 				.from('licenciaTeletrabajo')
@@ -279,7 +261,6 @@ const update: Action = async ({ request }) => {
 		}
 		licencia.datosTeletrabajo = currentDatosTeletrabajo.id;
 	} else if (currentLicencia.tipo === 'vacaciones') {
-		console.log('entre a vacaciones');
 		const { data: currentDatosVacaciones, error: errorDatosVacaciones }: PostgrestResponse<any> =
 			await supabase
 				.from('licenciaVacaciones')
@@ -302,15 +283,11 @@ const update: Action = async ({ request }) => {
 		}
 		licencia.datosVacaciones = currentDatosVacaciones.id;
 	}
-	console.log('actualizando licencia');
+
 	const { error: updateLicenciaError }: PostgrestResponse<any> = await supabase
 		.from('licencia')
 		.update(licencia)
 		.eq('id', currentLicencia.id);
-
-	console.log('----------------------------------');
-	console.log(updateLicenciaError);
-	console.log('----------------------------------');
 
 	if (updateLicenciaError) {
 		return fail(400);
