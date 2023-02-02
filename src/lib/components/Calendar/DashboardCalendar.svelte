@@ -4,6 +4,7 @@
 
 	export let tipoLicencia: string;
 	export let direccion: number;
+	export let equipo: number;
 	export let month: number;
 	export let year: number;
 	export let items: {
@@ -112,6 +113,7 @@
 							{year}
 							{tipoLicencia}
 							{direccion}
+							{equipo}
 							on:show-agentes={showDeails}
 						/>
 						{#if agenteDayShow == monthDays[row][column]}

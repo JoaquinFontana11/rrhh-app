@@ -11,6 +11,10 @@ type LicenciaShort = {
 			acronimo: string;
 			id: number;
 		};
+		equipo: {
+			equipo: string;
+			id: number;
+		};
 	};
 };
 
@@ -22,7 +26,7 @@ export const load: PageLoad<{
 }> = async () => {
 	const resSupabaseLicencias: PostgrestResponse<LicenciaShort> = await supabase
 		.from('licencia')
-		.select('fechaInicio, fechaFin, tipo, agente(direccion(acronimo, id))');
+		.select('fechaInicio, fechaFin, tipo, agente(direccion(acronimo, id), equipo(equipo, id))');
 	const resSupabaseDirecciones: PostgrestResponse<any> = await supabase
 		.from('direccion')
 		.select('acronimo, id');

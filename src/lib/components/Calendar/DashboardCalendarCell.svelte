@@ -4,6 +4,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import DashboardCalendarCellItem from './DashboardCalendarCellItem.svelte';
 	export let direccion: number;
+	export let equipo: number;
 	export let tipoLicencia: string;
 	export let day: number | string;
 	export let month: number;
@@ -35,7 +36,8 @@
 					.filter(
 						(licencia) =>
 							(tipoLicencia == 'todas' || licencia.tipo == tipoLicencia) &&
-							(direccion == 100 || licencia.agente.direccion.id == direccion)
+							(direccion == 100 || licencia.agente.direccion.id == direccion) &&
+							(equipo == 100 || licencia.agente.equipo.id == equipo)
 					)
 					.map((licencia) => {
 						return {

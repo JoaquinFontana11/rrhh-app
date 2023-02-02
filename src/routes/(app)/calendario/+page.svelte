@@ -11,6 +11,7 @@
 	let year: number = new Date().getFullYear();
 	let tipoLicencia: string = 'todas';
 	let direccion: number = 100;
+	let equipo: number = 100;
 
 	const updateMonth = (e: Event) => {
 		const target = e.target as HTMLSelectElement;
@@ -28,7 +29,7 @@
 		teletrabajo: 'sky'
 	};
 
-	const reloadItems = (month: number, tipoLicencia: string, direccion: number) => {
+	const reloadItems = (month: number, tipoLicencia: string, direccion: number, equipo: number) => {
 		let licencias = data.data
 			.filter((licencia) => {
 				const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
@@ -38,7 +39,9 @@
 					(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
 				);
 			})
-			.filter((licencia) => direccion == 100 || licencia.agente.direccion.id == direccion);
+			.filter((licencia) => direccion == 100 || licencia.agente.direccion.id == direccion)
+			.filter((licencia) => equipo == 100 || licencia.agente.equipo.id == equipo);
+
 		let licenciasCompletas: { day: number; tipo: string }[] = [];
 
 		licencias.forEach((licencia) => {
@@ -86,7 +89,7 @@
 		});
 	};
 
-	$: reloadItems(month, tipoLicencia, direccion);
+	$: reloadItems(month, tipoLicencia, direccion, equipo);
 </script>
 
 <Header />
@@ -94,16 +97,24 @@
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarSelect
 			options={[
+				...data.equipos.map((equipo) => {
+					return { value: equipo.id, name: equipo.equipo };
+				}),
+				{ name: 'Todos los equipos', value: 100 }
+			]}
+			bind:value={equipo}
+		/><DashboardToolbarSelect
+			options={[
 				...data.direcciones.map((direccion) => {
 					return { value: direccion.id, name: direccion.acronimo };
 				}),
-				{ name: 'Todas', value: 100 }
+				{ name: 'Todas las direcciones', value: 100 }
 			]}
 			bind:value={direccion}
 		/>
 		<DashboardToolbarSelect
 			options={[
-				{ name: 'Todas', value: 'todas' },
+				{ name: 'Todas las licencias', value: 'todas' },
 				{ name: 'Ausente con aviso', value: 'ausente' },
 				{ name: 'Academica', value: 'academica' },
 				{ name: 'Vacaciones', value: 'vacaciones' },
@@ -139,6 +150,7 @@
 		{year}
 		bind:tipoLicencia
 		bind:direccion
+		bind:equipo
 		items={calendarItems}
 	/>
 </Dashboard>
