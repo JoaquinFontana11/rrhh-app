@@ -11,6 +11,7 @@
 	export let options: any = {};
 	export let validators: Array<Function>;
 	export let runValidate: boolean;
+	export let disabled: boolean = false;
 
 	let errors: Array<string> = [];
 	let status: boolean = false;
@@ -130,6 +131,7 @@
 			on:blur|preventDefault={required ? validateInput : null}
 			on:input
 			class:error={status}
+			{disabled}
 			class="outline-none col-span-4 col-start-3 focus:outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-stone-800 focus:border-stone-800 block w-full p-1 dark:bg-stone-800 dark:text-stone-500 dark:focus:text-stone-200  dark:border-stone-600 dark:focus:border-stone-500"
 		>
 			{#each options as option}

@@ -256,7 +256,7 @@ export type {
 export type Filter = {
 	field: string;
 	filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
-	value: string | number;
+	value: string | number | number[];
 };
 
 export type Order = {
@@ -316,4 +316,18 @@ export type Agente = {
 	expedienteAltaPP: string;
 	actoAltaPP: string;
 	antiguedadExterna: number;
+};
+
+export type Licencia = {
+	id: number;
+	agente: number;
+	fechaInicio: string;
+	fechaFin: string;
+	tipo: string;
+	observaciones: Text;
+	autorizadoSiape: boolean;
+	datosSalud: number | null;
+	datosTeletrabajo: number | null;
+	datosVacaciones: number | null;
+	datosAcademicos: number | null;
 };

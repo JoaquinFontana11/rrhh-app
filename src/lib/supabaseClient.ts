@@ -22,10 +22,12 @@ export const execSupabaseQuery = async (
 		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
+
 	filters.map((f: Filter) => {
-		querySupabase += `.${f.filter}('${f.field}', '${
-			f.filter == 'ilike' ? `%${f.value}%` : f.value
-		}')`;
+		querySupabase +=
+			typeof f.value === 'object'
+				? `.${f.filter}('${f.field}', [${f.value}])`
+				: `.${f.filter}('${f.field}', '${f.filter == 'ilike' ? `%${f.value}%` : f.value}')`;
 	});
 
 	// agegamos el order
@@ -53,6 +55,11 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 				flattedArr.push([key, { id: data[key].id, value: data[key].acronimo }]);
 			} else {
 				for (let subKey in data[key]) {
+					if (subKey === 'direccion') {
+						data[key][subKey].value = data[key][subKey].acronimo;
+					} else if (subKey === 'equipo') {
+						data[key][subKey].value = data[key][subKey].equipo;
+					}
 					flattedArr.push([subKey, data[key][subKey]]);
 				}
 			}

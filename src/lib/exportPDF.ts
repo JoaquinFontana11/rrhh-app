@@ -6,10 +6,17 @@ export const generatePDF = (data: Array<Object>) => {
 	let largo = header.reduce((acumulator, key) => acumulator + key.length, 0);
 
 	const body: Array<Array<any>> = [];
+
 	data.forEach((elem: { [key: string]: any }) => {
 		let arrayData: Array<any> = [];
 		Object.keys(elem).forEach((keys) => {
-			arrayData.push(elem[keys]);
+			typeof elem[keys] === 'object'
+				? arrayData.push(elem[keys].value)
+				: typeof elem[keys] === 'boolean' && elem[keys]
+				? arrayData.push('Si')
+				: typeof elem[keys] === 'boolean' && !elem[keys]
+				? arrayData.push('No')
+				: arrayData.push(elem[keys]);
 		});
 		body.push(arrayData);
 	});

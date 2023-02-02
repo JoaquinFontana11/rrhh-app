@@ -18,13 +18,10 @@ export const validateAllNomina = async (
 	let error = { message: [], status: false };
 	const formData = new FormData();
 	for (const key in components) {
-		// console.log(components);
 		let resExtraValidations;
 		for (const component of components[key]) {
-			// console.log(component);
 			let res;
 			let status: boolean = false;
-			// console.log(tipoLicencia);
 			component.validators.forEach((validator) => {
 				//res = component.required ? validator(component.value) : null;
 				res = validator(component.value);
@@ -61,17 +58,12 @@ export const validateAllLicencia = async (
 	let error = { message: [], status: false };
 	const formData = new FormData();
 	const iterator: Array<string> = ['datosGenerales', components.datosGenerales[5].value];
-	console.log('componente: ', components);
-	console.log(components.datosGenerales);
 	iterator.forEach(async (key) => {
-		// console.log(components);
 		let resExtraValidations;
 		for (const component of components[key]) {
-			console.log('componente: ', component);
-			// console.log(component);
 			let res;
 			let status: boolean = false;
-			// console.log(tipoLicencia);
+
 			component.validators.forEach((validator) => {
 				//res = component.required ? validator(component.value) : null;
 				res = validator(component.value);

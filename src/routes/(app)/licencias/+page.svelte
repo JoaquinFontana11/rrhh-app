@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowLeft, ArrowRight, Filter, Plus } from 'svelte-hero-icons';
+	import { ArrowLeft, ArrowRight, Filter, Plus, Icon, Document } from 'svelte-hero-icons';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -7,15 +7,17 @@
 	import DashboardToolbarSelect from '$lib/components/Dashboard/DashboardToolbarSelect.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/licencias/DashboardToolbarFilter.svelte';
 	import FormDrawerLicencia from '$lib/components/FormDrawer/licencias/FormDrawerLicencia.svelte';
+	import DashboardToolbarExport from '$lib/components/Dashboard/licencias/DashboardToolbarExport.svelte';
 	/*
 
 	import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
 	import filterLicenciaStore from '$lib/stores/licencias_old/filterLicenciaStore';
 	*/
-	import { tipoLicenciaStore, filterStore } from '$lib/stores/licenciaStore';
+	import { tipoLicenciaStore, filterStore, LicenciaStore } from '$lib/stores/licenciaStore';
 
 	import type { PageData } from './$types';
 	import pageLicenciaStore, { cantLicenciaPage } from '$lib/stores/licencias_old/pageLicenciaStore';
+	import { supabase } from '$lib/supabaseClient';
 
 	type TableData = {
 		headers: string[];
@@ -37,7 +39,7 @@
 	const initLongPolling = (
 		page: number,
 		order: { field: string; direction: boolean },
-		filter: { field: string; filter: string; value: string | number }[],
+		filter: { field: string; filter: string; value: string | number | number[] }[],
 		cantLicenciaPage: number,
 		tipoLicencia: string = 'ausente'
 	) => {
@@ -71,7 +73,6 @@
 	);
 
 	pageLicenciaStore.subscribe(async (val) => {
-		console.log('pageLicenciaStore');
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -84,7 +85,6 @@
 				)
 			).data
 		);
-		console.log(tableData);
 		stopLongPolling = initLongPolling(
 			val,
 			licenceOrder,
@@ -96,7 +96,6 @@
 
 	// cada vez que actualizamos el tipo de licencia recargamos las licencias
 	tipoLicenciaStore.subscribe(async (val) => {
-		console.log('tipoLicenciaStore');
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -109,6 +108,7 @@
 				)
 			).data
 		);
+
 		stopLongPolling = initLongPolling(
 			$pageLicenciaStore,
 			licenceOrder,
@@ -116,6 +116,12 @@
 			$cantLicenciaPage,
 			val
 		);
+		const { count } = await data.calcLastPage(
+			licenceOrder,
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			$tipoLicenciaStore
+		);
+		lastPage = Math.trunc(count / $cantLicenciaPage);
 	});
 
 	filterStore.subscribe(async (val) => {
@@ -138,6 +144,12 @@
 			$cantLicenciaPage,
 			$tipoLicenciaStore
 		);
+		const { count } = await data.calcLastPage(
+			licenceOrder,
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			$tipoLicenciaStore
+		);
+		lastPage = Math.trunc(count / $cantLicenciaPage);
 	});
 
 	const changeCantLicenciaPage = async (e: Event) => {
@@ -160,7 +172,8 @@
 			$pageLicenciaStore,
 			licenceOrder,
 			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
-			$cantLicenciaPage
+			$cantLicenciaPage,
+			$tipoLicenciaStore
 		);
 		const { count } = await data.calcLastPage(
 			licenceOrder,
@@ -181,6 +194,18 @@
 <Dashboard bind:showDrawer drawerContent={FormDrawerLicencia} drawerContentProps={data.agentes}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarButton
+			name="Exportar"
+			icon={Document}
+			dropdown={true}
+			bind:showDropdown={showDropdowns[3]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 3 ? val : false));
+				showDropdowns[3] = !showDropdowns[3];
+			}}
+		>
+			<DashboardToolbarExport slot="dropdown-content" manageFilters={data.manageFilters} />
+		</DashboardToolbarButton>
+		<DashboardToolbarButton
 			name="Agregar filtro"
 			icon={Filter}
 			dropdown={true}
@@ -188,7 +213,6 @@
 			on:click={() => {
 				showDropdowns = showDropdowns.map((val, i) => (i == 0 ? val : false));
 				showDropdowns[0] = !showDropdowns[0];
-				console.log(showDropdowns);
 			}}
 			textHighlight={$filterStore.length !== 0}
 		>
@@ -238,9 +262,39 @@
 			highlight={true}
 			icon={Plus}
 			on:click={() => {
+				LicenciaStore.update((n) => {
+					return {};
+				});
 				showDrawer = true;
 			}}
 		/>
 	</div>
-	<DashboardTable {tableData} slot="dashboard-content" />
+	<DashboardTable {tableData} slot="dashboard-content">
+		<th
+			slot="row-extra-header"
+			class="h-8  bg-stone-100 font-medium dark:bg-stone-800 dark:text-stone-300"
+		/>
+
+		<td
+			slot="row-extra-cell"
+			class=" dark:border-stone-800 dark:text-stone-400 border-t border-b border-r border-stone-100"
+			let:rowData
+			><button
+				on:click={async () => {
+					const data = await supabase
+						.from('agente')
+						.select('id')
+						.eq('nombreCompleto', rowData.nombreCompleto)
+						.limit(1)
+						.single();
+					rowData.agente = data.data?.id;
+					LicenciaStore.update((n) => rowData);
+
+					showDrawer = true;
+				}}
+				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"
+				><Icon src={Document} class="w-4 h-4" /></button
+			></td
+		>
+	</DashboardTable>
 </Dashboard>

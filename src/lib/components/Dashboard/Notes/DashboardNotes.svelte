@@ -15,7 +15,6 @@
 		warn: notes.filter((note) => note.nivel == 'warn'),
 		alert: notes.filter((note) => note.nivel == 'alert')
 	};
-	console.log('Notas: ', notesObj);
 
 	const clearNotes = (e: CustomEvent) => {
 		notes = notes.filter((note) => note.id !== e.detail.id);

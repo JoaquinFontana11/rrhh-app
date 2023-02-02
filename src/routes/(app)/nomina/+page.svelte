@@ -104,7 +104,6 @@
 	data.fields = data.fields.filter((field) => {
 		return field !== 'id' && field !== 'created_at' ? field : '';
 	});
-	console.log(tableData);
 
 	// cuando se actualiza la pagina se vuelve a hacer la peticion y se reinicia el long polling
 	pageStore.subscribe(async (val) => {
@@ -264,7 +263,6 @@
 				on:click={() => {
 					agenteStore.update((n) => rowData);
 
-					console.log(rowData);
 					showDrawer = true;
 				}}
 				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"

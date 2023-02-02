@@ -1,8 +1,10 @@
 import type { Actions, Action } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import licenciasRuleEngine from '$lib/server/ruleEngine';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { PostgrestResponse } from '@supabase/supabase-js';
+import type { Licencia } from '$lib/types';
+import { current_component } from 'svelte/internal';
 
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
@@ -81,7 +83,6 @@ const create: Action = async ({ request }) => {
 		dataAusentes = dataAusentes || [];
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
 
-		console.log(flags);
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
 		if (reject)
@@ -101,8 +102,6 @@ const create: Action = async ({ request }) => {
 
 		dataAcademica = dataAcademica || [];
 		const flags = licenciasRuleEngine.academicoRules({ licencia, dataAcademica });
-
-		console.log(flags);
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
@@ -134,8 +133,6 @@ const create: Action = async ({ request }) => {
 			agente: agente[0]
 		});
 
-		console.log(flags);
-
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
 		if (reject)
@@ -151,4 +148,150 @@ const objetoLleno = (obj: object) => {
 	return !Object.values(obj).some((value) => value == undefined || value == '');
 };
 
-export const actions: Actions = { create };
+const update: Action = async ({ request }) => {
+	const data = await request.formData();
+
+	const licencia = {
+		id: data.get('id'),
+		agente: data.get('agente'),
+		fechaInicio: data.get('fechaInicio'),
+		fechaFin: data.get('fechaFin'),
+		tipo: data.get('tipo'),
+		observaciones: data.get('observaciones'),
+		autorizadoSiape: data.get('autorizadoSiape'),
+		datosAcademicos: null,
+		datosSalud: null,
+		datosTeletrabajo: null,
+		datosVacaciones: null
+	};
+
+	const datosAcademicos = {
+		ultimaMateria: data.get('ultimaMateria')
+	};
+	const datosSalud = {
+		concepto: data.get('concepto')
+	};
+	const datosTeletrabajo = {
+		mailAutorizado: data.get('mailAutorizado'),
+		comunicacionInicio: data.get('comunicacionInicio'),
+		comunicoInicioA: data.get('comunicoInicioA'),
+		comunicacionFin: data.get('comunicacionFin'),
+		comunicoFinA: data.get('comunicoFinA'),
+		conectadoATeams: data.get('conectadoATeams')
+	};
+	const datosVacaciones = {
+		periodo: data.get('periodo')
+	};
+
+	const { data: currentLicencia, error: errorLicencia }: PostgrestResponse<any> = await supabase
+		.from('licencia')
+		.select('*')
+		.eq('id', licencia.id)
+		.limit(1)
+		.single();
+
+	if (errorLicencia) {
+		return fail(400);
+	}
+
+	if (currentLicencia.tipo === 'academica') {
+		const { data: currentDatosAcademicos, error: errorDatosAcademicos }: PostgrestResponse<any> =
+			await supabase
+				.from('licenciaAcademica')
+				.select('*')
+				.eq('id', currentLicencia.datosAcademicos)
+				.limit(1)
+				.single();
+
+		if (errorDatosAcademicos) {
+			return fail(400);
+		}
+
+		const { error: updateDatosAcademicosError }: PostgrestResponse<any> = await supabase
+			.from('licenciaAcademica')
+			.update(datosAcademicos)
+			.eq('id', currentDatosAcademicos.id);
+
+		if (updateDatosAcademicosError) {
+			return fail(400);
+		}
+		licencia.datosAcademicos = currentDatosAcademicos.id;
+	} else if (currentLicencia.tipo === 'salud') {
+		const { data: currentDatosSalud, error: errorDatosSalud }: PostgrestResponse<any> =
+			await supabase
+				.from('licenciaSalud')
+				.select('*')
+				.eq('id', currentLicencia.datosSalud)
+				.limit(1)
+				.single();
+
+		if (errorDatosSalud) {
+			return fail(400);
+		}
+
+		const { error: updateDatosSaludError }: PostgrestResponse<any> = await supabase
+			.from('licenciaSalud')
+			.update(datosSalud)
+			.eq('id', currentDatosSalud.id);
+
+		if (updateDatosSaludError) {
+			return fail(400);
+		}
+		licencia.datosSalud = currentDatosSalud.id;
+	} else if (currentLicencia.tipo === 'teletrabajo') {
+		const { data: currentDatosTeletrabajo, error: errorDatosTeletrabajo }: PostgrestResponse<any> =
+			await supabase
+				.from('licenciaTeletrabajo')
+				.select('*')
+				.eq('id', currentLicencia.datosTeletrabajo)
+				.limit(1)
+				.single();
+
+		if (errorDatosTeletrabajo) {
+			return fail(400);
+		}
+
+		const { error: updateDatosTeletrabajoError }: PostgrestResponse<any> = await supabase
+			.from('licenciaTeletrabajo')
+			.update(datosTeletrabajo)
+			.eq('id', currentDatosTeletrabajo.id);
+
+		if (updateDatosTeletrabajoError) {
+			return fail(400);
+		}
+		licencia.datosTeletrabajo = currentDatosTeletrabajo.id;
+	} else if (currentLicencia.tipo === 'vacaciones') {
+		const { data: currentDatosVacaciones, error: errorDatosVacaciones }: PostgrestResponse<any> =
+			await supabase
+				.from('licenciaVacaciones')
+				.select('*')
+				.eq('id', currentLicencia.datosVacaciones)
+				.limit(1)
+				.single();
+
+		if (errorDatosVacaciones) {
+			return fail(400);
+		}
+
+		const { error: updateDatosVacacionesError }: PostgrestResponse<any> = await supabase
+			.from('licenciaVacaciones')
+			.update(datosVacaciones)
+			.eq('id', currentDatosVacaciones.id);
+
+		if (updateDatosVacacionesError) {
+			return fail(400);
+		}
+		licencia.datosVacaciones = currentDatosVacaciones.id;
+	}
+
+	const { error: updateLicenciaError }: PostgrestResponse<any> = await supabase
+		.from('licencia')
+		.update(licencia)
+		.eq('id', currentLicencia.id);
+
+	if (updateLicenciaError) {
+		return fail(400);
+	}
+};
+
+export const actions: Actions = { create, update };

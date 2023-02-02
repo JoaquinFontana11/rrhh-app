@@ -89,7 +89,7 @@ const create: Action = async ({ request }) => {
 		.from('agente')
 		.insert(agente)
 		.select();
-	console.log(errorAgente);
+
 	if (errorAgente) return fail(400);
 };
 
@@ -195,7 +195,6 @@ const update: Action = async ({ request }) => {
 
 	// chequeamos que todo se actualice bien sino hacemos rollback
 
-	//	console.log('me quiero morir', updateRecorridoError, updateAgenteError, updateAcademicoError);
 	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError)
 		return fail(400);
 };
