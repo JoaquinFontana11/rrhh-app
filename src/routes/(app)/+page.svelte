@@ -11,7 +11,7 @@
 			Seleccione uno de los siguientes modulos para comenzar a trabajar!
 		</p>
 	</div>
-	<div class="flex gap-10">
+	<div class="flex gap-10 md:grid md:grid-cols-2">
 		<a
 			href="/nomina"
 			class="p-5 shadow-lg rounded-md w-72 flex flex-col items-center gap-2 dark:shadow-none dark:border dark:border-stone-600 hover:-translate-y-1 hover:shadow-xl duration-75 dark:hover:bg-stone-800"

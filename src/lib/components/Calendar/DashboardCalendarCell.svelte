@@ -2,6 +2,7 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { createEventDispatcher } from 'svelte';
 	import DashboardCalendarCellItem from './DashboardCalendarCellItem.svelte';
+	export let tipoLicencia: string;
 	export let day: number | string;
 	export let month: number;
 	export let year: number;
@@ -19,12 +20,20 @@
 	};
 	const clickItem = async (e: CustomEvent, i: number) => {
 		const currentDate = `${year}-${month + 1 > 10 ? `0${month + 1}` : month + 1}-${day}`;
-
-		const resSupabaseItems = await supabase
-			.from('licencia')
-			.select('agente(*), fechaInicio, fechaFin, tipo')
-			.lte('fechaInicio', currentDate)
-			.gte('fechaFin', currentDate);
+		let resSupabaseItems;
+		if (tipoLicencia == 'todas')
+			resSupabaseItems = await supabase
+				.from('licencia')
+				.select('agente(*), fechaInicio, fechaFin, tipo')
+				.lte('fechaInicio', currentDate)
+				.gte('fechaFin', currentDate);
+		else
+			resSupabaseItems = await supabase
+				.from('licencia')
+				.select('agente(*), fechaInicio, fechaFin, tipo')
+				.lte('fechaInicio', currentDate)
+				.gte('fechaFin', currentDate)
+				.eq('tipo', tipoLicencia);
 
 		if (resSupabaseItems.data) {
 			dispatch('show-agentes', {
