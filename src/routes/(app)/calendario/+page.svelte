@@ -99,6 +99,7 @@
 				{ name: 'noviembre', value: 10 },
 				{ name: 'diciembre', value: 11 }
 			]}
+			bind:value={month}
 			on:input={updateMonth}
 		/>
 	</div>

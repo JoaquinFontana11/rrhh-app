@@ -204,6 +204,7 @@
 				{ name: 'Salud', value: 'salud' },
 				{ name: 'Otro', value: 'otro' }
 			]}
+			value="ausente"
 			on:input={updateTipoLicencia}
 		/>
 		<div class="flex gap-1 justify-center items-center">
@@ -229,6 +230,7 @@
 				{ name: '50', value: 50 },
 				{ name: '100', value: 100 }
 			]}
+			value={10}
 			on:input={changeCantLicenciaPage}
 		/>
 		<DashboardToolbarButton

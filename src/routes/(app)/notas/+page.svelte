@@ -49,6 +49,7 @@
 				{ name: 'nomina', value: '/nomina' },
 				{ name: 'licencias', value: '/licencias' }
 			]}
+			value="/nomina"
 			on:input={filterNotes}
 		/>
 		<DashboardToolbarButton
