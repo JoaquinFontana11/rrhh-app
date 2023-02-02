@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/auth-helpers-sveltekit';
-import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, NODE_ENV } from '$env/static/public';
 import type { Filter } from './types';
 
 export const supabase = createClient(
 	PUBLIC_SUPABASE_URL as string,
-	PUBLIC_SUPABASE_ANON_KEY as string
+	PUBLIC_SUPABASE_ANON_KEY as string,
+	undefined,
+	{ secure: NODE_ENV === 'production' }
 );
 
 export const execSupabaseQuery = async (
