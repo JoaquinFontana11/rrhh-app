@@ -92,5 +92,5 @@
 			bind:checked={filtersActive}
 		/>
 	</div>
-	<button class="bg-lime-500 rounded-lg p-1" on:click={exportData}>Exportar agentes</button>
+	<button class="bg-lime-500 rounded-lg p-1" on:click={exportData}>Exportar licencias</button>
 </div>
