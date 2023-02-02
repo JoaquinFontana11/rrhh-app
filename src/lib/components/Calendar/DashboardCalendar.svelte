@@ -3,6 +3,7 @@
 	import DashboardCalendarCellItem from './DashboardCalendarCellItem.svelte';
 
 	export let tipoLicencia: string;
+	export let direccion: number;
 	export let month: number;
 	export let year: number;
 	export let items: {
@@ -110,6 +111,7 @@
 							{month}
 							{year}
 							{tipoLicencia}
+							{direccion}
 							on:show-agentes={showDeails}
 						/>
 						{#if agenteDayShow == monthDays[row][column]}

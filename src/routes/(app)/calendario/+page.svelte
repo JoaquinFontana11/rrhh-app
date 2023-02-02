@@ -10,6 +10,7 @@
 	let month: number = new Date().getMonth();
 	let year: number = new Date().getFullYear();
 	let tipoLicencia: string = 'todas';
+	let direccion: number = 100;
 
 	const updateMonth = (e: Event) => {
 		const target = e.target as HTMLSelectElement;
@@ -27,15 +28,17 @@
 		teletrabajo: 'sky'
 	};
 
-	const reloadItems = (month: number, tipoLicencia: string) => {
-		let licencias = data.data.filter((licencia) => {
-			const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
-			const licenciaMonthFin = new Date(licencia.fechaFin).getMonth();
-			return (
-				licenciaMonthInicio == month ||
-				(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
-			);
-		});
+	const reloadItems = (month: number, tipoLicencia: string, direccion: number) => {
+		let licencias = data.data
+			.filter((licencia) => {
+				const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
+				const licenciaMonthFin = new Date(licencia.fechaFin).getMonth();
+				return (
+					licenciaMonthInicio == month ||
+					(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
+				);
+			})
+			.filter((licencia) => direccion == 100 || licencia.agente.direccion.id == direccion);
 		let licenciasCompletas: { day: number; tipo: string }[] = [];
 
 		licencias.forEach((licencia) => {
@@ -83,12 +86,21 @@
 		});
 	};
 
-	$: reloadItems(month, tipoLicencia);
+	$: reloadItems(month, tipoLicencia, direccion);
 </script>
 
 <Header />
 <Dashboard>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
+		<DashboardToolbarSelect
+			options={[
+				...data.direcciones.map((direccion) => {
+					return { value: direccion.id, name: direccion.acronimo };
+				}),
+				{ name: 'Todas', value: 100 }
+			]}
+			bind:value={direccion}
+		/>
 		<DashboardToolbarSelect
 			options={[
 				{ name: 'Todas', value: 'todas' },
@@ -126,6 +138,7 @@
 		bind:month
 		{year}
 		bind:tipoLicencia
+		bind:direccion
 		items={calendarItems}
 	/>
 </Dashboard>
