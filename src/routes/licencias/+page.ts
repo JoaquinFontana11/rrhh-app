@@ -51,6 +51,7 @@ export const load: PageLoad = async ({ url }) => {
 		lastPage: Math.trunc((lastPage as number) / 10),
 		reloadData,
 		calcLastPage,
+		manageFilters,
 		fields: [
 			...Object.entries(fields[0]).map((entries) => entries[0]),
 			'equipo',

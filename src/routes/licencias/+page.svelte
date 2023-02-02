@@ -7,6 +7,7 @@
 	import DashboardToolbarSelect from '$lib/components/Dashboard/DashboardToolbarSelect.svelte';
 	import DashboardToolbarFilter from '$lib/components/Dashboard/licencias/DashboardToolbarFilter.svelte';
 	import FormDrawerLicencia from '$lib/components/FormDrawer/licencias/FormDrawerLicencia.svelte';
+	import DashboardToolbarExport from '$lib/components/Dashboard/licencias/DashboardToolbarExport.svelte';
 	/*
 
 	import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
@@ -195,6 +196,18 @@
 <Header />
 <Dashboard bind:showDrawer drawerContent={FormDrawerLicencia} drawerContentProps={data.agentes}>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
+		<DashboardToolbarButton
+			name="Exportar"
+			icon={Document}
+			dropdown={true}
+			bind:showDropdown={showDropdowns[3]}
+			on:click={() => {
+				showDropdowns = showDropdowns.map((val, i) => (i == 3 ? val : false));
+				showDropdowns[3] = !showDropdowns[3];
+			}}
+		>
+			<DashboardToolbarExport slot="dropdown-content" manageFilters={data.manageFilters} />
+		</DashboardToolbarButton>
 		<DashboardToolbarButton
 			name="Agregar filtro"
 			icon={Filter}
