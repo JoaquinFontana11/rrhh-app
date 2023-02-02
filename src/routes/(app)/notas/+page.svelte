@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Icon, Plus } from 'svelte-hero-icons';
+	import { Plus } from 'svelte-hero-icons';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Dashboard from '$lib/components/Dashboard/Dashboard.svelte';
 	import DashboardToolbarButton from '$lib/components/Dashboard/DashboardToolbarButton.svelte';
@@ -26,11 +26,18 @@
 		const target = e.target as HTMLSelectElement;
 		modulo = target.value;
 		notes = notesData.filter((note) => note.modulo == modulo);
+		console.log(notes);
 	};
 
 	const deleteNote = (e: CustomEvent) => {
 		notesData = notesData.filter((note) => note.id !== e.detail.id);
 		notesData = notesData.filter((note) => note.modulo == modulo);
+	};
+
+	const refreshNotes = async (e: CustomEvent) => {
+		data.data = await data.reload();
+		notesData = data.data as Nota[];
+		notes = notesData.filter((note) => note.modulo == modulo);
 	};
 </script>
 
@@ -42,6 +49,7 @@
 				{ name: 'nomina', value: '/nomina' },
 				{ name: 'licencias', value: '/licencias' }
 			]}
+			value="/nomina"
 			on:input={filterNotes}
 		/>
 		<DashboardToolbarButton
@@ -57,5 +65,10 @@
 			<DashboardToolbarNote slot="dropdown-content" on:create-note={addNote} />
 		</DashboardToolbarButton>
 	</div>
-	<DashboardNotes slot="dashboard-content" bind:notes on:delete-note={deleteNote} />
+	<DashboardNotes
+		slot="dashboard-content"
+		bind:notes
+		on:delete-note={deleteNote}
+		on:refresh={refreshNotes}
+	/>
 </Dashboard>

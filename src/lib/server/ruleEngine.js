@@ -234,15 +234,12 @@ const ausenteRulesFactory = (data) => {
 };
 
 const passRules = (data, rules) => {
-	console.log('ultData:', data);
-	console.log('rules', rules.ausentesMismoMes.criteria);
 	brie.setup({
 		data: data,
 		features: rules
 	});
 
 	const flags = brie.getAll();
-	console.log('flags: ', flags);
 	return flags;
 };
 

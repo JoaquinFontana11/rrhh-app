@@ -31,6 +31,9 @@
 
 		loading = false;
 	};
+	const setLimitText = () => {
+		contenido = contenido.length < 18 ? contenido : contenido.substring(0, 18);
+	};
 </script>
 
 <div
@@ -63,6 +66,7 @@
 		id="contenido"
 		name="contenido"
 		bind:value={contenido}
+		on:input={setLimitText}
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	/>
 	<button
