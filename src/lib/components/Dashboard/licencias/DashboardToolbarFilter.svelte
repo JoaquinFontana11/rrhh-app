@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { Icon, Trash } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
-	// import filterStore from '$lib/stores/licencias_old/filterStore';
 	import { filterStore } from '$lib/stores/licenciaStore';
 	import type { Filter } from '$lib/types';
-	import type { PostgrestResponse } from '@supabase/supabase-js';
-	import { supabase } from '$lib/supabaseClient';
 
 	type Simbols = {
 		lt: string;
@@ -19,8 +16,8 @@
 	export let fields: string[] = [];
 
 	let field: string;
-	let filter: string;
-	let value: string | number | boolean;
+	let filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
+	let value: string | number | number[];
 	let simbols: Simbols = {
 		lt: '<',
 		lte: '<=',
@@ -34,21 +31,10 @@
 		localStorage.setItem('filter-licencia', JSON.stringify(val));
 	});
 
-	const searchId = async (table: string, column: string, value: string | number | boolean) => {
-		console.log(field, column, value);
-		let res: PostgrestResponse<any> = await supabase.from(table).select('id').eq(column, value);
-		let prueba: PostgrestResponse<any> = await supabase
-			.from('agente')
-			.select('id')
-			.eq(field, res.data[0].id);
-
-		console.log(res.data);
-		console.log(prueba);
-		if (!res.data) return;
-		return res.data[0] ? res.data[0].id : -1;
+	const filterField = (f: Filter) => {
+		console.log(`${f.field}   ,   ${field}`);
+		f.field !== field;
 	};
-
-	const filterField = (f: Filter) => f.field !== field;
 
 	const getSimbol = (index: string) => simbols[index as keyof Simbols];
 	console.log(fields);
@@ -93,17 +79,7 @@
 	<button
 		class="bg-lime-500 rounded-lg p-1"
 		on:click={async () => {
-			if (field === 'equipo' || field === 'direccion') {
-				const column = field === 'equipo' ? 'equipo' : 'acronimo';
-				value = await searchId(field, column, value);
-			}
-			field =
-				field === 'equipo' || field === 'direccion' || field === 'nombreCompleto'
-					? `agente.${field}`
-					: field;
-			console.log(field);
 			filterStore.update((filterStoreValue) => {
-				console.log(field, filter, value);
 				if (!value) return filterStoreValue;
 				filterStoreValue = filterStoreValue.filter(filterField);
 

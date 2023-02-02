@@ -20,10 +20,13 @@ export const execSupabaseQuery = async (
 		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
+	console.log(filters);
 	filters.map((f: Filter) => {
-		querySupabase += `.${f.filter}('${f.field}', '${
-			f.filter == 'ilike' ? `%${f.value}%` : f.value
-		}')`;
+		console.log(f.value);
+		querySupabase +=
+			typeof f.value === 'object'
+				? `.${f.filter}('${f.field}', [${f.value}])`
+				: `.${f.filter}('${f.field}', '${f.filter == 'ilike' ? `%${f.value}%` : f.value}')`;
 	});
 
 	// agegamos el order

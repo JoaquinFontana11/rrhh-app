@@ -2,7 +2,7 @@ import type { PageLoad } from './$types';
 import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 import notasStore from '$lib/stores/notasStore';
 import type { PostgrestResponse } from '@supabase/postgrest-js';
-import type { AgenteSupabase, Nota, FlatLicenciaSupabase } from '$lib/types';
+import type { AgenteSupabase, Nota, FlatLicenciaSupabase, Filter } from '$lib/types';
 
 export const ssr = false;
 
@@ -79,11 +79,10 @@ const reloadData = async (
 			: ''
 	}')`;
 
+	filters = await manageFilters(filters);
+
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
-	console.log(resSupabase.data);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
-	resSupabase.data = resSupabase.data.filter((data) => data.agente !== null);
-	console.log(resSupabase.data);
 
 	return resSupabase;
 };
@@ -94,15 +93,15 @@ const calcLastPage = async (
 	tipo: string = 'ausente'
 ) => {
 	console.log(tipo);
-	let query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
+	let query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
 		tipo == 'academica'
-			? ', datosAcademicos(*)'
+			? ', datosAcademicos(ultimaMateria)'
 			: tipo == 'salud'
-			? ', datosSalud(*)'
+			? ', datosSalud(concepto)'
 			: tipo == 'teletrabajo'
-			? ', datosTeletrabajo(*)'
+			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
 			: tipo == 'vacaciones'
-			? ', datosVacaciones(*)'
+			? ', datosVacaciones(periodo)'
 			: ''
 	}', {count: 'exact'})`;
 	console.log(query);
@@ -111,5 +110,38 @@ const calcLastPage = async (
 	});
 	query += `.order('${order.field}', {ascending: ${order.direction}})`;
 	console.log(query);
-	return await eval(query);
+	const resSupabase = await eval(query);
+	console.log(resSupabase);
+	return resSupabase;
+};
+
+const manageFilters = async (filters: Filter[]) =>
+	await Promise.all(
+		filters.map(async (filter: Filter) =>
+			filter.field === 'direccion' || filter.field === 'equipo' || filter.field === 'nombreCompleto'
+				? await searchAgentes(filter)
+				: filter
+		)
+	);
+
+const searchAgentes = async (filter: Filter) => {
+	let res: PostgrestResponse<any>;
+	if (filter.field === 'nombreCompleto') {
+		res = await supabase.from('agente').select('id').eq(filter.field, filter.value);
+	} else {
+		const column = filter.field === 'equipo' ? 'equipo' : 'acronimo';
+		const id = await searchId(filter.field, column, filter.value);
+
+		res = await supabase.from('agente').select('id').eq(filter.field, id);
+	}
+
+	const ids: any[] | undefined = res.data?.map((data) => data.id);
+
+	return { field: 'agente', filter: 'in', value: ids };
+};
+
+const searchId = async (table: string, column: string, value: string | number | number[]) => {
+	let res: PostgrestResponse<any> = await supabase.from(table).select('id').eq(column, value);
+	if (!res.data) return;
+	return res.data[0] ? res.data[0].id : -1;
 };

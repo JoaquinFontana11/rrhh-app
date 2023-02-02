@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
-	import type { IComponentObject } from '$lib/types';
+	import type { Agente, IComponentObject } from '$lib/types';
 	import FormDrawer from '../FormDrawer.svelte';
 	import FormDrawerInputGroup from '../FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from '../FormDrawerInputGroupButton.svelte';
@@ -18,9 +18,7 @@
 	let action = 'create';
 
 	LicenciaStore.subscribe((licencia) => {
-		console.log(licencia);
 		action = Object.keys(licencia).includes('nombreCompleto') ? 'update' : 'create';
-		console.log(action);
 	});
 	let validateForm = false;
 	let validateForms = {
@@ -55,7 +53,7 @@
 				name: 'agente',
 				value: $LicenciaStore.agente || 1,
 				validators: [validateEmptyInput],
-				options: agentes.map((agente) => {
+				options: agentes.map((agente: Agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
 				})
 			},
@@ -258,7 +256,7 @@
 				name: 'comunicoInicioA',
 				value: $LicenciaStore.comunicoInicioA || '',
 				validators: [validateEmptyInput],
-				options: agentes.map((agente) => {
+				options: agentes.map((agente: Agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
 				})
 			},
@@ -268,7 +266,7 @@
 				name: 'comunicoFinA',
 				value: $LicenciaStore.comunicoFinA || '',
 				validators: [validateEmptyInput],
-				options: agentes.map((agente) => {
+				options: agentes.map((agente: Agente) => {
 					return { name: agente.emailPersonal, value: agente.id };
 				})
 			},

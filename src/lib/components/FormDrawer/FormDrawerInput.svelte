@@ -13,8 +13,6 @@
 	export let runValidate: boolean;
 	export let disabled: boolean = false;
 
-	console.log(disabled);
-
 	let errors: Array<string> = [];
 	let status: boolean = false;
 	let viewErrors: boolean = false;

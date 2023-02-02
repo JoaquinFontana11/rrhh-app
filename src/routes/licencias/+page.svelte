@@ -38,7 +38,7 @@
 	const initLongPolling = (
 		page: number,
 		order: { field: string; direction: boolean },
-		filter: { field: string; filter: string; value: string | number }[],
+		filter: { field: string; filter: string; value: string | number | number[] }[],
 		cantLicenciaPage: number,
 		tipoLicencia: string = 'ausente'
 	) => {
@@ -47,6 +47,7 @@
 				tableData = transformData(
 					(await data.reloadData(page, order, filter, cantLicenciaPage, tipoLicencia)).data
 				);
+				console.log(tableData);
 			}, 10000)
 		);
 		return () => intervalsIds.forEach((id) => clearInterval(id));
@@ -85,7 +86,6 @@
 				)
 			).data
 		);
-		console.log(tableData);
 		stopLongPolling = initLongPolling(
 			val,
 			licenceOrder,
@@ -110,7 +110,7 @@
 				)
 			).data
 		);
-		console.log(tableData);
+
 		stopLongPolling = initLongPolling(
 			$pageLicenciaStore,
 			licenceOrder,
@@ -118,10 +118,15 @@
 			$cantLicenciaPage,
 			val
 		);
+		const { count } = await data.calcLastPage(
+			licenceOrder,
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			$tipoLicenciaStore
+		);
+		lastPage = Math.trunc(count / $cantLicenciaPage);
 	});
 
 	filterStore.subscribe(async (val) => {
-		console.log('Filter Store: ', val);
 		stopLongPolling();
 		tableData = transformData(
 			(
@@ -141,6 +146,12 @@
 			$cantLicenciaPage,
 			$tipoLicenciaStore
 		);
+		const { count } = await data.calcLastPage(
+			licenceOrder,
+			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
+			$tipoLicenciaStore
+		);
+		lastPage = Math.trunc(count / $cantLicenciaPage);
 	});
 
 	const changeCantLicenciaPage = async (e: Event) => {
@@ -163,7 +174,8 @@
 			$pageLicenciaStore,
 			licenceOrder,
 			[...$filterStore, { field: 'tipo', filter: 'eq', value: $tipoLicenciaStore }],
-			$cantLicenciaPage
+			$cantLicenciaPage,
+			$tipoLicenciaStore
 		);
 		const { count } = await data.calcLastPage(
 			licenceOrder,

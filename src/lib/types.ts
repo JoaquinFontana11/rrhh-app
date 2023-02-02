@@ -256,7 +256,7 @@ export type {
 export type Filter = {
 	field: string;
 	filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
-	value: string | number;
+	value: string | number | number[];
 };
 
 export type Order = {
