@@ -7,11 +7,11 @@
 	coords.stiffness = 0.03;
 	coords.damping = 0.1;
 	setInterval(() => {
-		deg = deg + 10;
+		deg = deg + 5;
 	}, 5);
 
 	const mouseMove = (e: MouseEvent) => {
-		coords.set({ x: e.clientX - 72, y: e.clientY - 72 });
+		coords.set({ x: e.clientX - 72, y: e.clientY - 52 });
 	};
 </script>
 
@@ -19,7 +19,7 @@
 
 <div class="w-screen h-screen bg-lime-100 overflow-hidden">
 	<img
-		class="w-36 h-36  relative"
+		class="w-36 h-26 relative"
 		style={`top: ${$coords.y}px; left: ${$coords.x}px; transform: rotate(${deg}deg) `}
 		src="/joacko_cara.png"
 		alt="la cara de joacko girando"

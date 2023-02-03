@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/auth-helpers-sveltekit';
-import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, PUBLIC_NODE_ENV } from '$env/static/public';
 import type { Filter } from './types';
 
 export const supabase = createClient(
 	PUBLIC_SUPABASE_URL as string,
-	PUBLIC_SUPABASE_ANON_KEY as string
+	PUBLIC_SUPABASE_ANON_KEY as string,
+	undefined,
+	{ secure: PUBLIC_NODE_ENV === 'production' }
 );
 
 export const execSupabaseQuery = async (
@@ -20,10 +22,12 @@ export const execSupabaseQuery = async (
 		querySupabase += `.range(${page * cantPage},${page * cantPage + cantPage - 1})`;
 
 	// agregamos los filtros
+
 	filters.map((f: Filter) => {
-		querySupabase += `.${f.filter}('${f.field}', '${
-			f.filter == 'ilike' ? `%${f.value}%` : f.value
-		}')`;
+		querySupabase +=
+			typeof f.value === 'object'
+				? `.${f.filter}('${f.field}', [${f.value}])`
+				: `.${f.filter}('${f.field}', '${f.filter == 'ilike' ? `%${f.value}%` : f.value}')`;
 	});
 
 	// agegamos el order
@@ -51,6 +55,11 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 				flattedArr.push([key, { id: data[key].id, value: data[key].acronimo }]);
 			} else {
 				for (let subKey in data[key]) {
+					if (subKey === 'direccion') {
+						data[key][subKey].value = data[key][subKey].acronimo;
+					} else if (subKey === 'equipo') {
+						data[key][subKey].value = data[key][subKey].equipo;
+					}
 					flattedArr.push([subKey, data[key][subKey]]);
 				}
 			}

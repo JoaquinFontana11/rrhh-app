@@ -9,6 +9,9 @@
 
 	let month: number = new Date().getMonth();
 	let year: number = new Date().getFullYear();
+	let tipoLicencia: string = 'todas';
+	let direccion: number = 100;
+	let equipo: number = 100;
 
 	const updateMonth = (e: Event) => {
 		const target = e.target as HTMLSelectElement;
@@ -26,15 +29,19 @@
 		teletrabajo: 'sky'
 	};
 
-	const reloadItems = (month: number) => {
-		let licencias = data.data.filter((licencia) => {
-			const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
-			const licenciaMonthFin = new Date(licencia.fechaFin).getMonth();
-			return (
-				licenciaMonthInicio == month ||
-				(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
-			);
-		});
+	const reloadItems = (month: number, tipoLicencia: string, direccion: number, equipo: number) => {
+		let licencias = data.data
+			.filter((licencia) => {
+				const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
+				const licenciaMonthFin = new Date(licencia.fechaFin).getMonth();
+				return (
+					licenciaMonthInicio == month ||
+					(licenciaMonthFin == month && licenciaMonthInicio == month - 1)
+				);
+			})
+			.filter((licencia) => direccion == 100 || licencia.agente.direccion.id == direccion)
+			.filter((licencia) => equipo == 100 || licencia.agente.equipo.id == equipo);
+
 		let licenciasCompletas: { day: number; tipo: string }[] = [];
 
 		licencias.forEach((licencia) => {
@@ -70,7 +77,11 @@
 
 		Object.entries(calendarItems).forEach(([day, tipos]: any) => {
 			calendarItems[day] = [];
-			['salud', 'otro', 'ausente', 'teletrabajo', 'vacaciones', 'academica'].forEach((tipo) => {
+			const tiposPermitidos =
+				tipoLicencia == 'todas'
+					? ['salud', 'otro', 'ausente', 'teletrabajo', 'vacaciones', 'academica']
+					: [tipoLicencia];
+			tiposPermitidos.forEach((tipo) => {
 				let countTipo = tipos.filter((t: string) => t == tipo).length;
 				if (countTipo == 0) return;
 				calendarItems[day].push({ color: colors[tipo], content: `${countTipo} - ${tipo}` });
@@ -78,12 +89,41 @@
 		});
 	};
 
-	$: reloadItems(month);
+	$: reloadItems(month, tipoLicencia, direccion, equipo);
 </script>
 
 <Header />
 <Dashboard>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
+		<DashboardToolbarSelect
+			options={[
+				...data.equipos.map((equipo) => {
+					return { value: equipo.id, name: equipo.equipo };
+				}),
+				{ name: 'Todos los equipos', value: 100 }
+			]}
+			bind:value={equipo}
+		/><DashboardToolbarSelect
+			options={[
+				...data.direcciones.map((direccion) => {
+					return { value: direccion.id, name: direccion.acronimo };
+				}),
+				{ name: 'Todas las direcciones', value: 100 }
+			]}
+			bind:value={direccion}
+		/>
+		<DashboardToolbarSelect
+			options={[
+				{ name: 'Todas las licencias', value: 'todas' },
+				{ name: 'Ausente con aviso', value: 'ausente' },
+				{ name: 'Academica', value: 'academica' },
+				{ name: 'Vacaciones', value: 'vacaciones' },
+				{ name: 'Teletrabajo', value: 'teletrabajo' },
+				{ name: 'Salud', value: 'salud' },
+				{ name: 'Otro', value: 'otro' }
+			]}
+			bind:value={tipoLicencia}
+		/>
 		<DashboardToolbarSelect
 			options={[
 				{ name: 'enero', value: 0 },
@@ -104,5 +144,13 @@
 		/>
 	</div>
 
-	<DashboardCalendar slot="dashboard-content" bind:month {year} items={calendarItems} />
+	<DashboardCalendar
+		slot="dashboard-content"
+		bind:month
+		{year}
+		bind:tipoLicencia
+		bind:direccion
+		bind:equipo
+		items={calendarItems}
+	/>
 </Dashboard>

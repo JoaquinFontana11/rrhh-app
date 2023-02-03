@@ -17,7 +17,6 @@
 
 	let showDropdown = false;
 	const addNote = (e: CustomEvent) => {
-		console.log('hola exo en la plata');
 		data.data?.push(e.detail.note);
 		notes = notesData.filter((note) => note.modulo == modulo);
 	};
@@ -26,7 +25,6 @@
 		const target = e.target as HTMLSelectElement;
 		modulo = target.value;
 		notes = notesData.filter((note) => note.modulo == modulo);
-		console.log(notes);
 	};
 
 	const deleteNote = (e: CustomEvent) => {

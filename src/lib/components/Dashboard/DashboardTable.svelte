@@ -24,7 +24,7 @@
 		const value: any = data[key];
 
 		if (key == 'equipo' || key == 'direccion' || key == 'superiorDirecto') {
-			return value;
+			return value ? value.value : value;
 		}
 
 		if (typeof value == 'boolean') return value == true ? 'Si' : 'No';

@@ -1,7 +1,11 @@
 <script lang="ts">
+	import { LicenciaStore } from '$lib/stores/licenciaStore';
 	import { supabase } from '$lib/supabaseClient';
 	import { createEventDispatcher } from 'svelte';
 	import DashboardCalendarCellItem from './DashboardCalendarCellItem.svelte';
+	export let direccion: number;
+	export let equipo: number;
+	export let tipoLicencia: string;
 	export let day: number | string;
 	export let month: number;
 	export let year: number;
@@ -19,22 +23,29 @@
 	};
 	const clickItem = async (e: CustomEvent, i: number) => {
 		const currentDate = `${year}-${month + 1 > 10 ? `0${month + 1}` : month + 1}-${day}`;
-
 		const resSupabaseItems = await supabase
 			.from('licencia')
-			.select('agente(*), fechaInicio, fechaFin, tipo')
+			.select('agente(*, direccion(*), equipo(*)), fechaInicio, fechaFin, tipo')
 			.lte('fechaInicio', currentDate)
 			.gte('fechaFin', currentDate);
 
 		if (resSupabaseItems.data) {
+			console.log(resSupabaseItems.data, direccion);
 			dispatch('show-agentes', {
-				agentes: resSupabaseItems.data.map((licencia) => {
-					return {
-						agente: licencia.agente.nombreCompleto,
-						tipo: licencia.tipo,
-						color: colors[licencia.tipo]
-					};
-				}),
+				agentes: resSupabaseItems.data
+					.filter(
+						(licencia) =>
+							(tipoLicencia == 'todas' || licencia.tipo == tipoLicencia) &&
+							(direccion == 100 || licencia.agente.direccion.id == direccion) &&
+							(equipo == 100 || licencia.agente.equipo.id == equipo)
+					)
+					.map((licencia) => {
+						return {
+							agente: licencia.agente.nombreCompleto,
+							tipo: licencia.tipo,
+							color: colors[licencia.tipo]
+						};
+					}),
 				day: day
 			});
 		}

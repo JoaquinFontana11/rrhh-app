@@ -1,9 +1,8 @@
 import type { PageLoad } from './$types';
 import { supabase, execSupabaseQuery, flatSupabaseResponse } from '$lib/supabaseClient';
 import notasStore from '$lib/stores/notasStore';
-import tipoLicenciaStore from '$lib/stores/licencias_old/tipoLicenciaStore';
 import type { PostgrestResponse } from '@supabase/postgrest-js';
-import type { AgenteSupabase, Nota, FlatLicenciaSupabase } from '$lib/types';
+import type { AgenteSupabase, Nota, FlatLicenciaSupabase, Filter } from '$lib/types';
 
 export const ssr = false;
 
@@ -42,7 +41,7 @@ export const load: PageLoad = async ({ url }) => {
 	// cargamos los campos para filtrar
 	const resSupabaseFields: PostgrestResponse<any> = await supabase
 		.from('licencia')
-		.select(' fechaInicio, fechaFin, observaciones, autorizadoSiape')
+		.select('id, fechaInicio, fechaFin, observaciones, autorizadoSiape')
 		.range(0, 1);
 	const fields = flatSupabaseResponse(resSupabaseFields.data);
 
@@ -52,7 +51,13 @@ export const load: PageLoad = async ({ url }) => {
 		lastPage: Math.trunc((lastPage as number) / 10),
 		reloadData,
 		calcLastPage,
-		fields: Object.entries(fields[0]).map((entries) => entries[0])
+		manageFilters,
+		fields: [
+			...Object.entries(fields[0]).map((entries) => entries[0]),
+			'equipo',
+			'direccion',
+			'nombreCompleto'
+		]
 	};
 };
 
@@ -63,17 +68,19 @@ const reloadData = async (
 	cantPage: number,
 	tipo: string = 'ausente'
 ) => {
-	const query = `supabase.from('licencia').select(' fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
+	const query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
 		tipo == 'academica'
-			? ', datosAcademicos(*)'
+			? ', datosAcademicos(ultimaMateria)'
 			: tipo == 'salud'
-			? ', datosSalud(*)'
+			? ', datosSalud(concepto)'
 			: tipo == 'teletrabajo'
-			? ', datosTeletrabajo(*)'
+			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
 			: tipo == 'vacaciones'
-			? ', datosVacaciones(*)'
+			? ', datosVacaciones(periodo)'
 			: ''
 	}')`;
+
+	filters = await manageFilters(filters);
 
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
@@ -86,23 +93,55 @@ const calcLastPage = async (
 	filters: any[],
 	tipo: string = 'ausente'
 ) => {
-	console.log(tipo);
-	let query = `supabase.from('licencia').select(' fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto)${
+	let query = `supabase.from('licencia').select('id, fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
 		tipo == 'academica'
-			? ', datosAcademicos(*)'
+			? ', datosAcademicos(ultimaMateria)'
 			: tipo == 'salud'
-			? ', datosSalud(*)'
+			? ', datosSalud(concepto)'
 			: tipo == 'teletrabajo'
-			? ', datosTeletrabajo(*)'
+			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
 			: tipo == 'vacaciones'
-			? ', datosVacaciones(*)'
+			? ', datosVacaciones(periodo)'
 			: ''
 	}', {count: 'exact'})`;
-	console.log(query);
+
 	filters.map((f) => {
 		query += `.${f.filter}('${f.field}', '${f.value}')`;
 	});
 	query += `.order('${order.field}', {ascending: ${order.direction}})`;
-	console.log(query);
-	return await eval(query);
+
+	const resSupabase = await eval(query);
+
+	return resSupabase;
+};
+
+const manageFilters = async (filters: Filter[]) =>
+	await Promise.all(
+		filters.map(async (filter: Filter) =>
+			filter.field === 'direccion' || filter.field === 'equipo' || filter.field === 'nombreCompleto'
+				? await searchAgentes(filter)
+				: filter
+		)
+	);
+
+const searchAgentes = async (filter: Filter) => {
+	let res: PostgrestResponse<any>;
+	if (filter.field === 'nombreCompleto') {
+		res = await supabase.from('agente').select('id').eq(filter.field, filter.value);
+	} else {
+		const column = filter.field === 'equipo' ? 'equipo' : 'acronimo';
+		const id = await searchId(filter.field, column, filter.value);
+
+		res = await supabase.from('agente').select('id').eq(filter.field, id);
+	}
+
+	const ids: any[] | undefined = res.data?.map((data) => data.id);
+
+	return { field: 'agente', filter: 'in', value: ids };
+};
+
+const searchId = async (table: string, column: string, value: string | number | number[]) => {
+	let res: PostgrestResponse<any> = await supabase.from(table).select('id').eq(column, value);
+	if (!res.data) return;
+	return res.data[0] ? res.data[0].id : -1;
 };
