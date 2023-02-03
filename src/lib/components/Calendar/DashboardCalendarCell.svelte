@@ -25,7 +25,7 @@
 		const currentDate = `${year}-${month + 1 > 10 ? `0${month + 1}` : month + 1}-${day}`;
 		const resSupabaseItems = await supabase
 			.from('licencia')
-			.select('agente(*, direccion(*)), fechaInicio, fechaFin, tipo')
+			.select('agente(*, direccion(*), equipo(*)), fechaInicio, fechaFin, tipo')
 			.lte('fechaInicio', currentDate)
 			.gte('fechaFin', currentDate);
 
