@@ -1,16 +1,34 @@
 import jsPDF, { AcroFormPasswordField } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+const portada = 'img/pdf/portada.png';
+
+const getActualMonth = () =>
+	[
+		'Enero',
+		'Febrero',
+		'Marzo',
+		'Abril',
+		'Mayo',
+		'Junio',
+		'Julio',
+		'Agosto',
+		'Septiembre',
+		'Octubre',
+		'Noviembre',
+		'Diciembre'
+	][new Date().getMonth()];
+
 export const generatePDF = (data: Array<Object>, title: string, subtitle: string) => {
-	const header = Object.keys(data[0]);
-	let largo = header.reduce((acumulator, key) => acumulator + key.length, 0);
+	const tableHeader = Object.keys(data[0]);
+	let largo = tableHeader.reduce((acumulator, key) => acumulator + key.length, 0);
 
 	const body: Array<Array<any>> = [];
 
 	data.forEach((elem: { [key: string]: any }) => {
 		let arrayData: Array<any> = [];
 		Object.keys(elem).forEach((keys) => {
-			typeof elem[keys] === 'object'
+			typeof elem[keys] === 'object' && elem[keys] !== null
 				? arrayData.push(elem[keys].value)
 				: typeof elem[keys] === 'boolean' && elem[keys]
 				? arrayData.push('Si')
@@ -20,12 +38,25 @@ export const generatePDF = (data: Array<Object>, title: string, subtitle: string
 		});
 		body.push(arrayData);
 	});
-	const pdf = new jsPDF();
-	pdf.text('Hola que tal', 100, 100);
+
+	let pdf = new jsPDF();
+	pdf.addImage(portada, 'PNG', 0, 0, 210, 300);
+
+	pdf.setTextColor(255, 255, 255);
+	pdf.setFontSize(36);
+	pdf.setFont('Times', 'times');
+	pdf.text(title, 10, 132);
+	pdf.setTextColor(0, 0, 0);
+	pdf.setFontSize(28);
+	pdf.text(subtitle, 10, 152);
+	pdf.setFontSize(18);
+	pdf.text(getActualMonth(), 160, 34);
+	pdf.text(new Date().getFullYear() + '', 182, 34);
+
 	pdf.addPage([largo * 2.5, 500], 'l');
 
 	autoTable(pdf, {
-		head: [header],
+		head: [tableHeader],
 		body: body
 	});
 
