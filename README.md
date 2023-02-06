@@ -7,6 +7,10 @@ Esta es una aplicacion para el equipo de Recursos Humanos para la gestion de tod
 - Svelte-Kit
 - TypeScript
 
+### Base de Datos
+
+- PostgreSQL
+
 ## Alojamiento
 
 ### Entorno de Desarrollo
