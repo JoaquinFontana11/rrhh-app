@@ -1,6 +1,6 @@
-import jsPDF, { AcroFormPasswordField } from 'jspdf';
+import jsPDF from 'jspdf';
+import { encodeSans } from './exportFonts';
 import autoTable from 'jspdf-autotable';
-
 const portada = 'img/pdf/portada.png';
 
 const getActualMonth = () =>
@@ -40,16 +40,18 @@ export const generatePDF = (data: Array<Object>, title: string, subtitle: string
 	});
 
 	let pdf = new jsPDF();
+	pdf.addFileToVFS('Encode-Sans.ttf', encodeSans);
+	pdf.addFont('Encode-Sans.ttf', 'Encode Sans', 'normal');
 	pdf.addImage(portada, 'PNG', 0, 0, 210, 300);
 
 	pdf.setTextColor(255, 255, 255);
 	pdf.setFontSize(36);
-	pdf.setFont('Times', 'times');
+	pdf.setFont('Encode Sans', 'normal');
 	pdf.text(title, 10, 132);
 	pdf.setTextColor(0, 0, 0);
 	pdf.setFontSize(28);
 	pdf.text(subtitle, 10, 152);
-	pdf.setFontSize(18);
+	pdf.setFontSize(15);
 	pdf.text(getActualMonth(), 160, 34);
 	pdf.text(new Date().getFullYear() + '', 182, 34);
 
@@ -60,5 +62,5 @@ export const generatePDF = (data: Array<Object>, title: string, subtitle: string
 		body: body
 	});
 
-	pdf.save('table.pdf');
+	pdf.save(`${title}-${subtitle}.pdf`);
 };
