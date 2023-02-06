@@ -1,7 +1,7 @@
 import jsPDF, { AcroFormPasswordField } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-export const generatePDF = (data: Array<Object>) => {
+export const generatePDF = (data: Array<Object>, title: string, subtitle: string) => {
 	const header = Object.keys(data[0]);
 	let largo = header.reduce((acumulator, key) => acumulator + key.length, 0);
 

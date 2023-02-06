@@ -17,6 +17,8 @@
 	let exportFormat = 'pdf';
 	let filtersActive = false;
 	let fieldsActive = false;
+	let title: string;
+	let subtitle: string;
 
 	const exportData = async () => {
 		// obtenemos los datos de supabase
@@ -52,7 +54,7 @@
 		}
 
 		if (exportFormat === 'pdf') {
-			generatePDF(data);
+			generatePDF(data, title, subtitle);
 		} else {
 			// generamos el Blob del excel
 			const blobExcel = await generateBlobExcel(data);
@@ -103,5 +105,21 @@
 			bind:checked={fieldsActive}
 		/>
 	</div>
+	{#if exportFormat == 'pdf'}
+		<label class="dark:text-stone-400" for="titulo">Titulo del documento</label>
+		<input
+			id="titulo"
+			class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
+			type="text"
+			bind:value={title}
+		/>
+		<label class="dark:text-stone-400" for="subtitulo">Subtitulo del documento</label>
+		<input
+			id="subtitulo"
+			class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
+			type="text"
+			bind:value={subtitle}
+		/>
+	{/if}
 	<button class="bg-lime-500 rounded-lg p-1" on:click={exportData}>Exportar agentes</button>
 </div>

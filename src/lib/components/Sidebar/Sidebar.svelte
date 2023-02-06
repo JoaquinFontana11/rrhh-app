@@ -5,6 +5,7 @@
 		Adjustments,
 		Archive,
 		Bookmark,
+		User,
 		Newspaper,
 		Document,
 		Calendar,
@@ -22,11 +23,10 @@
 		<Icon src={Chip} class="w-8 h-8 text-lime-500 mt-3" />
 	</a>
 	<ul class="flex flex-col gap-4 absolute top-1/2 -translate-y-1/2">
-		<SidebarButton icon={Table} tooltip="Nomina de agentes" href="/nomina" />
+		<SidebarButton icon={User} tooltip="Nomina de agentes" href="/nomina" />
 		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
 		<SidebarButton icon={Newspaper} tooltip="Licencias" href="/licencias" />
 		<SidebarButton icon={Calendar} tooltip="Calendario" href="/calendario" />
-		<SidebarButton icon={Bookmark} tooltip="Presentismo (proximamente)" href="/presentismo" />
 	</ul>
 	<ul class="absolute bottom-2 flex flex-col gap-3">
 		<SidebarButtonTheme />
