@@ -23,7 +23,18 @@
 	let direcciones: IOption[] = [];
 	let equipos: IOption[] = [];
 	let superioresDirectos: IOption[] = [];
-
+	let tipoContratacion: { [key: string]: boolean } = {
+		CLS: true,
+		PPT: true,
+		PP: true
+	};
+	$: tipoContratacion = {
+		CLS: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'CLS') : true,
+		PPT: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PPT') : true,
+		PP: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PP') : true
+	};
+	console.log($agenteStore.tipoContratacion);
+	console.log(tipoContratacion);
 	agenteStore.subscribe((agente) => {
 		action = Object.keys(agente).includes('id') ? 'update' : 'create';
 	});
@@ -82,7 +93,9 @@
 
 	getEquipos();
 	getDirecciones();
-	$: getSuperioresDorectos($agenteStore.direccion);
+	$: getSuperioresDorectos(
+		$agenteStore.direccion?.id ? $agenteStore.direccion.id : $agenteStore.direccion
+	);
 
 	const dropdown: { [key: string]: any } = {
 		datosPersonales: false,
@@ -102,7 +115,7 @@
 		datosPersonales: 'Datos Personales',
 		datosSalud: 'Datos de Salud',
 		datosAcademicos: 'Datos Academicos',
-		datosRecorrido: 'Recorrido'
+		datosRecorrido: 'Datos Institucionales'
 	};
 
 	let veryComplexValidators: FunctionsObject = {
@@ -196,7 +209,7 @@
 				label: 'email institucional',
 				name: 'emailInstitucional',
 				value: $agenteStore.emailInstitucional || '',
-				required: true,
+				required: false,
 				validators: [
 					validateEmptyInput,
 					validateInputEmail,
@@ -273,7 +286,7 @@
 				type: 'select',
 				label: 'Equipo',
 				name: 'equipo',
-				value: $agenteStore.equipo || '',
+				value: $agenteStore.equipo?.id || $agenteStore.equipo || '',
 				required: true,
 				options: equipos,
 				validators: [validateEmptyInput]
@@ -282,7 +295,7 @@
 				type: 'select',
 				label: 'Direccion de linea',
 				name: 'direccion',
-				value: $agenteStore.direccion || '',
+				value: $agenteStore.direccion?.id || $agenteStore.direccion || '',
 				required: true,
 				options: direcciones,
 				validators: [validateEmptyInput]
@@ -299,7 +312,7 @@
 				type: 'select',
 				label: 'Superior Directo',
 				name: 'superiorDirecto',
-				value: $agenteStore.superiorDirecto || '',
+				value: $agenteStore.superiorDirecto?.id || $agenteStore.superiorDirecto || '',
 				required: true,
 				options: superioresDirectos,
 				validators: [validateEmptyInput]
@@ -433,7 +446,7 @@
 			},
 			{
 				type: 'select',
-				label: 'Carrera universitaria Fianlizada',
+				label: 'Carrera universitaria Finalizada',
 				name: 'carreraFinalizada',
 				value: $agenteStore.carreraFinalizada,
 				required: true,
@@ -446,6 +459,28 @@
 		],
 		datosRecorrido: [
 			{
+				type: 'select',
+				label: 'tipo de contratacion',
+				name: 'tipoContratacion',
+				value: $agenteStore.tipoContratacion || '',
+				required: true,
+				options: [
+					{
+						name: 'Contrato de locacion de servicios',
+						value: 'CLS'
+					},
+					{
+						name: 'Planta transitorio temporaria',
+						value: 'PPT'
+					},
+					{
+						name: 'Planta permanente',
+						value: 'PP'
+					}
+				],
+				validators: [validateEmptyInput]
+			},
+			{
 				type: 'number',
 				label: 'categoria',
 				name: 'categoria',
@@ -454,7 +489,7 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value <= 5 || value >= 21)
 						)
 							return {
@@ -464,11 +499,11 @@
 					},
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -489,11 +524,11 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -502,45 +537,23 @@
 			},
 			{
 				type: 'number',
-				label: 'numero de Siape',
+				label: 'Legajos (SIAPE)',
 				name: 'numSiape',
 				value: $agenteStore.numSiape || '',
 				required: false,
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
 					}
 				]
-			},
-			{
-				type: 'select',
-				label: 'tipo de contratacion',
-				name: 'tipoContratacion',
-				value: $agenteStore.tipoContratacion || '',
-				required: true,
-				options: [
-					{
-						name: 'Contrato de locacion de servicios',
-						value: 'CLS'
-					},
-					{
-						name: 'Planta transitorio temporaria',
-						value: 'PTT'
-					},
-					{
-						name: 'Planta permanente',
-						value: 'PP'
-					}
-				],
-				validators: [validateEmptyInput]
 			},
 			{
 				type: 'text',
@@ -559,11 +572,11 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -586,6 +599,7 @@
 				name: 'fechaAltaCLS',
 				value: $agenteStore.fechaAltaCLS || '',
 				required: false,
+				hidden: tipoContratacion.CLS,
 				validators: [
 					(value: any) => {
 						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
@@ -614,6 +628,7 @@
 				name: 'fechaBajaCLS',
 				value: $agenteStore.fechaBajaCLS || '',
 				required: false,
+				hidden: tipoContratacion.CLS,
 				validators: [
 					(value: any) => {
 						if (
@@ -638,18 +653,11 @@
 				name: 'expedienteAltaCLS',
 				value: $agenteStore.expedienteAltaCLS || '',
 				required: false,
+				hidden: tipoContratacion.CLS,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
@@ -664,18 +672,11 @@
 				name: 'actoAltaCLS',
 				value: $agenteStore.actoAltaCLS || '',
 				required: false,
+				hidden: tipoContratacion.CLS,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'CLS' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es CLS, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'CLS' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
@@ -686,15 +687,16 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta PTT',
+				label: 'fecha de alta PPT',
 				name: 'fechaAltaPTT',
 				value: $agenteStore.fechaAltaPTT || '',
 				required: false,
+				hidden: tipoContratacion.PPT,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
+						if ($agenteStore.tipoContratacion == 'PPT' && (value == '' || value == null)) {
 							return {
-								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PPT, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -718,11 +720,12 @@
 				name: 'fechaBajaPTT',
 				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
+				hidden: tipoContratacion.PPT,
 				validators: [
 					(value: any) => {
 						if (
 							$agenteStore.fechaAltaPTT &&
-							$agenteStore.tipoContratacion !== 'PTT' &&
+							$agenteStore.tipoContratacion !== 'PPT' &&
 							(value == '' || value == null)
 						) {
 							return {
@@ -740,18 +743,11 @@
 				name: 'expedienteAltaPTT',
 				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
+				hidden: tipoContratacion.PPT,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'PPT' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
@@ -762,22 +758,15 @@
 			},
 			{
 				type: 'text',
-				label: 'acto de alta PTT',
+				label: 'acto de alta PPT',
 				name: 'actoAltaPTT',
 				value: $agenteStore.actoAltaPTT || '',
 				required: false,
+				hidden: tipoContratacion.PPT,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'PPT' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
@@ -792,6 +781,7 @@
 				name: 'fechaAltaPP',
 				value: $agenteStore.fechaAltaPP || '',
 				required: false,
+				hidden: tipoContratacion.PP,
 				validators: [
 					(value: any) => {
 						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
@@ -820,6 +810,7 @@
 				name: 'fechaBajaPP',
 				value: $agenteStore.fechaBajaPP || '',
 				required: false,
+				hidden: tipoContratacion.PP,
 				validators: []
 			},
 			{
@@ -828,18 +819,11 @@
 				name: 'expedienteAltaPP',
 				value: $agenteStore.expedienteAltaPP || '',
 				required: false,
+				hidden: tipoContratacion.PP,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
@@ -854,18 +838,11 @@
 				name: 'actoAltaPP',
 				value: $agenteStore.actoAltaPP || '',
 				required: false,
+				hidden: tipoContratacion.PP,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PP' && (value == '' || value == null)) {
-							return {
-								message: 'Si el tipo de contratacion es PP, este campo es obligatorio',
-								status: false
-							};
-						}
-					},
-					(value: any) => {
 						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value))
+						if ($agenteStore.tipoContratacion == 'PP' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
@@ -898,17 +875,23 @@
 	};
 
 	const changeInput = (e: Event) => {
+		console.log(tipoContratacion);
 		const target = e.target as HTMLInputElement;
 		let value: string | number | boolean = target.value;
-
+		console.log(target, value, target.type);
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
-		if (typeof value == 'string' && parseInt(value)) value = parseInt(value);
-
+		if (
+			target.type === 'number' ||
+			(target.type === 'select-one' && typeof value === 'string' && parseInt(value))
+		)
+			value = parseInt(value);
+		console.log(value);
 		agenteStore.update((agente) => {
 			agente[target.name as string] = value;
 			return agente;
 		});
+		console.log($agenteStore);
 	};
 </script>
 

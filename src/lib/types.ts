@@ -11,6 +11,7 @@ interface IComponent {
 	files?: FileList | Array<File>;
 	options?: IOption[];
 	images?: Array<Object>;
+	hidden?: boolean;
 	[key: string]: any;
 	validators: Array<Function>;
 }
@@ -130,7 +131,7 @@ type FlatAgenteSupabase = {
 	categoria: number;
 	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 	numSiape: number;
-	tipoContratacion: 'CLS' | 'PTT' | 'PP';
+	tipoContratacion: 'CLS' | 'PPT' | 'PP';
 	referenciaBaja: string;
 	obraSocialActiva: boolean;
 	fechaAltaCLS: string;
@@ -211,7 +212,7 @@ type AgenteSupabase = {
 				categoria: number;
 				agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 				numSiape: number;
-				tipoContratacion: 'CLS' | 'PTT' | 'PP';
+				tipoContratacion: 'CLS' | 'PPT' | 'PP';
 				referenciaBaja: string;
 				obraSocialActiva: boolean;
 				fechaAltaCLS: string;
@@ -300,7 +301,7 @@ export type Agente = {
 	categoria: number;
 	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 	numSiape: number;
-	tipoContratacion: 'CLS' | 'PTT' | 'PP';
+	tipoContratacion: 'CLS' | 'PPT' | 'PP';
 	referenciaBaja: string;
 	obraSocialActiva: boolean;
 	fechaAltaCLS: string;

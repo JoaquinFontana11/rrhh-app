@@ -13,8 +13,10 @@ export const diffMonths = (date1: string, date2: string) => {
 
 export const validateAllNomina = async (
 	components: IComponentObject,
-	extraValidations: FunctionsObject | boolean = false
+	extraValidations: FunctionsObject | boolean = false,
+	action: string
 ) => {
+	console.log('hola que tal');
 	let error = { message: [], status: false };
 	const formData = new FormData();
 	for (const key in components) {
@@ -38,15 +40,24 @@ export const validateAllNomina = async (
 			error.status = resExtraValidations.status;
 			return { data: error, status: false };
 		}
-		await Promise.all(
-			components[key].map((component) => {
-				component.name === 'equipo' ||
-				component.name === 'direccion' ||
-				component.name === 'superiorDirecto'
-					? formData.append(component.name, component.value.id)
-					: formData.append(component.name, component.value);
-			})
-		);
+		if (action === 'create') {
+			await Promise.all(
+				components[key].map((component) => {
+					formData.append(component.name, component.value);
+				})
+			);
+		} else {
+			await Promise.all(
+				components[key].map((component) => {
+					console.log(component);
+					component.name === 'equipo' ||
+					component.name === 'direccion' ||
+					component.name === 'superiorDirecto'
+						? formData.append(component.name, component.value)
+						: formData.append(component.name, component.value);
+				})
+			);
+		}
 	}
 	return { data: formData, status: true };
 };

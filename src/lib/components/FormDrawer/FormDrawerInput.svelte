@@ -12,10 +12,13 @@
 	export let validators: Array<Function>;
 	export let runValidate: boolean;
 	export let disabled: boolean = false;
+	export let hidden: boolean | undefined = false;
 
 	let errors: Array<string> = [];
 	let status: boolean = false;
 	let viewErrors: boolean = false;
+
+	console.log(`${label}:   ${hidden}`);
 
 	const dispatch = createEventDispatcher();
 
@@ -38,7 +41,7 @@
 	<div class="grid grid-cols-6 mb-2 mx-2 ">
 -->
 
-<div class="flex m-2 relative">
+<div class="flex m-2 relative" class:ocultar={hidden}>
 	<label
 		class=" block  mr-8 text-sm font-medium text-stone-900 dark:text-stone-400 w-2/4"
 		for={label}
@@ -144,5 +147,8 @@
 <style lang="postcss">
 	.error {
 		@apply border-rose-500 text-rose-500;
+	}
+	.ocultar {
+		@apply hidden;
 	}
 </style>

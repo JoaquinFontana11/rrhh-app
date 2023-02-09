@@ -52,6 +52,9 @@ const create: Action = async ({ request }) => {
 		.from('datosRecorrido')
 		.insert(datosRecorrido)
 		.select();
+	console.log(dataSalud, errorSalud);
+	console.log(dataAcademico, errorAcademico);
+	console.log(dataRecorrido, errorRecorrido);
 
 	if (errorSalud || errorAcademico || errorRecorrido) {
 		if (dataSalud) await supabase.from('datosSalud').delete().eq('id', dataSalud[0].id);
@@ -89,7 +92,9 @@ const create: Action = async ({ request }) => {
 		.from('agente')
 		.insert(agente)
 		.select();
-
+	console.log(data);
+	console.log(agente);
+	console.log(dataAgente, errorAgente);
 	if (errorAgente) return fail(400);
 };
 
