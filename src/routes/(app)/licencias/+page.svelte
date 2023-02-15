@@ -292,7 +292,7 @@
 
 					showDrawer = true;
 				}}
-				class="w-6 h-6 bg-lime-500 flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-lime-400"
+				class="w-6 h-6 bg-DPMA-Turquoise flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-light-Turquoise"
 				><Icon src={Document} class="w-4 h-4" /></button
 			></td
 		>

@@ -47,7 +47,7 @@
 
 <div class="flex h-full w-full">
 	<div
-		class="pt-10 bg-lime-500/20 dark:bg-stone-900   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		class="pt-10 bg-lime-500/20 dark:bg-stone-900 dark:border-2 dark:border-green-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
 		use:dndzone={{ items: notesObj.ok, flipDurationMs, type }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}
@@ -60,7 +60,7 @@
 		{/each}
 	</div>
 	<div
-		class="pt-10 bg-yellow-500/20 dark:bg-stone-900 dark:border-l dark:border-r dark:border-stone-800   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		class="pt-10 bg-yellow-500/20 dark:bg-stone-900 dark:border-2 dark:border-yellow-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
 		use:dndzone={{ items: notesObj.warn, flipDurationMs, type }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}
@@ -73,7 +73,7 @@
 		{/each}
 	</div>
 	<div
-		class="pt-10 bg-rose-500/20 dark:bg-stone-900   h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
+		class="pt-10 bg-rose-500/20 dark:bg-stone-900 dark:border-2 dark:border-rose-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
 		use:dndzone={{ items: notesObj.alert, flipDurationMs, type }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}

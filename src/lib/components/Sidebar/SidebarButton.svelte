@@ -8,7 +8,7 @@
 </script>
 
 <a
-	class=" relative w-10 h-10 rounded-lg  text-stone-700 hover:bg-gray-200 hover:text-gray-900 flex justify-center items-center dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300"
+	class=" relative w-10 h-10 rounded-lg  text-DPMA-Grey hover:bg-gray-200 hover:text-dark-Grey flex justify-center items-center dark:text-dark-Rose dark:hover:bg-stone-800 dark:hover:text-light-Rose"
 	on:mouseenter={() => {
 		active = true;
 	}}
