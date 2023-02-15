@@ -54,6 +54,7 @@
 			validators={component.validators}
 			runValidate={validateAllInputs}
 			disabled={component.disabled}
+			hidden={component.hidden}
 		/>
 	{/each}
 </div>

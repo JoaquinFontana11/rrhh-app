@@ -22,8 +22,8 @@
 		let formData = new FormData();
 		try {
 			const response: any = components.datosPersonales
-				? await validateAllNomina(components, extraValidations)
-				: await validateAllLicencia(components, extraValidations);
+				? await validateAllNomina(components, extraValidations, action)
+				: await validateAllLicencia(components, extraValidations, action);
 			if (response.status) {
 				formData = response.data;
 			} else error = response.data;
@@ -31,7 +31,8 @@
 			if (error.status) return;
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
-
+			console.log(components);
+			console.log([...formData]);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData

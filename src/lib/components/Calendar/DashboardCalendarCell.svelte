@@ -22,7 +22,7 @@
 		teletrabajo: 'sky'
 	};
 	const clickItem = async (e: CustomEvent, i: number) => {
-		const currentDate = `${year}-${month + 1 > 10 ? `0${month + 1}` : month + 1}-${day}`;
+		const currentDate = `${year}-${month + 1 > 10 ? month + 1 : `0${month + 1}`}-${day}`;
 		const resSupabaseItems = await supabase
 			.from('licencia')
 			.select('agente(*, direccion(*), equipo(*)), fechaInicio, fechaFin, tipo')
