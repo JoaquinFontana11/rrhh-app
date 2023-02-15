@@ -20,6 +20,10 @@
 	let title: string;
 	let subtitle: string;
 
+	let disabled: boolean;
+
+	$: disabled = title === '' || subtitle === '' || title === undefined || subtitle === undefined;
+
 	const exportData = async () => {
 		// obtenemos los datos de supabase
 		const resSupabase: PostgrestResponse<AgenteSupabase> = await execSupabaseQuery(
@@ -121,5 +125,13 @@
 			bind:value={subtitle}
 		/>
 	{/if}
-	<button class="bg-lime-500 rounded-lg p-1" on:click={exportData}>Exportar agentes</button>
+	<button class="bg-lime-500 rounded-lg p-1" class:disabled {disabled} on:click={exportData}
+		>Exportar agentes</button
+	>
 </div>
+
+<style lang="postcss">
+	.disabled {
+		@apply bg-lime-300 cursor-not-allowed;
+	}
+</style>
