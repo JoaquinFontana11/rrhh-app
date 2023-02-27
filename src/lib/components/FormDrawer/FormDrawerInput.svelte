@@ -29,6 +29,7 @@
 			res = validator(value);
 			if (res && res.message) errors.push(res.message);
 		});
+		console.log(errors, validators, value, name);
 		status = errors.length > 0 ? true : false;
 	};
 

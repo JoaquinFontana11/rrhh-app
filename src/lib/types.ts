@@ -24,7 +24,17 @@ interface FunctionsObject {
 	[key: string]: Function;
 }
 
-export type { IComponent, IComponentObject, FunctionsObject, IOption };
+interface ErrorObject {
+	error: string;
+	description: string;
+}
+
+interface ErrorsArray {
+	message: ErrorObject[];
+	status: boolean;
+}
+
+export type { IComponent, IComponentObject, FunctionsObject, IOption, ErrorObject, ErrorsArray };
 
 // tipos para las tablas que estan en supabase
 

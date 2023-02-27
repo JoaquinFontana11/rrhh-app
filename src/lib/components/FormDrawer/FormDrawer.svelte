@@ -1,20 +1,21 @@
 <script lang="ts">
-	import type { FunctionsObject, IComponentObject } from '$lib/types';
+	import type { FunctionsObject, IComponentObject, ErrorsArray, ErrorObject } from '$lib/types';
 	import { agenteStore } from '$lib/stores/nominaStores';
 	import { LicenciaStore } from '$lib/stores/licenciaStore';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
 	import { validateAllNomina, validateAllLicencia } from '$lib/helpers';
+	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
 
 	export let components: IComponentObject;
 	export let action: string;
 	export let disabled: boolean = true;
 	export let extraValidations: FunctionsObject | boolean = false;
 
-	let dispacher = createEventDispatcher();
+	let dispatcher = createEventDispatcher();
 
 	let loading = false;
-	let error = { message: [], status: false };
+	let error: ErrorsArray = { message: [], status: false };
 	const handlerSubmit = async (e: Event) => {
 		if (loading) return;
 		error = { message: [], status: false };
@@ -37,12 +38,15 @@
 				method: 'POST',
 				body: formData
 			});
+			//console.log((await res.json()).error.message);
 			if (res.status == 400) {
-				dispacher('invalid', {
-					data: (await res.json()).error.message
-				});
+				console.log('hola: ', res);
+				const message = (await res.json()).error.message;
+
+				console.log(message);
+				dispatcher('error', { message: message });
 			} else {
-				dispacher('valid');
+				dispatcher('valid');
 			}
 		} catch (err) {
 			console.log('ERORR', err);
@@ -72,15 +76,18 @@
 	</button>
 </form>
 {#if error.status}
-	<div class="mt-5">
-		<p class="mb-1">Ocurrieron los Siguientes errores:</p>
-		<ul class="list-disc">
-			{#each error.message as message}
-				<li>
-					{message}
-				</li>
-			{/each}
-		</ul>
+	<div class=" w-full p-3 m-5 flex flex-col gap-5">
+		{#each error.message as message}
+			<div
+				class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
+			>
+				<Icon src={ExclamationCircle} class="text-rose-500 w-6 h-6" />
+				<div class="w-5/6">
+					<p class="text-stone-700 dark:text-stone-200 text-sm">{message.error}</p>
+					<p class="text-stone-500 text-sm">{message.description}</p>
+				</div>
+			</div>
+		{/each}
 	</div>
 {/if}
 

@@ -322,7 +322,7 @@
 		{components}
 		{action}
 		disabled={disabledButton || showForm}
-		on:invalid={showValidations}
+		on:error={showValidations}
 		on:valid={() => {
 			showErrors = false;
 		}}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
 	import FormDrawer from './FormDrawer.svelte';
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
@@ -16,7 +17,8 @@
 		IOption,
 		AgenteSupabase,
 		DireccionSupabase,
-		EquipoSupabase
+		EquipoSupabase,
+		ErrorObject
 	} from '$lib/types';
 
 	let action = 'create';
@@ -28,6 +30,8 @@
 		PPT: true,
 		PP: true
 	};
+	let showErrors: boolean = false;
+	let errorsMessage: ErrorObject[] = [];
 	$: tipoContratacion = {
 		CLS: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'CLS') : true,
 		PPT: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PPT') : true,
@@ -104,10 +108,10 @@
 		datosRecorrido: false
 	};
 	const validate: { [key: string]: any } = {
-		datosPersonales: true,
-		datosSalud: true,
-		datosAcademicos: true,
-		datosRecorrido: true
+		datosPersonales: false,
+		datosSalud: false,
+		datosAcademicos: false,
+		datosRecorrido: false
 	};
 	let disabledbutton: boolean = true;
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'datosRecorrido'];
@@ -274,7 +278,7 @@
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: $agenteStore.activo,
+				value: $agenteStore.activo || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -321,7 +325,7 @@
 				type: 'select',
 				label: 'Tiene hijos',
 				name: 'tieneHijos',
-				value: $agenteStore.tieneHijos,
+				value: $agenteStore.tieneHijos || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -333,7 +337,7 @@
 				type: 'select',
 				label: 'Asignacion familiar',
 				name: 'asignacionFamiliar',
-				value: $agenteStore.asignacionFamiliar,
+				value: $agenteStore.asignacionFamiliar || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -345,7 +349,7 @@
 				type: 'select',
 				label: 'Beneficio de guarderia',
 				name: 'beneficioGuarderia',
-				value: $agenteStore.beneficioGuarderia,
+				value: $agenteStore.beneficioGuarderia || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -448,7 +452,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Finalizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.carreraFinalizada,
+				value: $agenteStore.carreraFinalizada || '',
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -855,15 +859,25 @@
 				type: 'number',
 				label: 'antiguedad externa',
 				name: 'antiguedadExterna',
-				value: $agenteStore.antiguedadExterna,
-				required: false,
-				validators: []
+				value: $agenteStore.antiguedadExterna || '',
+				required: true,
+				validators: [validateEmptyInput]
 			}
 		]
 	};
 
 	const validateForm = (e: CustomEvent) => {
+		console.log(validate);
 		validate[e.detail.form] = e.detail.status;
+		console.log(validate);
+		console.log(
+			!(
+				validate.datosPersonales &&
+				validate.datosSalud &&
+				validate.datosAcademicos &&
+				validate.datosRecorrido
+			)
+		);
 		disabledbutton = true
 			? !(
 					validate.datosPersonales &&
@@ -893,6 +907,23 @@
 		});
 		console.log($agenteStore);
 	};
+
+	const showValidations = (e: CustomEvent) => {
+		console.log(e.detail.message);
+		showErrors = true;
+		errorsMessage = [];
+		errorsMessage.push(e.detail.message);
+		/*
+		const dataErrors = JSON.parse(e.detail.message);
+
+		showErrors = true;
+		errorsMessage = [];
+		// TODO: invertir el orden de los mensjes
+		Object.entries(dataErrors.flags).forEach((flag) => {
+			if (flag[1]) return;
+			errorsMessage.push(dataErrors.messages[flag[0]]);
+		});*/
+	};
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
@@ -901,6 +932,10 @@
 		{action}
 		disabled={disabledbutton}
 		extraValidations={veryComplexValidators}
+		on:error={showValidations}
+		on:valid={() => {
+			showErrors = false;
+		}}
 	>
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
@@ -923,4 +958,19 @@
 			{/if}
 		{/each}
 	</FormDrawer>
+	{#if showErrors}
+		<div class=" w-full p-3 m-5 flex flex-col gap-5">
+			{#each errorsMessage as error}
+				<div
+					class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
+				>
+					<Icon src={ExclamationCircle} class="text-rose-500 w-6 h-6" />
+					<div class="w-5/6">
+						<p class="text-stone-700 dark:text-stone-200 text-sm">{error.error}</p>
+						<p class="text-stone-500 text-sm">{error.description}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>

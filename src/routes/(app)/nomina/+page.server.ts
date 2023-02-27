@@ -1,8 +1,9 @@
 import type { Action, Actions } from './$types';
-import { fail } from '@sveltejs/kit';
+import { fail, error } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
 
 const create: Action = async ({ request }) => {
+	console.log('hola que tal');
 	const data = await request.formData();
 
 	const datosAcademicos = {
@@ -61,7 +62,12 @@ const create: Action = async ({ request }) => {
 		if (dataAcademico)
 			await supabase.from('datosAcademicos').delete().eq('id', dataAcademico[0].id);
 		if (dataRecorrido) await supabase.from('datosRecorrido').delete().eq('id', dataRecorrido[0].id);
-		return fail(400);
+		const message = errorSalud
+			? { error: 'Datos de Salud', description: errorSalud.message + '' }
+			: errorAcademico
+			? { error: 'Datos Academicos', description: errorAcademico.message + '' }
+			: { error: 'Datos Institucionales', description: errorRecorrido.message + '' };
+		throw error(400, { message: message });
 	}
 
 	const agente = {
@@ -95,7 +101,10 @@ const create: Action = async ({ request }) => {
 	console.log(data);
 	console.log(agente);
 	console.log(dataAgente, errorAgente);
-	if (errorAgente) return fail(400);
+	if (errorAgente) {
+		const message = { error: 'Datos Personales', description: errorAgente.message + '' };
+		throw error(400, { message: message });
+	}
 };
 
 // TODO: ACTUALIZAR CON LOS NUEVOS DATOS
@@ -172,7 +181,14 @@ const update: Action = async ({ request }) => {
 		await supabase.from('datosRecorrido').select('*').eq('id', currentAgente[0].datosRecorrido);
 
 	if (errorAgente || errorSalud || errorAcademico || errorRecorrido) {
-		return fail(400);
+		const message = errorSalud
+			? { error: 'Datos de Salud', description: errorSalud.message + '' }
+			: errorAcademico
+			? { error: 'Datos Academicos', description: errorAcademico.message + '' }
+			: errorRecorrido
+			? { error: 'Datos Institucionales', description: errorRecorrido.message + '' }
+			: { error: 'Datos Personales', description: errorAgente.message + '' };
+		throw error(400, { message: message });
 	}
 
 	// actualizamos los datos
@@ -200,7 +216,15 @@ const update: Action = async ({ request }) => {
 
 	// chequeamos que todo se actualice bien sino hacemos rollback
 
-	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError)
-		return fail(400);
+	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError) {
+		const message = updateSaludError
+			? { error: 'Datos de Salud', description: updateSaludError.message + '' }
+			: updateAcademicoError
+			? { error: 'Datos Academicos', description: updateAcademicoError.message + '' }
+			: updateRecorridoError
+			? { error: 'Datos Institucionales', description: updateRecorridoError.message + '' }
+			: { error: 'Datos Personales', description: updateAgenteError?.message + '' };
+		throw error(400, { message: message });
+	}
 };
 export const actions: Actions = { create, update };

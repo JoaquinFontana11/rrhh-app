@@ -191,7 +191,11 @@ const update: Action = async ({ request }) => {
 		.single();
 
 	if (errorLicencia) {
-		return fail(400);
+		const message = {
+			error: 'Datos generales de la licencia',
+			description: errorLicencia.message + ''
+		};
+		throw error(400, { message: message });
 	}
 
 	if (currentLicencia.tipo === 'academica') {
@@ -204,7 +208,8 @@ const update: Action = async ({ request }) => {
 				.single();
 
 		if (errorDatosAcademicos) {
-			return fail(400);
+			const message = { error: 'Datos Academicos', description: errorDatosAcademicos.message + '' };
+			throw error(400, { message: message });
 		}
 
 		const { error: updateDatosAcademicosError }: PostgrestResponse<any> = await supabase
@@ -213,7 +218,11 @@ const update: Action = async ({ request }) => {
 			.eq('id', currentDatosAcademicos.id);
 
 		if (updateDatosAcademicosError) {
-			return fail(400);
+			const message = {
+				error: 'Datos Academicos',
+				description: updateDatosAcademicosError.message + ''
+			};
+			throw error(400, { message: message });
 		}
 		licencia.datosAcademicos = currentDatosAcademicos.id;
 	} else if (currentLicencia.tipo === 'salud') {
@@ -226,7 +235,8 @@ const update: Action = async ({ request }) => {
 				.single();
 
 		if (errorDatosSalud) {
-			return fail(400);
+			const message = { error: 'Datos de Salud', description: errorDatosSalud.message + '' };
+			throw error(400, { message: message });
 		}
 
 		const { error: updateDatosSaludError }: PostgrestResponse<any> = await supabase
@@ -235,7 +245,11 @@ const update: Action = async ({ request }) => {
 			.eq('id', currentDatosSalud.id);
 
 		if (updateDatosSaludError) {
-			return fail(400);
+			const message = {
+				error: 'Datos de Salud',
+				description: updateDatosSaludError.message + ''
+			};
+			throw error(400, { message: message });
 		}
 		licencia.datosSalud = currentDatosSalud.id;
 	} else if (currentLicencia.tipo === 'teletrabajo') {
@@ -248,7 +262,11 @@ const update: Action = async ({ request }) => {
 				.single();
 
 		if (errorDatosTeletrabajo) {
-			return fail(400);
+			const message = {
+				error: 'Datos Teletrabajo',
+				description: errorDatosTeletrabajo.message + ''
+			};
+			throw error(400, { message: message });
 		}
 
 		const { error: updateDatosTeletrabajoError }: PostgrestResponse<any> = await supabase
@@ -257,7 +275,11 @@ const update: Action = async ({ request }) => {
 			.eq('id', currentDatosTeletrabajo.id);
 
 		if (updateDatosTeletrabajoError) {
-			return fail(400);
+			const message = {
+				error: 'Datos Teletrabajo',
+				description: updateDatosTeletrabajoError.message + ''
+			};
+			throw error(400, { message: message });
 		}
 		licencia.datosTeletrabajo = currentDatosTeletrabajo.id;
 	} else if (currentLicencia.tipo === 'vacaciones') {
@@ -270,7 +292,11 @@ const update: Action = async ({ request }) => {
 				.single();
 
 		if (errorDatosVacaciones) {
-			return fail(400);
+			const message = {
+				error: 'Datos Vacaciones',
+				description: errorDatosVacaciones.message + ''
+			};
+			throw error(400, { message: message });
 		}
 
 		const { error: updateDatosVacacionesError }: PostgrestResponse<any> = await supabase
@@ -279,7 +305,11 @@ const update: Action = async ({ request }) => {
 			.eq('id', currentDatosVacaciones.id);
 
 		if (updateDatosVacacionesError) {
-			return fail(400);
+			const message = {
+				error: 'Datos Vacaiones',
+				description: updateDatosVacacionesError.message + ''
+			};
+			throw error(400, { message: message });
 		}
 		licencia.datosVacaciones = currentDatosVacaciones.id;
 	}
@@ -290,7 +320,11 @@ const update: Action = async ({ request }) => {
 		.eq('id', currentLicencia.id);
 
 	if (updateLicenciaError) {
-		return fail(400);
+		const message = {
+			error: 'Datos generales de la licencia',
+			description: updateLicenciaError.message + ''
+		};
+		throw error(400, { message: message });
 	}
 };
 

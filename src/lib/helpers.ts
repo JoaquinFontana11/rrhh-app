@@ -17,7 +17,8 @@ export const validateAllNomina = async (
 	action: string
 ) => {
 	console.log('hola que tal');
-	let error = { message: [], status: false };
+	let error = { message: [{}], status: false };
+	error.message.pop();
 	const formData = new FormData();
 	for (const key in components) {
 		let resExtraValidations;
@@ -27,11 +28,15 @@ export const validateAllNomina = async (
 			component.validators.forEach((validator) => {
 				//res = component.required ? validator(component.value) : null;
 				res = validator(component.value);
-				if (res && res.message) error.message.push(`${component.name}: ${res.message}`);
+				console.log(component.value, '    ', res);
+				if (res && res.message)
+					error.message.push({ error: component.name, description: res.message });
+
 				error.status = res && !res.status ? !res.status : status;
+				console.log('aaaaaa', component);
 			});
-			if (error.status) return { data: error, status: false };
 		}
+		if (error.status) return { data: error, status: false };
 		resExtraValidations = extraValidations[key]
 			? extraValidations[key](components[key])
 			: { status: false };
@@ -64,9 +69,11 @@ export const validateAllNomina = async (
 
 export const validateAllLicencia = async (
 	components: IComponentObject,
-	extraValidations: FunctionsObject | boolean = false
+	extraValidations: FunctionsObject | boolean = false,
+	action = 'create'
 ) => {
-	let error = { message: [], status: false };
+	let error = { message: [{}], status: false };
+	error.message.pop();
 	const formData = new FormData();
 	const iterator: Array<string> = ['datosGenerales', components.datosGenerales[5].value];
 	iterator.forEach(async (key) => {
@@ -78,7 +85,9 @@ export const validateAllLicencia = async (
 			component.validators.forEach((validator) => {
 				//res = component.required ? validator(component.value) : null;
 				res = validator(component.value);
-				if (res && res.message) error.message.push(`${component.name}: ${res.message}`);
+
+				if (res && res.message)
+					error.message.push({ error: component.name, description: res.message });
 				error.status = res && !res.status ? !res.status : status;
 			});
 			if (error.status) return { data: error, status: false };
