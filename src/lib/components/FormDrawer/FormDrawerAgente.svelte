@@ -108,10 +108,10 @@
 		datosRecorrido: false
 	};
 	const validate: { [key: string]: any } = {
-		datosPersonales: false,
-		datosSalud: false,
-		datosAcademicos: false,
-		datosRecorrido: false
+		datosPersonales: true,
+		datosSalud: true,
+		datosAcademicos: true,
+		datosRecorrido: true
 	};
 	let disabledbutton: boolean = true;
 	const formNames = ['datosPersonales', 'datosSalud', 'datosAcademicos', 'datosRecorrido'];
@@ -278,7 +278,7 @@
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: $agenteStore.activo || '',
+				value: $agenteStore.activo,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -325,7 +325,7 @@
 				type: 'select',
 				label: 'Tiene hijos',
 				name: 'tieneHijos',
-				value: $agenteStore.tieneHijos || '',
+				value: $agenteStore.tieneHijos,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -337,7 +337,7 @@
 				type: 'select',
 				label: 'Asignacion familiar',
 				name: 'asignacionFamiliar',
-				value: $agenteStore.asignacionFamiliar || '',
+				value: $agenteStore.asignacionFamiliar,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -349,7 +349,7 @@
 				type: 'select',
 				label: 'Beneficio de guarderia',
 				name: 'beneficioGuarderia',
-				value: $agenteStore.beneficioGuarderia || '',
+				value: $agenteStore.beneficioGuarderia,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -452,7 +452,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Finalizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.carreraFinalizada || '',
+				value: $agenteStore.carreraFinalizada,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -491,23 +491,23 @@
 				value: $agenteStore.categoria || '',
 				required: false,
 				validators: [
-					(value: any) => {
+					(value: number) => {
 						if (
 							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
-							(value <= 5 || value >= 21)
+							(value.toString().length <= 5 || value.toString().length >= 21)
 						)
 							return {
 								message: 'La categoria debe ser un numero entre 5 y 21',
 								status: false
 							};
 					},
-					(value: any) => {
+					(value: number) => {
 						if (
 							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
-							(value == '' || value == null)
+							(value.toString() == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -532,7 +532,7 @@
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -552,7 +552,7 @@
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -571,7 +571,7 @@
 				type: 'select',
 				label: 'obra social activa',
 				name: 'obraSocialActiva',
-				value: $agenteStore.obraSocialActiva || '',
+				value: $agenteStore.obraSocialActiva,
 				required: false,
 				validators: [
 					(value: any) => {
@@ -580,7 +580,7 @@
 							(value == '' || value == null)
 						) {
 							return {
-								message: 'Si el tipo de contratacion es PPT o PP, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PTT o PP, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -691,7 +691,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta PPT',
+				label: 'fecha de alta PTT',
 				name: 'fechaAltaPTT',
 				value: $agenteStore.fechaAltaPTT || '',
 				required: false,
@@ -700,7 +700,7 @@
 					(value: any) => {
 						if ($agenteStore.tipoContratacion == 'PPT' && (value == '' || value == null)) {
 							return {
-								message: 'Si el tipo de contratacion es PPT, este campo es obligatorio',
+								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
 								status: false
 							};
 						}
@@ -720,7 +720,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de baja PPT',
+				label: 'fecha de baja PTT',
 				name: 'fechaBajaPTT',
 				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
@@ -743,7 +743,7 @@
 			},
 			{
 				type: 'text',
-				label: 'expediente de alta PPT',
+				label: 'expediente de alta PTT',
 				name: 'expedienteAltaPTT',
 				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
@@ -762,7 +762,7 @@
 			},
 			{
 				type: 'text',
-				label: 'acto de alta PPT',
+				label: 'acto de alta PTT',
 				name: 'actoAltaPTT',
 				value: $agenteStore.actoAltaPTT || '',
 				required: false,
@@ -859,7 +859,7 @@
 				type: 'number',
 				label: 'antiguedad externa',
 				name: 'antiguedadExterna',
-				value: $agenteStore.antiguedadExterna || '',
+				value: $agenteStore.antiguedadExterna || 0,
 				required: true,
 				validators: [validateEmptyInput]
 			}
