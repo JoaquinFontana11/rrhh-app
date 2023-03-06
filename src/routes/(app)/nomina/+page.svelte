@@ -261,8 +261,9 @@
 			let:rowData
 			><button
 				on:click={() => {
+					console.log(rowData);
 					agenteStore.update((n) => rowData);
-
+					console.log(agenteStore);
 					showDrawer = true;
 				}}
 				class="w-6 h-6 bg-DPMA-Turquoise flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-light-Turquoise"

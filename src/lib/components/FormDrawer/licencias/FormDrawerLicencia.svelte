@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
+	import { Icon, ChevronDown, ExclamationCircle, CheckCircle } from 'svelte-hero-icons';
 	import type { Agente, IComponentObject } from '$lib/types';
 	import FormDrawer from '../FormDrawer.svelte';
 	import FormDrawerInputGroup from '../FormDrawerInputGroup.svelte';
@@ -13,6 +13,9 @@
 	let agentes = props.drawerContentProps || [];
 	let showErrors: boolean = false;
 	let errorsMessage: { error: string; description: string }[] = [];
+
+	let successMessage: { title: string; description: string } = { title: '', description: '' };
+	let success: boolean = false;
 	let disabledButton = true;
 	let showForm = true;
 	let action = 'create';
@@ -24,24 +27,6 @@
 	let validateForms = {
 		datosGenerales: false,
 		academica: true
-	};
-
-	let licencia = {
-		agente: 1,
-		tipo: '',
-		fechaInicio: '',
-		fechaFin: '',
-		observaciones: '',
-		autorizadoSiape: '',
-		ultimaMateria: '',
-		periodo: 1,
-		concepto: '',
-		mailAutorizado: false,
-		comunicacionInicio: false,
-		comunicacionFin: false,
-		comunicoInicioA: '',
-		comunicoFinA: '',
-		conectadoTeams: false
 	};
 
 	let components: IComponentObject = {};
@@ -315,6 +300,15 @@
 		disabledButton = true ? !(validateForms.datosGenerales && validateForms.academica) : false;
 		validateForm = !disabledButton;
 	};
+
+	const showSuccess = (e: CustomEvent) => {
+		successMessage.title = `Licencia ${action === 'create' ? 'Creada' : 'Actualizada'}`;
+		successMessage.description = `La licencia se ${
+			action === 'create' ? 'creó' : 'actualizó'
+		} correctamente!`;
+		success = true;
+		showErrors = false;
+	};
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
@@ -323,9 +317,7 @@
 		{action}
 		disabled={disabledButton || showForm}
 		on:error={showValidations}
-		on:valid={() => {
-			showErrors = false;
-		}}
+		on:valid={showSuccess}
 		><FormDrawerInputGroupButton
 			on:click={() => {
 				showForm = !showForm;
@@ -371,6 +363,19 @@
 					</div>
 				</div>
 			{/each}
+		</div>
+	{/if}
+	{#if success}
+		<div class=" w-full p-3 m-5 flex flex-col gap-5">
+			<div
+				class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
+			>
+				<Icon src={CheckCircle} class="text-lime-500 w-6 h-6" />
+				<div class="w-5/6">
+					<p class="text-stone-700 dark:text-stone-200 text-sm">{successMessage.title}</p>
+					<p class="text-stone-500 text-sm">{successMessage.description}</p>
+				</div>
+			</div>
 		</div>
 	{/if}
 </div>

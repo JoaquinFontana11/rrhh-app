@@ -110,7 +110,7 @@ const create: Action = async ({ request }) => {
 // TODO: ACTUALIZAR CON LOS NUEVOS DATOS
 const update: Action = async ({ request }) => {
 	const data = await request.formData();
-
+	console.log(data);
 	const datosAcademicos = {
 		carreraUniversitaria: data.get('carreraUniversitaria'),
 		carreraPostgrado: data.get('carreraPostgrado'),
@@ -166,11 +166,13 @@ const update: Action = async ({ request }) => {
 		asignacionFamiliar: data.get('asignacionFamiliar'),
 		beneficioGuarderia: data.get('beneficioGuarderia')
 	};
+	console.log(datosSalud);
 
 	const { data: currentAgente, error: errorAgente }: { data: any; error: any } = await supabase
 		.from('agente')
 		.select('*')
 		.eq('DNI', data.get('DNI'));
+	console.log(currentAgente);
 	const { data: currentSalud, error: errorSalud }: { data: any; error: any } = await supabase
 		.from('datosSalud')
 		.select('*')

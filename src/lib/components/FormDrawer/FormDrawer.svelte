@@ -46,6 +46,7 @@
 				console.log(message);
 				dispatcher('error', { message: message });
 			} else {
+				console.log('ta todo bien master');
 				dispatcher('valid');
 			}
 		} catch (err) {

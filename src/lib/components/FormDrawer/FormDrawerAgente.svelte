@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
+	import { Icon, ExclamationCircle, CheckCircle } from 'svelte-hero-icons';
 	import { fly } from 'svelte/transition';
 	import FormDrawer from './FormDrawer.svelte';
 	import FormDrawerInputGroup from './FormDrawerInputGroup.svelte';
@@ -27,14 +27,18 @@
 	let superioresDirectos: IOption[] = [];
 	let tipoContratacion: { [key: string]: boolean } = {
 		CLS: true,
-		PPT: true,
+		PTT: true,
 		PP: true
 	};
 	let showErrors: boolean = false;
 	let errorsMessage: ErrorObject[] = [];
+
+	let successMessage: { title: string; description: string } = { title: '', description: '' };
+	let success: boolean = false;
+
 	$: tipoContratacion = {
 		CLS: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'CLS') : true,
-		PPT: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PPT') : true,
+		PTT: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PTT') : true,
 		PP: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PP') : true
 	};
 	console.log($agenteStore.tipoContratacion);
@@ -475,7 +479,7 @@
 					},
 					{
 						name: 'Planta transitorio temporaria',
-						value: 'PPT'
+						value: 'PTT'
 					},
 					{
 						name: 'Planta permanente',
@@ -493,7 +497,7 @@
 				validators: [
 					(value: number) => {
 						if (
-							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value.toString().length <= 5 || value.toString().length >= 21)
 						)
 							return {
@@ -503,7 +507,7 @@
 					},
 					(value: number) => {
 						if (
-							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value.toString() == '' || value == null)
 						) {
 							return {
@@ -528,7 +532,7 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
@@ -548,7 +552,7 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
@@ -576,7 +580,7 @@
 				validators: [
 					(value: any) => {
 						if (
-							($agenteStore.tipoContratacion == 'PPT' || $agenteStore.tipoContratacion == 'PP') &&
+							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
 							(value == '' || value == null)
 						) {
 							return {
@@ -695,10 +699,10 @@
 				name: 'fechaAltaPTT',
 				value: $agenteStore.fechaAltaPTT || '',
 				required: false,
-				hidden: tipoContratacion.PPT,
+				hidden: tipoContratacion.PTT,
 				validators: [
 					(value: any) => {
-						if ($agenteStore.tipoContratacion == 'PPT' && (value == '' || value == null)) {
+						if ($agenteStore.tipoContratacion == 'PTT' && (value == '' || value == null)) {
 							return {
 								message: 'Si el tipo de contratacion es PTT, este campo es obligatorio',
 								status: false
@@ -724,12 +728,12 @@
 				name: 'fechaBajaPTT',
 				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
-				hidden: tipoContratacion.PPT,
+				hidden: tipoContratacion.PTT,
 				validators: [
 					(value: any) => {
 						if (
 							$agenteStore.fechaAltaPTT &&
-							$agenteStore.tipoContratacion !== 'PPT' &&
+							$agenteStore.tipoContratacion !== 'PTT' &&
 							(value == '' || value == null)
 						) {
 							return {
@@ -747,11 +751,11 @@
 				name: 'expedienteAltaPTT',
 				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
-				hidden: tipoContratacion.PPT,
+				hidden: tipoContratacion.PTT,
 				validators: [
 					(value: any) => {
 						const regex = /[E][X][-]\d{4}[-]\d{8}[-]\s[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PPT' && !regex.test(value) && value !== '')
+						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO- -ECOSISTEMA-REPARTICION)',
@@ -766,11 +770,11 @@
 				name: 'actoAltaPTT',
 				value: $agenteStore.actoAltaPTT || '',
 				required: false,
-				hidden: tipoContratacion.PPT,
+				hidden: tipoContratacion.PTT,
 				validators: [
 					(value: any) => {
 						const regex = /[A-Z]*[-]\d{4}[-]\d{8}[-][A-Z]*[-][A-Z]*/;
-						if ($agenteStore.tipoContratacion == 'PPT' && !regex.test(value) && value !== '')
+						if ($agenteStore.tipoContratacion == 'PTT' && !regex.test(value) && value !== '')
 							return {
 								message:
 									'No cumple con el formato de expediente (EX-AÑO-NUMERO-ECOSISTEMA-REPARTICION)',
@@ -910,6 +914,7 @@
 
 	const showValidations = (e: CustomEvent) => {
 		console.log(e.detail.message);
+		success = false;
 		showErrors = true;
 		errorsMessage = [];
 		errorsMessage.push(e.detail.message);
@@ -924,6 +929,14 @@
 			errorsMessage.push(dataErrors.messages[flag[0]]);
 		});*/
 	};
+	const showSuccess = (e: CustomEvent) => {
+		successMessage.title = `Agente ${action === 'create' ? 'Creado' : 'Actualizado'}`;
+		successMessage.description = `El agente se ${
+			action === 'create' ? 'creó' : 'actualizó'
+		} correctamente!`;
+		success = true;
+		showErrors = false;
+	};
 </script>
 
 <div class="p-2 flex flex-col items-center w-full scrollbar-thin scrollbar-w-10 overflow-y-scroll">
@@ -933,9 +946,7 @@
 		disabled={disabledbutton}
 		extraValidations={veryComplexValidators}
 		on:error={showValidations}
-		on:valid={() => {
-			showErrors = false;
-		}}
+		on:valid={showSuccess}
 	>
 		{#each formNames as formName}
 			<FormDrawerInputGroupButton
@@ -971,6 +982,19 @@
 					</div>
 				</div>
 			{/each}
+		</div>
+	{/if}
+	{#if success}
+		<div class=" w-full p-3 m-5 flex flex-col gap-5">
+			<div
+				class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
+			>
+				<Icon src={CheckCircle} class="text-lime-500 w-6 h-6" />
+				<div class="w-5/6">
+					<p class="text-stone-700 dark:text-stone-200 text-sm">{successMessage.title}</p>
+					<p class="text-stone-500 text-sm">{successMessage.description}</p>
+				</div>
+			</div>
 		</div>
 	{/if}
 </div>

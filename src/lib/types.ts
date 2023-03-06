@@ -141,7 +141,7 @@ type FlatAgenteSupabase = {
 	categoria: number;
 	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 	numSiape: number;
-	tipoContratacion: 'CLS' | 'PPT' | 'PP';
+	tipoContratacion: 'CLS' | 'PTT' | 'PP';
 	referenciaBaja: string;
 	obraSocialActiva: boolean;
 	fechaAltaCLS: string;
@@ -222,7 +222,7 @@ type AgenteSupabase = {
 				categoria: number;
 				agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 				numSiape: number;
-				tipoContratacion: 'CLS' | 'PPT' | 'PP';
+				tipoContratacion: 'CLS' | 'PTT' | 'PP';
 				referenciaBaja: string;
 				obraSocialActiva: boolean;
 				fechaAltaCLS: string;
@@ -311,7 +311,7 @@ export type Agente = {
 	categoria: number;
 	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
 	numSiape: number;
-	tipoContratacion: 'CLS' | 'PPT' | 'PP';
+	tipoContratacion: 'CLS' | 'PTT' | 'PP';
 	referenciaBaja: string;
 	obraSocialActiva: boolean;
 	fechaAltaCLS: string;
