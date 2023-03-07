@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { LicenciaStore } from '$lib/stores/licenciaStore';
 	import { supabase } from '$lib/supabaseClient';
 	import { createEventDispatcher } from 'svelte';
 	import DashboardCalendarCellItem from './DashboardCalendarCellItem.svelte';

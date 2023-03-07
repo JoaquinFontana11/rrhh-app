@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type IconSource, Icon } from 'svelte-hero-icons';
+	import { clickOutside } from '$lib/clickOutside';
 
 	export let name: string = 'btn';
 	export let icon: IconSource;
@@ -7,6 +8,11 @@
 	export let textHighlight: boolean = false;
 	export let dropdown: boolean = false;
 	export let showDropdown: boolean = false;
+
+	const handleClickOutside = (e: any) => {
+		console.log(e);
+		showDropdown = false;
+	};
 </script>
 
 {#if !dropdown}
@@ -19,7 +25,7 @@
 		on:click><Icon src={icon} class="w-4 h-4" /> {name}</button
 	>
 {:else}
-	<div class="relative">
+	<div class="relative" use:clickOutside on:click_outside={handleClickOutside}>
 		<button
 			class={`
 	 p-1 text-sm rounded-md flex gap-2 justify-center items-center ${
@@ -27,6 +33,7 @@
 		}`}
 			class:highligth={highlight}
 			class:text-highligth={textHighlight}
+			id="toolbarButton"
 			on:click><Icon src={icon} class="w-4 h-4" /> {name}</button
 		>
 		{#if showDropdown}

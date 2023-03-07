@@ -60,6 +60,7 @@
 	>
 		<option value="/nomina">nomina</option>
 		<option value="/licencias">licencias</option>
+		<option value="/calendario">calendario</option>
 	</select>
 	<label class="dark:text-stone-400" for="contenido">Contenido de la nota</label>
 	<textarea

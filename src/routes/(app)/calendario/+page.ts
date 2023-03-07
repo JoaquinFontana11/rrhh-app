@@ -1,6 +1,8 @@
 import type { PageLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import type { PostgrestResponse } from '@supabase/supabase-js';
+import notasStore from '$lib/stores/notasStore';
+import type { Nota } from '$lib/types';
 
 type LicenciaShort = {
 	fechaInicio: string;
@@ -23,7 +25,14 @@ export const load: PageLoad<{
 	direcciones: any;
 	agentes: any;
 	equipos: any;
-}> = async () => {
+}> = async ({ url }) => {
+	const resSupabaseNotas: PostgrestResponse<Nota> = await supabase
+		.from('notas')
+		.select('*')
+		.ilike('modulo', `%${url.pathname}%`);
+
+	const notas = resSupabaseNotas.data as any;
+	if (resSupabaseNotas.data) notasStore.update((n) => notas);
 	const resSupabaseLicencias: PostgrestResponse<LicenciaShort> = await supabase
 		.from('licencia')
 		.select('fechaInicio, fechaFin, tipo, agente(direccion(acronimo, id), equipo(equipo, id))');

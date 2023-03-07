@@ -45,7 +45,8 @@
 		<DashboardToolbarSelect
 			options={[
 				{ name: 'nomina', value: '/nomina' },
-				{ name: 'licencias', value: '/licencias' }
+				{ name: 'licencias', value: '/licencias' },
+				{ name: 'calendario', value: '/calendario' }
 			]}
 			value="/nomina"
 			on:input={filterNotes}

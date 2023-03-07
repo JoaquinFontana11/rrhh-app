@@ -9,6 +9,7 @@
 	notasStore.subscribe((val: Nota[]) => {
 		notas = val;
 	});
+	console.log(notas);
 </script>
 
 <!-- <div
