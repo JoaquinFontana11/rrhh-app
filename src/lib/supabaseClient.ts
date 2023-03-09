@@ -6,7 +6,7 @@ export const supabase = createClient(
 	PUBLIC_SUPABASE_URL as string,
 	PUBLIC_SUPABASE_ANON_KEY as string,
 	undefined,
-	{ secure: PUBLIC_NODE_ENV === 'production' }
+	{ secure: PUBLIC_NODE_ENV === 'production', maxAge: 36000 }
 );
 
 export const execSupabaseQuery = async (

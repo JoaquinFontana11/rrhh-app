@@ -14,6 +14,7 @@
 	} from 'svelte-hero-icons';
 	import SidebarButton from './SidebarButton.svelte';
 	import SidebarButtonTheme from './SidebarButtonTheme.svelte';
+	import SidebarButtonLogout from './SidebarButtonLogout.svelte';
 </script>
 
 <nav
@@ -30,5 +31,6 @@
 	</ul>
 	<ul class="absolute bottom-2 flex flex-col gap-3">
 		<SidebarButtonTheme />
+		<SidebarButtonLogout />
 	</ul>
 </nav>
