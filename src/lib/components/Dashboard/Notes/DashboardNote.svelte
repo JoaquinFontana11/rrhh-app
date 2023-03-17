@@ -1,28 +1,52 @@
 <script lang="ts">
-	import {
-		Icon,
-		X,
-		CheckCircle,
-		Exclamation,
-		ExclamationCircle,
-		PencilAlt,
-		Check
-	} from 'svelte-hero-icons';
+	import { Icon, X, CheckCircle, Exclamation, ExclamationCircle, Eye } from 'svelte-hero-icons';
 	import { createEventDispatcher } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import type { Nota } from '$lib/types';
+	import DashboardBigCardNote from './DashboardBigCardNote.svelte';
+	import { fly } from 'svelte/transition';
 	import Spinner from 'svelte-spinner';
 
 	export let note: Nota;
 	const dispatcher = createEventDispatcher();
-	let showEdit = false;
+	let showBigNote = false;
 	let loading = false;
 
 	const setLimitText = () => {
 		note.contenido = note.contenido.length < 18 ? note.contenido : note.contenido.substring(0, 18);
 	};
+	const setBlur = () => {
+		dispatcher('set-blur', {});
+		console.log('blur en DashboardNote');
+		showBigNote = !showBigNote;
+	};
+	const stopPropagation = (e: Event) => {
+		e.stopPropagation();
+	};
 </script>
 
+{#if showBigNote}
+	<div
+		class="fixed inset-0 flex items-center justify-center"
+		on:click={stopPropagation}
+		on:keyup={stopPropagation}
+	>
+		<div
+			class="fixed inset-0 bg-stone-900 dark:bg-stone-700 opacity-75 blur-lg"
+			on:click={stopPropagation}
+			on:keyup={stopPropagation}
+		/>
+		<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
+			<DashboardBigCardNote
+				{note}
+				on:close-note={() => {
+					showBigNote = false;
+					dispatcher('set-blur', {});
+				}}
+			/>
+		</div>
+	</div>
+{/if}
 <div
 	class="w-2/3 h-auto bg-white border border-white dark:bg-stone-800 rounded-md shadow-xl p-5 flex justify-start items-center  gap-2 dark:border-stone-700 "
 >
@@ -41,41 +65,11 @@
 			class="w-8 h-8 "
 		/>
 	</div>
-	{#if showEdit}
-		<textarea
-			id="contenido"
-			name="contenido"
-			rows="1"
-			bind:value={note.contenido}
-			on:input={setLimitText}
-			class="resize-none bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 "
-		/>
-		<button
-			on:click={async () => {
-				if (loading) return;
-				loading = true;
-				await supabase.from('notas').update({ contenido: note.contenido }).eq('id', note.id);
-				showEdit = false;
-				dispatcher('refresh', {});
-				loading = false;
-			}}
-			>{#if loading}
-				<Spinner />
-			{:else}
-				<Icon src={Check} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
-			{/if}</button
-		>
-	{:else}
-		<p class="grow dark:text-stone-100">
-			{note.contenido}
-		</p>
-	{/if}
-	<button
-		on:click={() => {
-			showEdit = !showEdit;
-		}}
-	>
-		<Icon src={PencilAlt} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
+	<p class="grow dark:text-stone-100">
+		{note.titulo}
+	</p>
+	<button on:click={setBlur}>
+		<Icon src={Eye} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
 	</button>
 	<button
 		on:click={async () => {

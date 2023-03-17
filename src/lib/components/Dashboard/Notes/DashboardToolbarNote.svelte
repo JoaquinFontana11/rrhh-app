@@ -10,6 +10,7 @@
 
 	let nivel = 'ok';
 	let contenido = '';
+	let titulo = '';
 	let modulo = '/nomina';
 	let loading = false;
 
@@ -18,7 +19,7 @@
 		loading = true;
 		const res: PostgrestResponse<Nota> = await supabase
 			.from('notas')
-			.insert({ modulo, nivel, contenido })
+			.insert({ modulo, nivel, contenido, titulo })
 			.select();
 
 		let note: Nota;
@@ -62,6 +63,14 @@
 		<option value="/licencias">licencias</option>
 		<option value="/calendario">calendario</option>
 	</select>
+	<label for="titulo" class="dark:text-stone-400">Titulo de la nota</label>
+	<input
+		type="text"
+		id="titulo"
+		name="titulo"
+		bind:value={titulo}
+		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
+	/>
 	<label class="dark:text-stone-400" for="contenido">Contenido de la nota</label>
 	<textarea
 		id="contenido"

@@ -10,6 +10,8 @@
 	const dispatcher = createEventDispatcher();
 
 	export let notes: Nota[];
+	let blur = false;
+
 	let notesObj: { [key: string]: any } = {
 		ok: notes.filter((note) => note.nivel == 'ok'),
 		warn: notes.filter((note) => note.nivel == 'warn'),
@@ -48,40 +50,61 @@
 <div class="flex h-full w-full">
 	<div
 		class="pt-10 bg-lime-500/20 dark:bg-stone-900 dark:border-2 dark:border-green-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
-		use:dndzone={{ items: notesObj.ok, flipDurationMs, type }}
+		use:dndzone={{ items: notesObj.ok, flipDurationMs, type, dragDisabled: blur }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}
 		id="ok"
 	>
 		{#each notesObj.ok as note (note.id)}
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
-				<DashboardNote {note} on:delete-note={clearNotes} />
+				<DashboardNote
+					{note}
+					on:delete-note={clearNotes}
+					on:set-blur={() => {
+						blur = !blur;
+						dispatcher('refresh', {});
+					}}
+				/>
 			</div>
 		{/each}
 	</div>
 	<div
 		class="pt-10 bg-yellow-500/20 dark:bg-stone-900 dark:border-2 dark:border-yellow-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
-		use:dndzone={{ items: notesObj.warn, flipDurationMs, type }}
+		use:dndzone={{ items: notesObj.warn, flipDurationMs, type, dragDisabled: blur }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}
 		id="warn"
 	>
 		{#each notesObj.warn as note (note.id)}
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
-				<DashboardNote {note} on:delete-note={clearNotes} />
+				<DashboardNote
+					{note}
+					on:delete-note={clearNotes}
+					on:set-blur={() => {
+						blur = !blur;
+						dispatcher('refresh', {});
+					}}
+				/>
 			</div>
 		{/each}
 	</div>
 	<div
 		class="pt-10 bg-rose-500/20 dark:bg-stone-900 dark:border-2 dark:border-rose-500 h-full w-full flex flex-col gap-5 p-2 justify-start items-center overflow-y-scroll scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700"
-		use:dndzone={{ items: notesObj.alert, flipDurationMs, type }}
+		use:dndzone={{ items: notesObj.alert, flipDurationMs, type, dragDisabled: blur }}
 		on:consider={handleSort}
 		on:finalize={handleSortFinalize}
 		id="alert"
 	>
 		{#each notesObj.alert as note (note.id)}
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
-				<DashboardNote {note} on:delete-note={clearNotes} />
+				<DashboardNote
+					{note}
+					on:delete-note={clearNotes}
+					on:set-blur={() => {
+						blur = !blur;
+						dispatcher('refresh', {});
+					}}
+				/>
 			</div>
 		{/each}
 	</div>

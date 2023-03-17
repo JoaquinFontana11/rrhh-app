@@ -42,6 +42,7 @@ type Nota = {
 	modulo: string;
 	nivel: string;
 	contenido: string;
+	titulo: string;
 	id: number;
 	created_at: number;
 };
