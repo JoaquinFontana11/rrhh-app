@@ -13,10 +13,7 @@ module.exports = {
 					Error: '#BE1717',
 					Succes: '#22a954',
 					Green: '#84CC16',
-
-					b: '#4DC300',
-					c: '#76E81F',
-					d: '#76E81F'
+					Black: '#414042'
 				},
 				dark: {
 					Turquoise: '#509199',
@@ -26,7 +23,8 @@ module.exports = {
 				light: {
 					Turquoise: '#60CCDA',
 					Rose: '#EB3B87',
-					Grey: '#B2B2B2'
+					Grey: '#B2B2B2',
+					Black: '#787878'
 				}
 			}
 		}

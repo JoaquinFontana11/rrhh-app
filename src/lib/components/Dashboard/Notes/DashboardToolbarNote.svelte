@@ -10,7 +10,7 @@
 
 	let nivel = 'ok';
 	let contenido = '';
-	let modulo = 'nomina';
+	let modulo = '/nomina';
 	let loading = false;
 
 	const createNote = async () => {

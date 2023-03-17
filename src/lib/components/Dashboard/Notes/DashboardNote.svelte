@@ -52,9 +52,12 @@
 		/>
 		<button
 			on:click={async () => {
+				if (loading) return;
+				loading = true;
 				await supabase.from('notas').update({ contenido: note.contenido }).eq('id', note.id);
 				showEdit = false;
 				dispatcher('refresh', {});
+				loading = false;
 			}}
 			>{#if loading}
 				<Spinner />
@@ -69,7 +72,7 @@
 	{/if}
 	<button
 		on:click={() => {
-			showEdit = true;
+			showEdit = !showEdit;
 		}}
 	>
 		<Icon src={PencilAlt} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
