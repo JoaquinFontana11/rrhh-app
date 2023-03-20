@@ -254,6 +254,22 @@ type EquipoSupabase = {
 	equipo: string;
 	created_at: string;
 };
+
+type Usuario = {
+	id: number;
+	nombre: string;
+	apellido: string;
+	color: string;
+	usuario: string;
+	created_at: number;
+};
+type UsuarioEtiquetado = {
+	id: number;
+	nota: Nota;
+	usuario: Usuario;
+	created_at: number;
+};
+
 export type {
 	Nota,
 	AgenteSupabase,
@@ -261,7 +277,9 @@ export type {
 	EquipoSupabase,
 	FlatAgenteSupabase,
 	LicenciaSupabase,
-	FlatLicenciaSupabase
+	FlatLicenciaSupabase,
+	Usuario,
+	UsuarioEtiquetado
 };
 
 // tipos utilizados para los stores

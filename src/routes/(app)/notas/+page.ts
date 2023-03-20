@@ -1,15 +1,15 @@
 import type { PageLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import type { PostgrestResponse } from '@supabase/supabase-js';
-import type { Nota } from '$lib/types';
+import type { Nota, Usuario } from '$lib/types';
 
 // usamos CSR para poder usar el localStorage.
 export const ssr = false;
 
 export const load: PageLoad = async () => {
 	const res: PostgrestResponse<Nota> = await supabase.from('notas').select('*');
-	const { data, error } = await supabase.auth.admin.listUsers();
-	console.log(data.users, error);
+	const usuarios: PostgrestResponse<Usuario> = await supabase.from('usuarios').select('*');
+	console.log(usuarios.data);
 	return {
 		data: res.data,
 		reload: reload

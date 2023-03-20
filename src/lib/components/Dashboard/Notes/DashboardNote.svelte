@@ -2,7 +2,8 @@
 	import { Icon, X, CheckCircle, Exclamation, ExclamationCircle, Eye } from 'svelte-hero-icons';
 	import { createEventDispatcher } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
-	import type { Nota } from '$lib/types';
+	import type { Nota, Usuario } from '$lib/types';
+	import type { PostgrestResponse } from '@supabase/supabase-js';
 	import DashboardBigCardNote from './DashboardBigCardNote.svelte';
 	import { fly } from 'svelte/transition';
 	import Spinner from 'svelte-spinner';
@@ -11,17 +12,29 @@
 	const dispatcher = createEventDispatcher();
 	let showBigNote = false;
 	let loading = false;
+	let usuarios: Usuario[] = [];
 
 	const setLimitText = () => {
 		note.contenido = note.contenido.length < 18 ? note.contenido : note.contenido.substring(0, 18);
 	};
-	const setBlur = () => {
+	const setBlur = async () => {
+		await getTaggedUsers(note.id);
 		dispatcher('set-blur', {});
-		console.log('blur en DashboardNote');
 		showBigNote = !showBigNote;
 	};
 	const stopPropagation = (e: Event) => {
 		e.stopPropagation();
+	};
+	const getTaggedUsers = async (note_id: number) => {
+		const users: PostgrestResponse<{ usuario: Usuario }> = await supabase
+			.from('usuariosEtiquetados')
+			.select('usuario(*)')
+			.eq('nota', note_id);
+		console.log(users.data);
+		users.data?.map((user) => {
+			usuarios.push(user.usuario);
+		});
+		console.log(usuarios);
 	};
 </script>
 
@@ -39,6 +52,7 @@
 		<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
 			<DashboardBigCardNote
 				{note}
+				{usuarios}
 				on:close-note={() => {
 					showBigNote = false;
 					dispatcher('set-blur', {});
