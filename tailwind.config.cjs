@@ -6,6 +6,16 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				Pastel: {
+					Rose: '#E75480',
+					Violet: '#966FD6',
+					Red: '#BA2E2E',
+					Yellow: '#efa94a',
+					Orange: '#ff7514',
+					Green: '#03C03C',
+					Blue: '#779ECB',
+					Brwon: '#836953'
+				},
 				DPMA: {
 					Turquoise: '#00aec3',
 					Grey: '#838383',

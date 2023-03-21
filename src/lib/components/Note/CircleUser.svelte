@@ -1,8 +1,12 @@
 <script lang="ts">
 	import type { Usuario } from '$lib/types';
 	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
+
 	export let user: Usuario;
+	const dispatcher = createEventDispatcher();
 	let active: boolean = false;
+	let color = `bg-Pastel-${user.color + ''}`;
 </script>
 
 <div
@@ -15,11 +19,16 @@
 >
 	<button
 		class="w-4 h-4 rounded-full bg-red-600 text-xs flex items-center justify-center border-black border-2 absolute"
+		on:click={() => {
+			console.log(user);
+			dispatcher('delete-user', user);
+		}}
 	>
 		x
 	</button>
 	<div
-		class={`w-10 h-10 rounded-full bg-[${user.color}] flex items-center justify-center border border-black cursor-default`}
+		class={'w-10 h-10 rounded-full flex items-center justify-center border border-black cursor-default ' +
+			color}
 	>
 		{user.nombre[0].toUpperCase()}{user.apellido[0].toUpperCase()}
 	</div>

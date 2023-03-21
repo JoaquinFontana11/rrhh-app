@@ -7,13 +7,16 @@
 	import DashboardToolbarNote from '$lib/components/Dashboard/Notes/DashboardToolbarNote.svelte';
 	import DashboardNotes from '$lib/components/Dashboard/Notes/DashboardNotes.svelte';
 	import type { PageData } from './$types';
-	import type { Nota } from '$lib/types';
+	import type { Nota, Usuario } from '$lib/types';
 
 	export let data: PageData;
+	console.log(data);
 	let modulo = '/nomina';
 
 	let notesData: Nota[] = data.data as Nota[];
 	let notes: Nota[] = notesData.filter((note) => note.modulo == modulo);
+
+	let allUsers: Usuario[] = data.allUsers as Usuario[];
 
 	let showDropdown = false;
 	const addNote = (e: CustomEvent) => {
@@ -67,6 +70,7 @@
 	<DashboardNotes
 		slot="dashboard-content"
 		bind:notes
+		{allUsers}
 		on:delete-note={deleteNote}
 		on:refresh={refreshNotes}
 	/>

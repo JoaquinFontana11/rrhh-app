@@ -7,11 +7,13 @@ import type { Nota, Usuario } from '$lib/types';
 export const ssr = false;
 
 export const load: PageLoad = async () => {
+	const response = await supabase.auth.update;
 	const res: PostgrestResponse<Nota> = await supabase.from('notas').select('*');
 	const usuarios: PostgrestResponse<Usuario> = await supabase.from('usuarios').select('*');
-	console.log(usuarios.data);
+	console.log(usuarios);
 	return {
 		data: res.data,
+		allUsers: usuarios.data,
 		reload: reload
 	};
 };

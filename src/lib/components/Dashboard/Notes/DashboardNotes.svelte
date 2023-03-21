@@ -2,7 +2,7 @@
 	import { flip } from 'svelte/animate';
 	import DashboardNote from './DashboardNote.svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import type { Nota } from '$lib/types';
+	import type { Nota, Usuario } from '$lib/types';
 	import { dndzone } from 'svelte-dnd-action';
 	import { supabase } from '$lib/supabaseClient';
 	import { watchResize } from 'svelte-watch-resize';
@@ -10,6 +10,7 @@
 	const dispatcher = createEventDispatcher();
 
 	export let notes: Nota[];
+	export let allUsers: Usuario[];
 	let blur = false;
 
 	let notesObj: { [key: string]: any } = {
@@ -59,6 +60,7 @@
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote
 					{note}
+					{allUsers}
 					on:delete-note={clearNotes}
 					on:set-blur={() => {
 						blur = !blur;
@@ -79,6 +81,7 @@
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote
 					{note}
+					{allUsers}
 					on:delete-note={clearNotes}
 					on:set-blur={() => {
 						blur = !blur;
@@ -99,6 +102,7 @@
 			<div animate:flip={{ duration: flipDurationMs }} class="w-full flex justify-center">
 				<DashboardNote
 					{note}
+					{allUsers}
 					on:delete-note={clearNotes}
 					on:set-blur={() => {
 						blur = !blur;

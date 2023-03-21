@@ -1,45 +1,49 @@
 <script lang="ts">
-	import {
-		Icon,
-		CheckCircle,
-		Exclamation,
-		ExclamationCircle,
-		Check,
-		User
-	} from 'svelte-hero-icons';
+	import { Icon, CheckCircle, Exclamation, ExclamationCircle, Check } from 'svelte-hero-icons';
 	import { createEventDispatcher } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import type { Nota, Usuario } from '$lib/types';
-	import type { PostgrestResponse } from '@supabase/supabase-js';
+	import { fly } from 'svelte/transition';
 	import Spinner from 'svelte-spinner';
 	import CircleUser from '$lib/components/Note/CircleUser.svelte';
 
 	export let note: Nota;
 	export let modify: boolean = true;
 	export let usuarios: Usuario[] = [];
+	export let allUsers: Usuario[];
 	const dispatcher = createEventDispatcher();
 	let showEditTitle = false;
 	let showEditContent = false;
+	let showAddTagger = false;
+	let newTagger: Usuario;
 	let loading = false;
-	/* let usuarios: Usuario[] = []; */
+
 	const setLimitText = () => {
 		note.titulo = note.titulo.length < 18 ? note.titulo : note.titulo.substring(0, 18);
 	};
-
-	/* 	const getTaggedUsers = async () => {
-		const users: PostgrestResponse<{ usuario: Usuario }> = await supabase
-			.from('usuariosEtiquetados')
-			.select('usuario(*)')
-			.eq('nota', note.id);
-		console.log(users.data);
-		users.data?.map((user) => {
-			usuarios.push(user.usuario);
-		});
-		console.log(usuarios);
-	};
-	getTaggedUsers();
-	console.log(usuarios); */
 	console.log(usuarios);
+
+	const addNewTagger = async (e: Event) => {
+		console.log(newTagger);
+		const res = await supabase
+			.from('usuariosEtiquetados')
+			.insert({ nota: note.id, usuario: newTagger.id })
+			.select();
+		console.log(res);
+		showAddTagger = false;
+		dispatcher('refresh-users', {});
+	};
+
+	const deleteUser = async (e: CustomEvent) => {
+		console.log(e.detail);
+		const res = await supabase
+			.from('usuariosEtiquetados')
+			.delete()
+			.eq('usuario', e.detail.id)
+			.eq('nota', note.id);
+		console.log(res);
+		dispatcher('refresh-users', {});
+	};
 </script>
 
 <div
@@ -119,15 +123,39 @@
 	<div class="flex flex-col">
 		<div class="p-3">
 			<p class="text-lg font-medium mb-2 dark:text-stone-100 ">Personas Etiquetadas</p>
-			<div class="flex flex-row gap-1 ">
+			<div class="flex flex-row gap-1 items-center">
 				{#each usuarios as usuario}
-					<CircleUser user={usuario} />
+					<CircleUser user={usuario} on:delete-user={deleteUser} />
 				{/each}
-				<button
-					class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center border border-black hover:bg-stone-200"
-				>
-					+
-				</button>
+				{#if modify}
+					<button
+						class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center border border-black hover:bg-stone-200"
+						on:click={() => {
+							showAddTagger = !showAddTagger;
+						}}
+					>
+						+
+					</button>
+				{/if}
+				{#if showAddTagger}
+					<div
+						class="bg-white drop-shadow-lg w-40 z-50 h-6 rounded-md dark:bg-stone-800"
+						transition:fly
+					>
+						<select
+							name="newTagger"
+							id="newTagger"
+							bind:value={newTagger}
+							class="w-full"
+							on:change={addNewTagger}
+						>
+							<option value="" disabled selected />
+							{#each allUsers as user}
+								<option value={user}>{user.nombre} {user.apellido}</option>
+							{/each}
+						</select>
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div class="p-3">

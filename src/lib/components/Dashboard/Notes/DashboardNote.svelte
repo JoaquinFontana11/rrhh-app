@@ -6,35 +6,43 @@
 	import type { PostgrestResponse } from '@supabase/supabase-js';
 	import DashboardBigCardNote from './DashboardBigCardNote.svelte';
 	import { fly } from 'svelte/transition';
-	import Spinner from 'svelte-spinner';
 
 	export let note: Nota;
+	export let allUsers: Usuario[];
 	const dispatcher = createEventDispatcher();
 	let showBigNote = false;
-	let loading = false;
-	let usuarios: Usuario[] = [];
+	let usuarios: Usuario[] | undefined = [];
 
-	const setLimitText = () => {
-		note.contenido = note.contenido.length < 18 ? note.contenido : note.contenido.substring(0, 18);
-	};
 	const setBlur = async () => {
 		await getTaggedUsers(note.id);
 		dispatcher('set-blur', {});
 		showBigNote = !showBigNote;
 	};
+
+	const setData = (data: { usuario: Usuario }[] | null) => {
+		console.log(data);
+		return data?.map((user) => {
+			return user.usuario;
+		});
+	};
+
 	const stopPropagation = (e: Event) => {
 		e.stopPropagation();
 	};
 	const getTaggedUsers = async (note_id: number) => {
+		usuarios = [];
 		const users: PostgrestResponse<{ usuario: Usuario }> = await supabase
 			.from('usuariosEtiquetados')
 			.select('usuario(*)')
 			.eq('nota', note_id);
-		console.log(users.data);
-		users.data?.map((user) => {
-			usuarios.push(user.usuario);
-		});
+		usuarios = setData(
+			(await supabase.from('usuariosEtiquetados').select('usuario(*)').eq('nota', note_id)).data
+		);
 		console.log(usuarios);
+
+		console.log(allUsers);
+		allUsers = allUsers.filter((user) => !usuarios?.some((user2) => user.id === user2.id));
+		console.log(allUsers);
 	};
 </script>
 
@@ -52,10 +60,14 @@
 		<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
 			<DashboardBigCardNote
 				{note}
-				{usuarios}
+				bind:usuarios
+				bind:allUsers
 				on:close-note={() => {
 					showBigNote = false;
 					dispatcher('set-blur', {});
+				}}
+				on:refresh-users={async () => {
+					await getTaggedUsers(note.id);
 				}}
 			/>
 		</div>
