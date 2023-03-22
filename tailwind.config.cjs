@@ -7,14 +7,15 @@ module.exports = {
 		extend: {
 			colors: {
 				Pastel: {
-					Rose: '#E75480',
-					Violet: '#966FD6',
-					Red: '#BA2E2E',
-					Yellow: '#efa94a',
-					Orange: '#ff7514',
-					Green: '#03C03C',
+					Pink: '#F49AC2',
+					Violet: '#B39EB5',
+					Red: '#FF6961',
+					Yellow: '#FDFD96',
+					Orange: '#FFB347',
+					Green: '#77DD77',
 					Blue: '#779ECB',
-					Brwon: '#836953'
+					Brown: '#836953',
+					Grey: '#CFCFC4'
 				},
 				DPMA: {
 					Turquoise: '#00aec3',

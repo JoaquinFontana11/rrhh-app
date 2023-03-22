@@ -3,12 +3,12 @@
 	import { createEventDispatcher } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import type { Nota, Usuario } from '$lib/types';
-	import type { PostgrestResponse } from '@supabase/supabase-js';
 	import DashboardBigCardNote from './DashboardBigCardNote.svelte';
 	import { fly } from 'svelte/transition';
 
 	export let note: Nota;
 	export let allUsers: Usuario[];
+	let allTaggedUsers: Usuario[];
 	const dispatcher = createEventDispatcher();
 	let showBigNote = false;
 	let usuarios: Usuario[] | undefined = [];
@@ -20,6 +20,7 @@
 	};
 
 	const setData = (data: { usuario: Usuario }[] | null) => {
+		usuarios = [];
 		console.log(data);
 		return data?.map((user) => {
 			return user.usuario;
@@ -30,19 +31,14 @@
 		e.stopPropagation();
 	};
 	const getTaggedUsers = async (note_id: number) => {
-		usuarios = [];
-		const users: PostgrestResponse<{ usuario: Usuario }> = await supabase
-			.from('usuariosEtiquetados')
-			.select('usuario(*)')
-			.eq('nota', note_id);
 		usuarios = setData(
 			(await supabase.from('usuariosEtiquetados').select('usuario(*)').eq('nota', note_id)).data
 		);
 		console.log(usuarios);
 
-		console.log(allUsers);
-		allUsers = allUsers.filter((user) => !usuarios?.some((user2) => user.id === user2.id));
-		console.log(allUsers);
+		console.log(allTaggedUsers);
+		allTaggedUsers = allUsers.filter((user) => !usuarios?.some((user2) => user.id === user2.id));
+		console.log(allTaggedUsers);
 	};
 </script>
 
@@ -61,7 +57,7 @@
 			<DashboardBigCardNote
 				{note}
 				bind:usuarios
-				bind:allUsers
+				bind:allUsers={allTaggedUsers}
 				on:close-note={() => {
 					showBigNote = false;
 					dispatcher('set-blur', {});

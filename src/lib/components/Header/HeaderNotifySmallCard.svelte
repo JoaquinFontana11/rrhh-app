@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { Icon, CheckCircle, Exclamation, ExclamationCircle } from 'svelte-hero-icons';
-	import type { Nota } from '$lib/types';
-	import { createEventDispatcher } from 'svelte';
+	import type { Nota, Usuario } from '$lib/types';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient';
+	import CircleUser from '../Note/CircleUser.svelte';
 
 	export let nota: Nota;
 	let icon: { [key: string]: any } = {
@@ -9,8 +11,29 @@
 		warn: Exclamation,
 		alert: ExclamationCircle
 	};
+	let usuarios: Usuario[] = [];
 
 	const dispatcher = createEventDispatcher();
+
+	const setData = (data: { usuario: Usuario }[] | null) => {
+		usuarios = [];
+		if (data && data?.length > 0) {
+			return data?.map((user) => {
+				return user.usuario;
+			});
+		} else {
+			return [];
+		}
+	};
+
+	const getTaggedUsers = async (note_id: number) => {
+		usuarios = setData(
+			(await supabase.from('usuariosEtiquetados').select('usuario(*)').eq('nota', note_id)).data
+		);
+	};
+	onMount(async () => {
+		await getTaggedUsers(nota.id);
+	});
 </script>
 
 <div
@@ -24,6 +47,11 @@
 >
 	<div class="flex justify-between">
 		<Icon src={icon[nota.nivel]} class={`w-5 h-5`} />
+		<div class="flex gap-1">
+			{#each usuarios as usuario}
+				<CircleUser user={usuario} modify={false} size={6} />
+			{/each}
+		</div>
 	</div>
 
 	<div class="flex flex-row gap-2 items-center">

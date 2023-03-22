@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import HeaderNotifySmallCard from './HeaderNotifySmallCard.svelte';
+	import { supabase } from '$lib/supabaseClient';
 
 	import notasStore from '$lib/stores/notasStore';
-	import type { Nota } from '$lib/types';
+	import type { Nota, Usuario } from '$lib/types';
 
 	import DashboardBigCardNote from '../Dashboard/Notes/DashboardBigCardNote.svelte';
 
@@ -14,13 +15,30 @@
 
 	let showBigNote: boolean = false;
 	let bigNote: Nota;
+	let usuarios: Usuario[] | undefined = [];
 
 	const stopPropagation = (e: Event) => {
 		e.stopPropagation();
 	};
-	const setNote = (e: CustomEvent) => {
+	const setNote = async (e: CustomEvent) => {
+		await getTaggedUsers(e.detail.note.id);
+		console.log(usuarios);
 		bigNote = e.detail.note;
 		showBigNote = true;
+	};
+
+	const setData = (data: { usuario: Usuario }[] | null) => {
+		usuarios = [];
+		console.log(data);
+		return data?.map((user) => {
+			return user.usuario;
+		});
+	};
+
+	const getTaggedUsers = async (note_id: number) => {
+		usuarios = setData(
+			(await supabase.from('usuariosEtiquetados').select('usuario(*)').eq('nota', note_id)).data
+		);
 	};
 </script>
 
@@ -38,6 +56,7 @@
 		<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
 			<DashboardBigCardNote
 				note={bigNote}
+				bind:usuarios
 				modify={false}
 				on:close-note={() => {
 					showBigNote = false;
