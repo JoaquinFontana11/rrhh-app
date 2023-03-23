@@ -16,7 +16,14 @@
 	let showEditTitle = false;
 	let showEditContent = false;
 	let showAddTagger = false;
-	let newTagger: Usuario | string = '';
+	let newTagger: Usuario = {
+		id: 0,
+		nombre: '',
+		apellido: '',
+		color: '',
+		created_at: 0,
+		usuario: ''
+	};
 	let loading = false;
 
 	const setLimitText = () => {
@@ -141,7 +148,7 @@
 							class="w-full bg-stone-100 dark:bg-stone-500"
 							on:change={addNewTagger}
 						>
-							<option value="" disabled selected />
+							<option value={newTagger} disabled selected />
 							{#each allUsers as user}
 								<option value={user}>{user.nombre} {user.apellido}</option>
 							{/each}
