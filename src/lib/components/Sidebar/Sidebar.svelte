@@ -25,9 +25,9 @@
 	</a>
 	<ul class="flex flex-col gap-4 absolute top-1/2 -translate-y-1/2">
 		<SidebarButton icon={User} tooltip="Nomina de agentes" href="/nomina" />
-		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
 		<SidebarButton icon={Newspaper} tooltip="Licencias" href="/licencias" />
 		<SidebarButton icon={Calendar} tooltip="Calendario" href="/calendario" />
+		<SidebarButton icon={Document} tooltip="Notas" href="/notas" />
 	</ul>
 	<ul class="absolute bottom-2 flex flex-col gap-3">
 		<SidebarButtonTheme />
