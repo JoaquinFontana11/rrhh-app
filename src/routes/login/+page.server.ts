@@ -15,9 +15,9 @@ const login: Action = async ({ cookies, request, locals }) => {
 
 	// para crear un usuario debemos hacerlo por codigo y despues confirmar el mail
 
-	/* 	const res = await supabase.auth.signUp({
-		email: 'user@user.com',
-		password: 'user123'
+	/* 	let res = await supabase.auth.signUp({
+		email: 'belen.simonutti@gba.gob.ar',
+		password: '123456'
 	});
 	console.log(res); */
 

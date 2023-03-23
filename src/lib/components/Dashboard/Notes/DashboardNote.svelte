@@ -5,12 +5,14 @@
 	import type { Nota, Usuario } from '$lib/types';
 	import DashboardBigCardNote from './DashboardBigCardNote.svelte';
 	import { fly } from 'svelte/transition';
+	import DashboardConfirmPopUp from '../DashboardConfirmPopUp.svelte';
 
 	export let note: Nota;
 	export let allUsers: Usuario[];
 	let allTaggedUsers: Usuario[];
 	const dispatcher = createEventDispatcher();
-	let showBigNote = false;
+	let showBigNote: boolean = false;
+	let showConfirmPopUp: boolean = false;
 	let usuarios: Usuario[] | undefined = [];
 
 	const setBlur = async () => {
@@ -40,11 +42,23 @@
 		allTaggedUsers = allUsers.filter((user) => !usuarios?.some((user2) => user.id === user2.id));
 		console.log(allTaggedUsers);
 	};
+
+	const deleteNote = async (e: CustomEvent) => {
+		console.log(e);
+		if (e.detail) {
+			await supabase.from('notas').delete().eq('id', note.id);
+			await supabase.from('usuariosEtiquetados').delete().eq('nota', note.id);
+			dispatcher('delete-note', { id: note.id });
+		}
+		showConfirmPopUp = false;
+		dispatcher('set-blur', {});
+		console.log(e.detail);
+	};
 </script>
 
 {#if showBigNote}
 	<div
-		class="fixed inset-0 flex items-center justify-center"
+		class="fixed inset-0 flex items-center justify-center z-[100]"
 		on:click={stopPropagation}
 		on:keyup={stopPropagation}
 	>
@@ -69,6 +83,23 @@
 		</div>
 	</div>
 {/if}
+{#if showConfirmPopUp}
+	<div
+		class="fixed inset-0 flex items-center justify-center z-[100]"
+		on:click={stopPropagation}
+		on:keyup={stopPropagation}
+	>
+		<div
+			class="fixed inset-0 bg-stone-900 dark:bg-stone-700 opacity-75 blur-lg"
+			on:click={stopPropagation}
+			on:keyup={stopPropagation}
+		/>
+		<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
+			<DashboardConfirmPopUp on:confirm={deleteNote} />
+		</div>
+	</div>
+{/if}
+
 <div
 	class="w-2/3 h-auto bg-white border border-white dark:bg-stone-800 rounded-md shadow-xl p-5 flex justify-start items-center  gap-2 dark:border-stone-700 "
 >
@@ -94,9 +125,9 @@
 		<Icon src={Eye} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
 	</button>
 	<button
-		on:click={async () => {
-			await supabase.from('notas').delete().eq('id', note.id);
-			dispatcher('delete-note', { id: note.id });
+		on:click={() => {
+			dispatcher('set-blur', {});
+			showConfirmPopUp = true;
 		}}
 	>
 		<Icon src={X} class="w-6 h-6 text-stone-400 hover:text-stone-600" />
