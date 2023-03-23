@@ -60,7 +60,7 @@
 </script>
 
 <div
-	class={`w-[34rem] h-[34rem] bg-white border border-white dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2 ${
+	class={` w-[34rem] h-[34rem] bg-white border border-white dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2 ${
 		note.nivel == 'ok'
 			? 'dark:border-green-500'
 			: note.nivel == 'warn'

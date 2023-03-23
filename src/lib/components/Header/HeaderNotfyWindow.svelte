@@ -44,7 +44,7 @@
 
 {#if showBigNote}
 	<div
-		class="fixed inset-0 flex items-center justify-center"
+		class="fixed inset-0 flex items-center justify-center z-[100]"
 		on:click={stopPropagation}
 		on:keyup={stopPropagation}
 	>
