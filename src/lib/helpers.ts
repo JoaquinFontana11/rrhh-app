@@ -16,7 +16,6 @@ export const validateAllNomina = async (
 	extraValidations: FunctionsObject | boolean = false,
 	action: string
 ) => {
-	console.log('hola que tal');
 	let error = { message: [{}], status: false };
 	error.message.pop();
 	const formData = new FormData();
@@ -28,12 +27,10 @@ export const validateAllNomina = async (
 			component.validators.forEach((validator) => {
 				//res = component.required ? validator(component.value) : null;
 				res = validator(component.value);
-				console.log(component.value, '    ', res);
 				if (res && res.message)
 					error.message.push({ error: component.name, description: res.message });
 
 				error.status = res && !res.status ? !res.status : status;
-				console.log('aaaaaa', component);
 			});
 		}
 		if (error.status) return { data: error, status: false };
@@ -54,7 +51,6 @@ export const validateAllNomina = async (
 		} else {
 			await Promise.all(
 				components[key].map((component) => {
-					console.log(component);
 					component.name === 'equipo' ||
 					component.name === 'direccion' ||
 					component.name === 'superiorDirecto'

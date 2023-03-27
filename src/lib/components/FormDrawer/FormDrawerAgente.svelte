@@ -41,8 +41,6 @@
 		PTT: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PTT') : true,
 		PP: $agenteStore.tipoContratacion ? !($agenteStore.tipoContratacion === 'PP') : true
 	};
-	console.log($agenteStore.tipoContratacion);
-	console.log(tipoContratacion);
 	agenteStore.subscribe((agente) => {
 		action = Object.keys(agente).includes('id') ? 'update' : 'create';
 	});
@@ -282,7 +280,7 @@
 				type: 'select',
 				label: 'Activo',
 				name: 'activo',
-				value: $agenteStore.activo,
+				value: $agenteStore.activo || true,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -329,7 +327,7 @@
 				type: 'select',
 				label: 'Tiene hijos',
 				name: 'tieneHijos',
-				value: $agenteStore.tieneHijos,
+				value: $agenteStore.tieneHijos || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -341,7 +339,7 @@
 				type: 'select',
 				label: 'Asignacion familiar',
 				name: 'asignacionFamiliar',
-				value: $agenteStore.asignacionFamiliar,
+				value: $agenteStore.asignacionFamiliar || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -353,7 +351,7 @@
 				type: 'select',
 				label: 'Beneficio de guarderia',
 				name: 'beneficioGuarderia',
-				value: $agenteStore.beneficioGuarderia,
+				value: $agenteStore.beneficioGuarderia || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -456,7 +454,7 @@
 				type: 'select',
 				label: 'Carrera universitaria Finalizada',
 				name: 'carreraFinalizada',
-				value: $agenteStore.carreraFinalizada,
+				value: $agenteStore.carreraFinalizada || false,
 				required: true,
 				options: [
 					{ value: true, name: 'Si' },
@@ -871,17 +869,7 @@
 	};
 
 	const validateForm = (e: CustomEvent) => {
-		console.log(validate);
 		validate[e.detail.form] = e.detail.status;
-		console.log(validate);
-		console.log(
-			!(
-				validate.datosPersonales &&
-				validate.datosSalud &&
-				validate.datosAcademicos &&
-				validate.datosRecorrido
-			)
-		);
 		disabledbutton = true
 			? !(
 					validate.datosPersonales &&
@@ -893,10 +881,8 @@
 	};
 
 	const changeInput = (e: Event) => {
-		console.log(tipoContratacion);
 		const target = e.target as HTMLInputElement;
 		let value: string | number | boolean = target.value;
-		console.log(target, value, target.type);
 		if (target.value == 'true' || target.value == 'false') value = target.value == 'true';
 
 		if (
@@ -904,30 +890,17 @@
 			(target.type === 'select-one' && typeof value === 'string' && parseInt(value))
 		)
 			value = parseInt(value);
-		console.log(value);
 		agenteStore.update((agente) => {
 			agente[target.name as string] = value;
 			return agente;
 		});
-		console.log($agenteStore);
 	};
 
 	const showValidations = (e: CustomEvent) => {
-		console.log(e.detail.message);
 		success = false;
 		showErrors = true;
 		errorsMessage = [];
 		errorsMessage.push(e.detail.message);
-		/*
-		const dataErrors = JSON.parse(e.detail.message);
-
-		showErrors = true;
-		errorsMessage = [];
-		// TODO: invertir el orden de los mensjes
-		Object.entries(dataErrors.flags).forEach((flag) => {
-			if (flag[1]) return;
-			errorsMessage.push(dataErrors.messages[flag[0]]);
-		});*/
 	};
 	const showSuccess = (e: CustomEvent) => {
 		successMessage.title = `Agente ${action === 'create' ? 'Creado' : 'Actualizado'}`;

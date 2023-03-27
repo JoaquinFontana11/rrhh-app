@@ -29,7 +29,6 @@
 			.gte('fechaFin', currentDate);
 
 		if (resSupabaseItems.data) {
-			console.log(resSupabaseItems.data, direccion);
 			dispatch('show-agentes', {
 				agentes: resSupabaseItems.data
 					.filter(

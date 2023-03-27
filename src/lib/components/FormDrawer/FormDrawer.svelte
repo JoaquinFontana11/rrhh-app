@@ -32,21 +32,15 @@
 			if (error.status) return;
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
-			console.log(components);
-			console.log([...formData]);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData
 			});
-			//console.log((await res.json()).error.message);
 			if (res.status == 400) {
-				console.log('hola: ', res);
 				const message = (await res.json()).error.message;
 
-				console.log(message);
 				dispatcher('error', { message: message });
 			} else {
-				console.log('ta todo bien master');
 				dispatcher('valid');
 			}
 		} catch (err) {

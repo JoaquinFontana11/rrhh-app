@@ -22,14 +22,12 @@
 	};
 	const setNote = async (e: CustomEvent) => {
 		await getTaggedUsers(e.detail.note.id);
-		console.log(usuarios);
 		bigNote = e.detail.note;
 		showBigNote = true;
 	};
 
 	const setData = (data: { usuario: Usuario }[] | null) => {
 		usuarios = [];
-		console.log(data);
 		return data?.map((user) => {
 			return user.usuario;
 		});

@@ -3,7 +3,6 @@ import { fail, error } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
 
 const create: Action = async ({ request }) => {
-	console.log('hola que tal');
 	const data = await request.formData();
 
 	const datosAcademicos = {

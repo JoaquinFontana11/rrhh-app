@@ -22,7 +22,6 @@
 		<button
 			class="w-4 h-4 rounded-full bg-red-600 text-xs flex items-center justify-center border-black border-2 absolute"
 			on:click={() => {
-				console.log(user);
 				dispatcher('delete-user', user);
 			}}
 		>

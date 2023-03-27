@@ -23,7 +23,6 @@
 
 	const setData = (data: { usuario: Usuario }[] | null) => {
 		usuarios = [];
-		console.log(data);
 		return data?.map((user) => {
 			return user.usuario;
 		});
@@ -36,15 +35,10 @@
 		usuarios = setData(
 			(await supabase.from('usuariosEtiquetados').select('usuario(*)').eq('nota', note_id)).data
 		);
-		console.log(usuarios);
-
-		console.log(allTaggedUsers);
 		allTaggedUsers = allUsers.filter((user) => !usuarios?.some((user2) => user.id === user2.id));
-		console.log(allTaggedUsers);
 	};
 
 	const deleteNote = async (e: CustomEvent) => {
-		console.log(e);
 		if (e.detail) {
 			await supabase.from('notas').delete().eq('id', note.id);
 			await supabase.from('usuariosEtiquetados').delete().eq('nota', note.id);
@@ -52,7 +46,6 @@
 		}
 		showConfirmPopUp = false;
 		dispatcher('set-blur', {});
-		console.log(e.detail);
 	};
 </script>
 

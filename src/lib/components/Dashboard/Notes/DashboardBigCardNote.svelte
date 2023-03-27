@@ -29,32 +29,27 @@
 	const setLimitText = () => {
 		note.titulo = note.titulo.length < 18 ? note.titulo : note.titulo.substring(0, 18);
 	};
-	console.log(usuarios);
 
 	const handleClickOutside = (e: any) => {
-		console.log(e);
 		showAddTagger = false;
 	};
 
 	const addNewTagger = async (e: Event) => {
-		console.log(newTagger);
 		const res = await supabase
 			.from('usuariosEtiquetados')
 			.insert({ nota: note.id, usuario: newTagger.id })
 			.select();
-		console.log(res);
+
 		showAddTagger = false;
 		dispatcher('refresh-users', {});
 	};
 
 	const deleteUser = async (e: CustomEvent) => {
-		console.log(e.detail);
 		const res = await supabase
 			.from('usuariosEtiquetados')
 			.delete()
 			.eq('usuario', e.detail.id)
 			.eq('nota', note.id);
-		console.log(res);
 		dispatcher('refresh-users', {});
 	};
 </script>

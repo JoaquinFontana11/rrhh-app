@@ -10,7 +10,6 @@
 	export let showDropdown: boolean = false;
 
 	const handleClickOutside = (e: any) => {
-		console.log(e);
 		showDropdown = false;
 	};
 </script>
