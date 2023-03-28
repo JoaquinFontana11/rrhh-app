@@ -104,7 +104,7 @@ const calcLastPage = async (
 			: tipo == 'vacaciones'
 			? ', datosVacaciones(periodo)'
 			: ''
-	}', {count: 'exact'})`;
+	}', {count: 'exact'}).neq('id', 167)`;
 
 	filters.map((f) => {
 		query += `.${f.filter}('${f.field}', '${f.value}')`;
