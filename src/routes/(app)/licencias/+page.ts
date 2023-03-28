@@ -78,13 +78,14 @@ const reloadData = async (
 			: tipo == 'vacaciones'
 			? ', datosVacaciones(periodo)'
 			: ''
-	}')`;
+	}').neq('id', 167)`;
 
 	filters = await manageFilters(filters);
 
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 
+	console.log(resSupabase);
 	return resSupabase;
 };
 
