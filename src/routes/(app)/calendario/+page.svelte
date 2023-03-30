@@ -12,6 +12,7 @@
 	let tipoLicencia: string = 'todas';
 	let direccion: number = 100;
 	let equipo: number = 100;
+	let equipos = [...data.equipos, { equipo: 'Todos los equipos', id: 100 }];
 
 	const updateMonth = (e: Event) => {
 		const target = e.target as HTMLSelectElement;
@@ -30,6 +31,17 @@
 	};
 
 	const reloadItems = (month: number, tipoLicencia: string, direccion: number, equipo: number) => {
+		console.log(direccion);
+		console.log([...data.equipos]);
+		if (direccion !== 100) {
+			equipos = [...data.equipos].filter((equipo) => {
+				return equipo.direccion
+					? equipo.direccion === direccion
+					: equipo.id === 100 || equipo.id === 0;
+			});
+			equipos.push({ equipo: 'Todos los equipos', id: 100 });
+		} else equipos = [...data.equipos, { equipo: 'Todos los equipos', id: 100 }];
+		console.log(equipos);
 		let licencias = data.data
 			.filter((licencia) => {
 				const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();
@@ -96,12 +108,10 @@
 <Dashboard>
 	<div slot="toolbar-content" class="mr-2 h-full flex gap-2 justify-center items-center">
 		<DashboardToolbarSelect
-			options={[
-				...data.equipos.map((equipo) => {
-					return { value: equipo.id, name: equipo.equipo };
-				}),
-				{ name: 'Todos los equipos', value: 100 }
-			]}
+			conf="w-72"
+			options={equipos.map((equipo) => {
+				return { value: equipo.id, name: equipo.equipo };
+			})}
 			bind:value={equipo}
 		/><DashboardToolbarSelect
 			options={[

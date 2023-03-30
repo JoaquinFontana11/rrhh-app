@@ -180,6 +180,7 @@ type AgenteSupabase = {
 				id: number;
 				equipo: string;
 				created_at: string;
+				direccion: number;
 		  };
 	direccion:
 		| number
@@ -253,6 +254,7 @@ type EquipoSupabase = {
 	id: number;
 	equipo: string;
 	created_at: string;
+	direccion: number;
 };
 
 type Usuario = {

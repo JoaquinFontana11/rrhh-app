@@ -35,13 +35,15 @@ export const load: PageLoad<{
 	if (resSupabaseNotas.data) notasStore.update((n) => notas);
 	const resSupabaseLicencias: PostgrestResponse<LicenciaShort> = await supabase
 		.from('licencia')
-		.select('fechaInicio, fechaFin, tipo, agente(direccion(acronimo, id), equipo(equipo, id))');
+		.select(
+			'fechaInicio, fechaFin, tipo, agente(direccion(acronimo, id), equipo(equipo, id,direccion))'
+		);
 	const resSupabaseDirecciones: PostgrestResponse<any> = await supabase
 		.from('direccion')
 		.select('acronimo, id');
 	const resSupabaseEquipos: PostgrestResponse<any> = await supabase
 		.from('equipo')
-		.select('equipo, id');
+		.select('equipo, id,direccion');
 	const resSupabaseAgentes: PostgrestResponse<any> = await supabase
 		.from('agente')
 		.select('id, direccion, nombreCompleto, equipo');
