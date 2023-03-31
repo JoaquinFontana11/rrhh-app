@@ -32,6 +32,7 @@
 			if (error.status) return;
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
+			console.log([...formData]);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData

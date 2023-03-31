@@ -284,7 +284,8 @@
 	};
 
 	const showValidations = (e: CustomEvent) => {
-		const dataErrors = JSON.parse(e.detail.data);
+		console.log(e.detail);
+		const dataErrors = JSON.parse(e.detail.message);
 
 		showErrors = true;
 		errorsMessage = [];

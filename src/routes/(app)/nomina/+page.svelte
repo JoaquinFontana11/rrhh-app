@@ -156,6 +156,15 @@
 		const { count } = await data.calcLastPage($orderStore, $filterStore);
 		lastPage = Math.trunc(count / value);
 	};
+
+	const formatRowData = (rowData: { [key: string]: any }) => {
+		console.log(rowData);
+		rowData.direccion = rowData.direccion.id;
+		rowData.equipo = rowData.equipo.id;
+		rowData.superiorDirecto = rowData.superiorDirecto.id;
+		console.log(rowData);
+		return rowData;
+	};
 </script>
 
 <Header />
@@ -261,8 +270,9 @@
 			let:rowData
 			><button
 				on:click={() => {
-					agenteStore.update((n) => rowData);
+					agenteStore.update((n) => formatRowData(rowData));
 					showDrawer = true;
+					console.log($agenteStore);
 				}}
 				class="w-6 h-6 bg-DPMA-Turquoise flex justify-center items-center rounded-full m-2 dark:text-stone-900 hover:bg-light-Turquoise"
 				><Icon src={Document} class="w-4 h-4" /></button

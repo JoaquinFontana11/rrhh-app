@@ -140,6 +140,7 @@ const create: Action = async ({ request }) => {
 				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
 			});
 	}
+	console.log('lic: ' + licencia);
 
 	await supabase.from('licencia').insert(licencia);
 };

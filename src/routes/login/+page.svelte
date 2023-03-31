@@ -18,12 +18,12 @@
 <svelte:window on:mousemove={mouseMove} />
 
 <div class="w-screen h-screen bg-lime-100 overflow-hidden">
-	<!-- 	<img
+	<img
 		class="w-36 h-26 relative"
 		style={`top: ${$coords.y}px; left: ${$coords.x}px; transform: rotate(${deg}deg)`}
 		src="/joacko_cara.png"
 		alt="la cara de joacko girando"
-	/> -->
+	/>
 	<form
 		method="POST"
 		action="?/login"

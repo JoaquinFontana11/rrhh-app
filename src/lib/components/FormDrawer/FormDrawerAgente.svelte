@@ -49,7 +49,16 @@
 		const res: PostgrestResponse<AgenteSupabase> = await supabase
 			.from('agente')
 			.select('*, direccion(*)')
-			.in('rol', ['Director', 'director', 'Coordinador', 'coordinador']);
+			.in('rol', [
+				'Director',
+				'Directora',
+				'director',
+				'directora',
+				'Coordinador',
+				'Coordinadora',
+				'coordinador',
+				'coordinadora'
+			]);
 
 		if (!res.data) return;
 
@@ -58,7 +67,7 @@
 		superioresDirectos = agentes
 			.filter((agente) => {
 				const direccionAgente = agente.direccion as DireccionSupabase;
-				return direccionAgente.id == direccion;
+				return direccionAgente.id == direccion || agente.id === 9;
 			})
 			.map((superior) => {
 				return {
@@ -85,8 +94,7 @@
 	const getEquipos = async () => {
 		const res: PostgrestResponse<EquipoSupabase> = await supabase
 			.from('equipo')
-			.select('id, equipo')
-			.neq('id', 0);
+			.select('id, equipo');
 
 		if (!res.data) return;
 
@@ -151,7 +159,8 @@
 								status: false
 							};
 					}
-				]
+				],
+				disabled: action === 'create' ? false : true
 			},
 			{
 				type: 'number',
