@@ -105,23 +105,21 @@
 				});
 				return newAgente;
 			});
-		}
-
-		data = data.map((agente: any) => {
-			const newAgente: { [key: string]: any } = {};
-			Object.entries(agente).forEach((entries: any[]) => {
-				if (
-					entries[0] === 'equipo' ||
-					entries[0] === 'direccion' ||
-					entries[0] === 'superiorDirecto'
-				)
-					entries[1] = entries[1].value;
-				console.log(entries);
-				newAgente[fields[entries[0]]] = entries[1];
-				console.log(newAgente);
+		} else {
+			data = data.map((agente: any) => {
+				const newAgente: { [key: string]: any } = {};
+				Object.entries(agente).forEach((entries: any[]) => {
+					if (
+						entries[0] === 'equipo' ||
+						entries[0] === 'direccion' ||
+						entries[0] === 'superiorDirecto'
+					)
+						entries[1] = entries[1].value;
+					newAgente[fields[entries[0]]] = entries[1];
+				});
+				return newAgente;
 			});
-			return newAgente;
-		});
+		}
 		console.log(data);
 
 		if (exportFormat === 'pdf') {
