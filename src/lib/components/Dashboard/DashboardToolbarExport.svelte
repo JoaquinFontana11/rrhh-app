@@ -24,10 +24,59 @@
 
 	$: disabled = title === '' || subtitle === '' || title === undefined || subtitle === undefined;
 
+	const fields = {
+		DNI: 'DNI',
+		CUIT: 'CUIT',
+		fechaNacimiento: 'Fecha Nacimiento',
+		domicilio: 'Domicilio',
+		emailPersonal: 'Email Personal',
+		emailInstitucional: 'Email Institucional',
+		telefono: 'Telefono',
+		curriculum: 'Curriculum',
+		genero: 'Genero',
+		activo: 'Activo',
+		rol: 'Rol',
+		nombreCompleto: 'Nombre Completo',
+		tieneHijos: 'Tiene Hijos',
+		beneficioGuarderia: 'Beneficio Guarderia',
+		asignacionFamiliar: 'Asignacion Familiar',
+		categoria: 'Categoria',
+		agrupamiento: 'Agrupamiento',
+		numSiape: 'Numero Siape',
+		tipoContratacion: 'Tipo Contratacion',
+		referenciaBaja: 'Referencia de Baja',
+		obraSocialActiva: 'Obra Social Activa',
+		fechaAltaCLS: 'Fecha Alta CLS',
+		fechaBajaCLS: 'Fecha Baja CLS',
+		expedienteAltaCLS: 'Expediente Alta CLS',
+		actoAltaCLS: 'Acto Alta CLS',
+		fechaAltaPTT: 'Fecha Alta PTT',
+		fechaBajaPTT: 'Fecha Baja PTT',
+		expedienteAltaPTT: 'Expediente Alta PTT',
+		actoAltaPTT: 'Acto Alta PTT',
+		fechaAltaPP: 'Fecha Alta PP',
+		fechaBajaPP: 'Fecha Baja PP',
+		expedienteAltaPP: 'Expediente Alta PP',
+		actoAltaPP: 'Acto Alta PP',
+		antiguedadExterna: 'Antiguedad Externa',
+		carreraUniversitaria: 'Carrera Universitaria',
+		carreraPostgrado: 'Carrera Postgrado',
+		carreraFinalizada: 'Carrera Finalizada',
+		tipoSangre: 'Tipo de Sangre',
+		medicamentos: 'Medicamentos',
+		consideracion: 'Consideracion',
+		obraSocial: 'Obra Social',
+		nombreContactoEmergencia: 'Nombre del Contacto de Emergencia',
+		telefonoContactoEmergencia: 'Telefono del Contacto de Emergencia',
+		equipo: 'Equipo',
+		direccion: 'Direccion',
+		superiorDirecto: 'Superior Directo'
+	};
+
 	const exportData = async () => {
 		// obtenemos los datos de supabase
 		const resSupabase: PostgrestResponse<AgenteSupabase> = await execSupabaseQuery(
-			`supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)')`,
+			`supabase.from('agente').select('DNI,CUIT,fechaNacimiento,domicilio,emailPersonal,emailInstitucional,telefono,curriculum,genero,activo,rol,nombreCompleto,tieneHijos,beneficioGuarderia,asignacionFamiliar, datosRecorrido (categoria,agrupamiento,numSiape,tipoContratacion,referenciaBaja,obraSocialActiva,fechaAltaCLS,fechaBajaCLS,expedienteAltaCLS,actoAltaCLS,fechaAltaPTT,fechaBajaPTT,expedienteAltaPTT,actoAltaPTT,fechaAltaPP,fechaBajaPP,expedienteAltaPP,actoAltaPP,antiguedadExterna), datosAcademicos (carreraUniversitaria,carreraPostgrado,carreraFinalizada), datosSalud (tipoSangre,medicamentos,consideracion,obraSocial,nombreContactoEmergencia,telefonoContactoEmergencia), equipo (*),  direccion (*), superiorDirecto (*)')`,
 			exportType == 'all' ? null : $pageStore,
 			filtersActive ? $filterStore : [],
 			$orderStore,
@@ -37,6 +86,7 @@
 		if (!resSupabase.data) return;
 
 		let data = flatSupabaseResponse(resSupabase.data);
+
 		//filtramos los campos
 		if (fieldsActive) {
 			data = data.map((agente: any) => {
@@ -56,6 +106,23 @@
 				return newAgente;
 			});
 		}
+
+		data = data.map((agente: any) => {
+			const newAgente: { [key: string]: any } = {};
+			Object.entries(agente).forEach((entries: any[]) => {
+				if (
+					entries[0] === 'equipo' ||
+					entries[0] === 'direccion' ||
+					entries[0] === 'superiorDirecto'
+				)
+					entries[1] = entries[1].value;
+				console.log(entries);
+				newAgente[fields[entries[0]]] = entries[1];
+				console.log(newAgente);
+			});
+			return newAgente;
+		});
+		console.log(data);
 
 		if (exportFormat === 'pdf') {
 			generatePDF(data, title, subtitle);
@@ -87,6 +154,9 @@
 		id="formato"
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 		bind:value={exportFormat}
+		on:change={() => {
+			disabled = !(exportFormat === 'excel');
+		}}
 	>
 		<option value="excel">Excel</option>
 		<option value="pdf">Pdf</option>

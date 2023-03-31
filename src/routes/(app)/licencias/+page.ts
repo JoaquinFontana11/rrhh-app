@@ -74,7 +74,7 @@ const reloadData = async (
 			: tipo == 'salud'
 			? ', datosSalud(concepto)'
 			: tipo == 'teletrabajo'
-			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
+			? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA(nombreCompleto),comunicacionFin,comunicoFinA(nombreCompleto),conectadoATeams)'
 			: tipo == 'vacaciones'
 			? ', datosVacaciones(periodo)'
 			: ''
@@ -85,7 +85,6 @@ const reloadData = async (
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 
-	console.log(resSupabase);
 	return resSupabase;
 };
 

@@ -56,6 +56,7 @@
 	const transformData = (data: any[]) => {
 		if (!data) return { headers: [], fields: [], data: [] };
 		if (data.length == 0) return { headers: [], fields: [], data: [] };
+		console.log(data);
 		return {
 			headers: Object.entries(data[0]).map((entries) => entries[0]),
 			fields: Object.entries(data[0]).map((entries) => entries[0]),

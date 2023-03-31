@@ -21,15 +21,36 @@
 	let title: string;
 	let subtitle: string;
 
+	const fields = {
+		fechaInicio: 'Fecha de Inicio',
+		fechaFin: 'Fecha de Fin',
+		tipo: 'Tipo',
+		observaciones: 'Observaciones',
+		autorizadoSiape: 'Autorizado Siape',
+		nombreCompleto: 'Nombre Completo',
+		acronimo: 'Acronimo',
+		equipo: 'Equipo',
+		direccion: 'Direccion',
+		ultimaMateria: 'Ultima Materia',
+		concepto: 'Concepto',
+		mailAutorizado: ' Mail Autorizado',
+		comunicacionInicio: 'Comunico Inicio',
+		comunicoInicioA: 'Comunico Inicio A',
+		comunicacionFin: 'Comunico Fin',
+		comunicoFinA: 'Comunico Fin A',
+		conectadoATeams: 'Conectado A Teams',
+		periodo: 'Periodo'
+	};
+
 	const exportData = async () => {
 		// obtenemos los datos de supabase
-		const query = `supabase.from('licencia').select('fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(id,acronimo),equipo(id,equipo))${
+		const query = `supabase.from('licencia').select('fechaInicio, fechaFin, tipo, observaciones, autorizadoSiape, agente(nombreCompleto,direccion(acronimo),equipo(equipo))${
 			$tipoLicenciaStore == 'academica'
 				? ', datosAcademicos(ultimaMateria)'
 				: $tipoLicenciaStore == 'salud'
 				? ', datosSalud(concepto)'
 				: $tipoLicenciaStore == 'teletrabajo'
-				? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA,comunicacionFin,comunicoFinA,conectadoATeams)'
+				? ', datosTeletrabajo(mailAutorizado,comunicacionInicio,comunicoInicioA(nombreCompleto),comunicacionFin,comunicoFinA(nombreCompleto),conectadoATeams)'
 				: $tipoLicenciaStore == 'vacaciones'
 				? ', datosVacaciones(periodo)'
 				: ''
@@ -50,6 +71,24 @@
 		if (!resSupabase.data) return;
 
 		let data = flatSupabaseResponse(resSupabase.data);
+		console.log(data);
+		data = data.map((agente: any) => {
+			const newAgente: { [key: string]: any } = {};
+			Object.entries(agente).forEach((entries: any[]) => {
+				if (
+					entries[0] === 'equipo' ||
+					entries[0] === 'direccion' ||
+					entries[0] === 'superiorDirecto'
+				)
+					entries[1] = entries[1].value;
+
+				if (entries[0] === 'comunicoInicioA' || entries[0] === 'comunicoFinA')
+					entries[1] = entries[1].nombreCompleto;
+
+				newAgente[fields[entries[0]]] = entries[1];
+			});
+			return newAgente;
+		});
 
 		if (exportFormat === 'pdf') {
 			generatePDF(data, title, subtitle);

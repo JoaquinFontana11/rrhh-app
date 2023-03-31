@@ -85,7 +85,8 @@
 	const getEquipos = async () => {
 		const res: PostgrestResponse<EquipoSupabase> = await supabase
 			.from('equipo')
-			.select('id, equipo');
+			.select('id, equipo')
+			.neq('id', 0);
 
 		if (!res.data) return;
 
@@ -196,7 +197,7 @@
 			},
 			{
 				type: 'text',
-				label: 'domicilio',
+				label: 'Domicilio',
 				name: 'domicilio',
 				value: $agenteStore.domicilio || '',
 				required: true,
@@ -204,7 +205,7 @@
 			},
 			{
 				type: 'email',
-				label: 'email personal',
+				label: 'Email Personal',
 				name: 'emailPersonal',
 				value: $agenteStore.emailPersonal || '',
 				required: true,
@@ -212,7 +213,7 @@
 			},
 			{
 				type: 'email',
-				label: 'email institucional',
+				label: 'Email Institucional',
 				name: 'emailInstitucional',
 				value: $agenteStore.emailInstitucional || '',
 				required: false,
@@ -230,7 +231,7 @@
 			},
 			{
 				type: 'number',
-				label: 'telefono',
+				label: 'Telefono',
 				name: 'telefono',
 				value: $agenteStore.telefono || '',
 				required: true,
@@ -247,7 +248,7 @@
 			},
 			{
 				type: 'text',
-				label: 'curriculum',
+				label: 'Curriculum',
 				name: 'curriculum',
 				value: $agenteStore.curriculum || '',
 				required: true,
@@ -265,7 +266,7 @@
 
 			{
 				type: 'select',
-				label: 'genero',
+				label: 'Genero',
 				name: 'genero',
 				value: $agenteStore.genero || '',
 				required: true,
@@ -381,7 +382,7 @@
 			},
 			{
 				type: 'text',
-				label: 'medicamentos',
+				label: 'Medicamentos',
 				name: 'medicamentos',
 				value: $agenteStore.medicamentos || '',
 				required: false,
@@ -389,7 +390,7 @@
 			},
 			{
 				type: 'text',
-				label: 'consideraciones',
+				label: 'Consideraciones',
 				name: 'consideracion',
 				value: $agenteStore.consideracion || '',
 				required: false,
@@ -409,7 +410,7 @@
 			},
 			{
 				type: 'number',
-				label: 'telefono de contacto de emergencia',
+				label: 'Telefono de contacto de emergencia',
 				name: 'telefonoContactoEmergencia',
 				value: $agenteStore.telefonoContactoEmergencia || '',
 				required: true,
@@ -426,7 +427,7 @@
 			},
 			{
 				type: 'text',
-				label: 'nombre de contacto de emergencia',
+				label: 'Nombre de contacto de emergencia',
 				name: 'nombreContactoEmergencia',
 				value: $agenteStore.nombreContactoEmergencia || '',
 				required: true,
@@ -466,7 +467,7 @@
 		datosRecorrido: [
 			{
 				type: 'select',
-				label: 'tipo de contratacion',
+				label: 'Tipo de contratacion',
 				name: 'tipoContratacion',
 				value: $agenteStore.tipoContratacion || '',
 				required: true,
@@ -488,7 +489,7 @@
 			},
 			{
 				type: 'number',
-				label: 'categoria',
+				label: 'Categoria',
 				name: 'categoria',
 				value: $agenteStore.categoria || '',
 				required: false,
@@ -496,7 +497,7 @@
 					(value: number) => {
 						if (
 							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
-							(value.toString().length <= 5 || value.toString().length >= 21)
+							(value < 5 || value > 21)
 						)
 							return {
 								message: 'La categoria debe ser un numero entre 5 y 21',
@@ -518,7 +519,7 @@
 			},
 			{
 				type: 'select',
-				label: 'agrupamiento',
+				label: 'Agrupamiento',
 				name: 'agrupamiento',
 				value: $agenteStore.agrupamiento || '',
 				required: false,
@@ -528,6 +529,7 @@
 					{ name: 'profesional', value: 'profesional' }
 				],
 				validators: [
+					validateEmptyInput,
 					(value: any) => {
 						if (
 							($agenteStore.tipoContratacion == 'PTT' || $agenteStore.tipoContratacion == 'PP') &&
@@ -563,7 +565,7 @@
 			},
 			{
 				type: 'text',
-				label: 'referencia de baja',
+				label: 'Referencia de baja',
 				name: 'referenciaBaja',
 				value: $agenteStore.referenciaBaja || '',
 				required: false,
@@ -571,9 +573,9 @@
 			},
 			{
 				type: 'select',
-				label: 'obra social activa',
+				label: 'Obra social activa',
 				name: 'obraSocialActiva',
-				value: $agenteStore.obraSocialActiva,
+				value: $agenteStore.obraSocialActiva || false,
 				required: false,
 				validators: [
 					(value: any) => {
@@ -601,7 +603,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta CLS',
+				label: 'Fecha de alta CLS',
 				name: 'fechaAltaCLS',
 				value: $agenteStore.fechaAltaCLS || '',
 				required: false,
@@ -630,7 +632,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de baja CLS',
+				label: 'Fecha de baja CLS',
 				name: 'fechaBajaCLS',
 				value: $agenteStore.fechaBajaCLS || '',
 				required: false,
@@ -655,7 +657,7 @@
 			//EX-2023-00000153- -GDEBA-TESTGDEBA
 			{
 				type: 'text',
-				label: 'expediente de alta CLS',
+				label: 'Expediente de alta CLS',
 				name: 'expedienteAltaCLS',
 				value: $agenteStore.expedienteAltaCLS || '',
 				required: false,
@@ -674,7 +676,7 @@
 			},
 			{
 				type: 'text',
-				label: 'acto de alta CLS',
+				label: 'Acto de alta CLS',
 				name: 'actoAltaCLS',
 				value: $agenteStore.actoAltaCLS || '',
 				required: false,
@@ -693,7 +695,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta PTT',
+				label: 'Fecha de alta PTT',
 				name: 'fechaAltaPTT',
 				value: $agenteStore.fechaAltaPTT || '',
 				required: false,
@@ -722,7 +724,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de baja PTT',
+				label: 'Fecha de baja PTT',
 				name: 'fechaBajaPTT',
 				value: $agenteStore.fechaBajaPTT || '',
 				required: false,
@@ -745,7 +747,7 @@
 			},
 			{
 				type: 'text',
-				label: 'expediente de alta PTT',
+				label: 'Expediente de alta PTT',
 				name: 'expedienteAltaPTT',
 				value: $agenteStore.expedienteAltaPTT || '',
 				required: false,
@@ -764,7 +766,7 @@
 			},
 			{
 				type: 'text',
-				label: 'acto de alta PTT',
+				label: 'Acto de alta PTT',
 				name: 'actoAltaPTT',
 				value: $agenteStore.actoAltaPTT || '',
 				required: false,
@@ -783,7 +785,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de alta PP',
+				label: 'Fecha de alta PP',
 				name: 'fechaAltaPP',
 				value: $agenteStore.fechaAltaPP || '',
 				required: false,
@@ -812,7 +814,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de baja PP',
+				label: 'Fecha de baja PP',
 				name: 'fechaBajaPP',
 				value: $agenteStore.fechaBajaPP || '',
 				required: false,
@@ -821,7 +823,7 @@
 			},
 			{
 				type: 'text',
-				label: 'expediente de alta PP',
+				label: 'Expediente de alta PP',
 				name: 'expedienteAltaPP',
 				value: $agenteStore.expedienteAltaPP || '',
 				required: false,
@@ -840,7 +842,7 @@
 			},
 			{
 				type: 'text',
-				label: 'acto de alta PP',
+				label: 'Acto de alta PP',
 				name: 'actoAltaPP',
 				value: $agenteStore.actoAltaPP || '',
 				required: false,
@@ -859,7 +861,7 @@
 			},
 			{
 				type: 'number',
-				label: 'antiguedad externa',
+				label: 'Antiguedad externa',
 				name: 'antiguedadExterna',
 				value: $agenteStore.antiguedadExterna || 0,
 				required: true,

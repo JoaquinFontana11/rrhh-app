@@ -59,6 +59,8 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 						data[key][subKey].value = data[key][subKey].acronimo;
 					} else if (subKey === 'equipo') {
 						data[key][subKey].value = data[key][subKey].equipo;
+					} else if (key == 'comunicoInicioA' || key == 'comunicoFinA') {
+						flattedArr.push([key, { id: data[key].id, value: data[key].nombreCompleto }]);
 					}
 					flattedArr.push([subKey, data[key][subKey]]);
 				}

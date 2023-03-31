@@ -22,9 +22,11 @@
 
 	const formatSomeValues = (data: { [key: string]: any }, key: string): string => {
 		const value: any = data[key];
-
 		if (key == 'equipo' || key == 'direccion' || key == 'superiorDirecto') {
 			return value ? value.value : value;
+		}
+		if (key == 'comunicoInicioA' || key == 'comunicoFinA') {
+			return value ? value.nombreCompleto : value;
 		}
 
 		if (typeof value == 'boolean') return value == true ? 'Si' : 'No';

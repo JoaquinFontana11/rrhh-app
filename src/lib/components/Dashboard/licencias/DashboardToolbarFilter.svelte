@@ -15,6 +15,12 @@
 
 	export let fields: string[] = [];
 
+	fields = fields.filter((field) => {
+		return field !== 'id';
+	});
+
+	console.log(fields);
+
 	let field: string;
 	let filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
 	let value: string | number | number[];
