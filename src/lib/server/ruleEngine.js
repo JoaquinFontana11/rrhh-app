@@ -72,6 +72,8 @@ const vacacionesDataFormat = (rawData) => {
 };
 
 const vacacionesRulesFactory = (data) => {
+	console.log(data);
+	console.log(data.diasVacaciones - data.diasPrimerPeriodo);
 	return {
 		cantidadMaximaVacaciones: {
 			criteria: [

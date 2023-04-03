@@ -27,7 +27,7 @@
 	let loading = false;
 
 	const setLimitText = () => {
-		note.titulo = note.titulo.length < 18 ? note.titulo : note.titulo.substring(0, 18);
+		note.titulo = note.titulo.length < 32 ? note.titulo : note.titulo.substring(0, 32);
 	};
 
 	const handleClickOutside = (e: any) => {
@@ -77,7 +77,7 @@
 					type="text"
 					bind:value={note.titulo}
 					on:input={setLimitText}
-					class={` rounded-lg outline-none p-2  dark:text-stone-100 ${
+					class={` rounded-lg outline-none p-2  dark:text-stone-100 w-96 ${
 						note.nivel == 'ok'
 							? 'bg-green-400 border-green-500 dark:bg-green-700'
 							: note.nivel == 'warn'
@@ -90,6 +90,7 @@
 						if (loading) return;
 						loading = true;
 						await supabase.from('notas').update({ titulo: note.titulo }).eq('id', note.id);
+						dispatcher('initLong', {});
 						showEditTitle = false;
 						loading = false;
 					}}
@@ -104,7 +105,10 @@
 			<p
 				class=" dark:text-stone-100 text-xl font-medium w-auto"
 				on:dblclick={() => {
-					if (modify) showEditTitle = true;
+					if (modify) {
+						showEditTitle = true;
+						dispatcher('stopLong', {});
+					}
 				}}
 			>
 				{note.titulo}
@@ -168,6 +172,7 @@
 							if (loading) return;
 							loading = true;
 							await supabase.from('notas').update({ contenido: note.contenido }).eq('id', note.id);
+							dispatcher('initLong', {});
 							showEditContent = false;
 							loading = false;
 						}}
@@ -185,7 +190,10 @@
 				<div
 					class="border rounded-lg p-2 overflow-y-scroll h-56 scrollbar-thin scrollbar-thumb-stone-500/20 dark:scrollbar-thumb-stone-700 dark:text-stone-100 dark:border-stone-500 "
 					on:dblclick={() => {
-						if (modify) showEditContent = true;
+						if (modify) {
+							showEditContent = true;
+							dispatcher('stopLong', {});
+						}
 					}}
 				>
 					{note.contenido}

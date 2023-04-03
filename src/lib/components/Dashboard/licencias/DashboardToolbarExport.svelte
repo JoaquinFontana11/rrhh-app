@@ -112,7 +112,7 @@
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 		bind:value={exportType}
 	>
-		<option value="all">Exporar todas las licencias</option>
+		<option value="all">Exportar todas las licencias</option>
 		<option value="page">Exportar la pagina actual</option>
 	</select>
 	<label class="dark:text-stone-400" for="formato">Formato de exportacion</label>

@@ -62,10 +62,23 @@ const create: Action = async ({ request }) => {
 			await supabase.from('datosAcademicos').delete().eq('id', dataAcademico[0].id);
 		if (dataRecorrido) await supabase.from('datosRecorrido').delete().eq('id', dataRecorrido[0].id);
 		const message = errorSalud
-			? { error: 'Datos de Salud', description: errorSalud.message + '' }
+			? {
+					error: 'Datos de Salud',
+					description: errorSalud.details ? errorSalud.details + '' : errorSalud.message + ''
+			  }
 			: errorAcademico
-			? { error: 'Datos Academicos', description: errorAcademico.message + '' }
-			: { error: 'Datos Institucionales', description: errorRecorrido.message + '' };
+			? {
+					error: 'Datos Academicos',
+					description: errorAcademico.details
+						? errorAcademico.details + ''
+						: errorAcademico.message + ''
+			  }
+			: {
+					error: 'Datos Institucionales',
+					description: errorRecorrido.details
+						? errorRecorrido.details + ''
+						: errorRecorrido.message + ''
+			  };
 		throw error(400, { message: message });
 	}
 
@@ -101,7 +114,14 @@ const create: Action = async ({ request }) => {
 	console.log(agente);
 	console.log(dataAgente, errorAgente);
 	if (errorAgente) {
-		const message = { error: 'Datos Personales', description: errorAgente.message + '' };
+		if (dataSalud) await supabase.from('datosSalud').delete().eq('id', dataSalud[0].id);
+		if (dataAcademico)
+			await supabase.from('datosAcademicos').delete().eq('id', dataAcademico[0].id);
+		if (dataRecorrido) await supabase.from('datosRecorrido').delete().eq('id', dataRecorrido[0].id);
+		const message = {
+			error: 'Datos Personales',
+			description: errorAgente.details ? errorAgente.details + '' : errorAgente.message + ''
+		};
 		throw error(400, { message: message });
 	}
 };
@@ -183,12 +203,28 @@ const update: Action = async ({ request }) => {
 
 	if (errorAgente || errorSalud || errorAcademico || errorRecorrido) {
 		const message = errorSalud
-			? { error: 'Datos de Salud', description: errorSalud.message + '' }
+			? {
+					error: 'Datos de Salud',
+					description: errorSalud.details ? errorSalud.details + '' : errorSalud.message + ''
+			  }
 			: errorAcademico
-			? { error: 'Datos Academicos', description: errorAcademico.message + '' }
+			? {
+					error: 'Datos Academicos',
+					description: errorAcademico.details
+						? errorAcademico.details + ''
+						: errorAcademico.message + ''
+			  }
 			: errorRecorrido
-			? { error: 'Datos Institucionales', description: errorRecorrido.message + '' }
-			: { error: 'Datos Personales', description: errorAgente.message + '' };
+			? {
+					error: 'Datos Institucionales',
+					description: errorRecorrido.details
+						? errorRecorrido.details + ''
+						: errorRecorrido.message + ''
+			  }
+			: {
+					error: 'Datos Personales',
+					description: errorAgente.details ? errorAgente.details + '' : errorAgente.message + ''
+			  };
 		throw error(400, { message: message });
 	}
 
@@ -219,12 +255,32 @@ const update: Action = async ({ request }) => {
 
 	if (updateAcademicoError || updateAgenteError || updateRecorridoError || updateSaludError) {
 		const message = updateSaludError
-			? { error: 'Datos de Salud', description: updateSaludError.message + '' }
+			? {
+					error: 'Datos de Salud',
+					description: updateSaludError.details
+						? updateSaludError.details + ''
+						: updateSaludError.message + ''
+			  }
 			: updateAcademicoError
-			? { error: 'Datos Academicos', description: updateAcademicoError.message + '' }
+			? {
+					error: 'Datos Academicos',
+					description: updateAcademicoError.details
+						? updateAcademicoError.details + ''
+						: updateAcademicoError.message + ''
+			  }
 			: updateRecorridoError
-			? { error: 'Datos Institucionales', description: updateRecorridoError.message + '' }
-			: { error: 'Datos Personales', description: updateAgenteError?.message + '' };
+			? {
+					error: 'Datos Institucionales',
+					description: updateRecorridoError.details
+						? updateRecorridoError.details + ''
+						: updateRecorridoError.message + ''
+			  }
+			: {
+					error: 'Datos Personales',
+					description: updateAgenteError?.details
+						? updateAgenteError?.details + ''
+						: updateAgenteError?.message + ''
+			  };
 		throw error(400, { message: message });
 	}
 };

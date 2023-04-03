@@ -42,35 +42,7 @@ const create: Action = async ({ request }) => {
 
 	const date = new Date();
 	// ejecutamos el motor de reglas para validar la licencia
-	if (objetoLleno(datosAcademicos) && data.get('tipo') == 'academica') {
-		let { data, error }: { data: any; error: any } = await supabase
-			.from('licenciaAcademica')
-			.insert(datosAcademicos)
-			.select();
 
-		licencia.datosAcademicos = data[0].id;
-	}
-	if (objetoLleno(datosSalud) && data.get('tipo') == 'salud') {
-		let { data }: { data: any } = await supabase.from('licenciaSalud').insert(datosSalud).select();
-
-		licencia.datosSalud = data[0].id;
-	}
-	if (objetoLleno(datosVacaciones) && data.get('tipo') == 'vacaciones') {
-		let { data }: { data: any } = await supabase
-			.from('licenciaVacaciones')
-			.insert(datosVacaciones)
-			.select();
-
-		licencia.datosVacaciones = data[0].id;
-	}
-	if (objetoLleno(datosTeletrabajo) && data.get('tipo') == 'teletrabajo') {
-		let { data }: { data: any } = await supabase
-			.from('licenciaTeletrabajo')
-			.insert(datosTeletrabajo)
-			.select();
-
-		licencia.datosTeletrabajo = data[0].id;
-	}
 	if (licencia.tipo == 'ausente') {
 		// obtenemos todos los ausentes con aviso en lo que va del año
 		let { data: dataAusentes } = await supabase
@@ -85,6 +57,7 @@ const create: Action = async ({ request }) => {
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
 
+		console.log(reject);
 		if (reject)
 			throw error(400, {
 				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
@@ -140,6 +113,37 @@ const create: Action = async ({ request }) => {
 				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
 			});
 	}
+
+	if (objetoLleno(datosAcademicos) && data.get('tipo') == 'academica') {
+		let { data, error }: { data: any; error: any } = await supabase
+			.from('licenciaAcademica')
+			.insert(datosAcademicos)
+			.select();
+
+		licencia.datosAcademicos = data[0].id;
+	}
+	if (objetoLleno(datosSalud) && data.get('tipo') == 'salud') {
+		let { data }: { data: any } = await supabase.from('licenciaSalud').insert(datosSalud).select();
+
+		licencia.datosSalud = data[0].id;
+	}
+	if (objetoLleno(datosVacaciones) && data.get('tipo') == 'vacaciones') {
+		let { data }: { data: any } = await supabase
+			.from('licenciaVacaciones')
+			.insert(datosVacaciones)
+			.select();
+
+		licencia.datosVacaciones = data[0].id;
+	}
+	if (objetoLleno(datosTeletrabajo) && data.get('tipo') == 'teletrabajo') {
+		let { data }: { data: any } = await supabase
+			.from('licenciaTeletrabajo')
+			.insert(datosTeletrabajo)
+			.select();
+
+		licencia.datosTeletrabajo = data[0].id;
+	}
+
 	console.log('lic: ' + licencia);
 
 	await supabase.from('licencia').insert(licencia);

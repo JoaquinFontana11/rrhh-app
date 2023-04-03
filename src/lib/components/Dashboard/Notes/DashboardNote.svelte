@@ -72,6 +72,12 @@
 				on:refresh-users={async () => {
 					await getTaggedUsers(note.id);
 				}}
+				on:stopLong={() => {
+					dispatcher('stopLong', {});
+				}}
+				on:initLong={() => {
+					dispatcher('initLong', {});
+				}}
 			/>
 		</div>
 	</div>
@@ -111,7 +117,7 @@
 			class="w-8 h-8 "
 		/>
 	</div>
-	<p class="grow dark:text-stone-100">
+	<p class="grow dark:text-stone-100 max-h-6 break-words truncate overflow-hidden">
 		{note.titulo}
 	</p>
 	<button on:click={setBlur}>

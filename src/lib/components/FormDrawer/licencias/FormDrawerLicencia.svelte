@@ -39,7 +39,7 @@
 				value: $LicenciaStore.agente || 1,
 				validators: [validateEmptyInput],
 				options: agentes.map((agente: Agente) => {
-					return { name: agente.emailPersonal, value: agente.id };
+					return { name: agente.nombreCompleto, value: agente.id };
 				})
 			},
 			{

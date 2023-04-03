@@ -136,7 +136,13 @@
 	let veryComplexValidators: FunctionsObject = {
 		datosAcademicos: (components: IComponent) => {
 			return components[2].value && components[0].value === ''
-				? { message: 'Si tiene una carrera Finalizada, debe especificar cual', status: true }
+				? {
+						message: {
+							error: 'Datos Academicos',
+							description: 'Si tiene una carrera Finalizada, debe especificar cual'
+						},
+						status: true
+				  }
 				: { message: '', status: false };
 		}
 	};
@@ -470,7 +476,16 @@
 					{ value: true, name: 'Si' },
 					{ value: false, name: 'No' }
 				],
-				validators: [validateEmptyInput]
+				validators: [
+					validateEmptyInput,
+					(value: boolean) => {
+						if (value)
+							return {
+								message: 'Si tiene una carrera Finalizada, debe especificar cual',
+								status: false
+							};
+					}
+				]
 			}
 		],
 		datosRecorrido: [
@@ -911,7 +926,9 @@
 		success = false;
 		showErrors = true;
 		errorsMessage = [];
-		errorsMessage.push(e.detail.message);
+		console.log(Array.isArray(e.detail.message));
+		if (Array.isArray(e.detail.message)) errorsMessage = e.detail.message;
+		else errorsMessage.push(e.detail.message);
 	};
 	const showSuccess = (e: CustomEvent) => {
 		successMessage.title = `Agente ${action === 'create' ? 'Creado' : 'Actualizado'}`;

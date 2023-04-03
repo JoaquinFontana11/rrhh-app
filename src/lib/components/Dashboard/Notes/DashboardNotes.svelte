@@ -66,6 +66,12 @@
 						blur = !blur;
 						dispatcher('refresh', {});
 					}}
+					on:stopLong={() => {
+						dispatcher('stopLong', {});
+					}}
+					on:initLong={() => {
+						dispatcher('initLong', {});
+					}}
 				/>
 			</div>
 		{/each}
@@ -87,6 +93,12 @@
 						blur = !blur;
 						dispatcher('refresh', {});
 					}}
+					on:stopLong={() => {
+						dispatcher('stopLong', {});
+					}}
+					on:initLong={() => {
+						dispatcher('initLong', {});
+					}}
 				/>
 			</div>
 		{/each}
@@ -107,6 +119,12 @@
 					on:set-blur={() => {
 						blur = !blur;
 						dispatcher('refresh', {});
+					}}
+					on:stopLong={() => {
+						dispatcher('stopLong', {});
+					}}
+					on:initLong={() => {
+						dispatcher('initLong', {});
 					}}
 				/>
 			</div>

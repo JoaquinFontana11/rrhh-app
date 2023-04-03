@@ -16,6 +16,7 @@
 
 	let loading = false;
 	let error: ErrorsArray = { message: [], status: false };
+
 	const handlerSubmit = async (e: Event) => {
 		if (loading) return;
 		error = { message: [], status: false };
@@ -29,7 +30,10 @@
 				formData = response.data;
 			} else error = response.data;
 
-			if (error.status) return;
+			console.log(error);
+			if (error.status) {
+				return dispatcher('error', { message: error.message });
+			}
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
 			console.log([...formData]);
@@ -39,6 +43,7 @@
 			});
 			if (res.status == 400) {
 				const message = (await res.json()).error.message;
+				console.log(message);
 
 				dispatcher('error', { message: message });
 			} else {
@@ -71,7 +76,8 @@
 		{/if}
 	</button>
 </form>
-{#if error.status}
+
+<!-- {#if error.status}
 	<div class=" w-full p-3 m-5 flex flex-col gap-5">
 		{#each error.message as message}
 			<div
@@ -85,8 +91,7 @@
 			</div>
 		{/each}
 	</div>
-{/if}
-
+{/if} -->
 <style lang="postcss">
 	.disabled {
 		@apply bg-lime-300 cursor-not-allowed;
