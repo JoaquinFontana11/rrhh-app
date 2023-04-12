@@ -40,8 +40,8 @@
 
 	const deleteNote = async (e: CustomEvent) => {
 		if (e.detail) {
-			await supabase.from('notas').delete().eq('id', note.id);
 			await supabase.from('usuariosEtiquetados').delete().eq('nota', note.id);
+			await supabase.from('notas').delete().eq('id', note.id);
 			dispatcher('delete-note', { id: note.id });
 		}
 		showConfirmPopUp = false;

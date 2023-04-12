@@ -10,8 +10,6 @@
 	export let formName: string;
 	export let validateAllInputs: boolean = false;
 
-	console.log(components);
-
 	const validateAll = () => {
 		let res;
 		for (const component of components) {

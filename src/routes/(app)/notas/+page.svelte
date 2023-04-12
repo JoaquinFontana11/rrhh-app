@@ -96,11 +96,9 @@
 		on:delete-note={deleteNote}
 		on:refresh={refreshNotes}
 		on:stopLong={() => {
-			console.log('Parate!');
 			stopLongPolling();
 		}}
 		on:initLong={() => {
-			console.log('Arranca padre');
 			initLongPolling();
 		}}
 	/>

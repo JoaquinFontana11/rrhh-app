@@ -926,7 +926,6 @@
 		success = false;
 		showErrors = true;
 		errorsMessage = [];
-		console.log(Array.isArray(e.detail.message));
 		if (Array.isArray(e.detail.message)) errorsMessage = e.detail.message;
 		else errorsMessage.push(e.detail.message);
 	};

@@ -30,20 +30,17 @@
 				formData = response.data;
 			} else error = response.data;
 
-			console.log(error);
 			if (error.status) {
 				return dispatcher('error', { message: error.message });
 			}
 			if ($agenteStore.id) formData.append('id', $agenteStore.id);
 			if ($LicenciaStore.id) formData.append('id', $LicenciaStore.id);
-			console.log([...formData]);
 			const res = await fetch(`?/${action}`, {
 				method: 'POST',
 				body: formData
 			});
 			if (res.status == 400) {
 				const message = (await res.json()).error.message;
-				console.log(message);
 
 				dispatcher('error', { message: message });
 			} else {

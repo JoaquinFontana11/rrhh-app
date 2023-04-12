@@ -120,7 +120,6 @@
 				return newAgente;
 			});
 		}
-		console.log(data);
 
 		if (exportFormat === 'pdf') {
 			generatePDF(data, title, subtitle);

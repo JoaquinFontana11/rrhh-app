@@ -5,7 +5,7 @@
 	export let direccion: number;
 	export let equipo: number;
 	export let tipoLicencia: string;
-	export let day: number | string;
+	export let day: number;
 	export let month: number;
 	export let year: number;
 	export let items: { color: string; content: string }[] = [];
@@ -21,7 +21,9 @@
 		teletrabajo: 'sky'
 	};
 	const clickItem = async (e: CustomEvent, i: number) => {
-		const currentDate = `${year}-${month + 1 > 10 ? month + 1 : `0${month + 1}`}-${day}`;
+		const currentDate = `${year}-${month + 1 > 10 ? month + 1 : `0${month + 1}`}-${
+			day > 10 ? day : `0${day}`
+		}`;
 		const resSupabaseItems = await supabase
 			.from('licencia')
 			.select('agente(*, direccion(*), equipo(*)), fechaInicio, fechaFin, tipo')

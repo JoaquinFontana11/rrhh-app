@@ -6,6 +6,10 @@
 
 	export let fields: string[] = [];
 
+	fields = fields.filter((field) => {
+		return field !== 'id' && field !== 'created_at';
+	});
+
 	let field: string;
 
 	showStore.subscribe((val) => {

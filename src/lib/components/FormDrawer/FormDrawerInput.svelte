@@ -18,8 +18,6 @@
 	let status: boolean = false;
 	let viewErrors: boolean = false;
 
-	console.log(label, disabled);
-
 	const dispatch = createEventDispatcher();
 
 	const validateInput = (e: Event | null = null) => {

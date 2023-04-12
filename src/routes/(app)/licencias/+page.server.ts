@@ -56,8 +56,6 @@ const create: Action = async ({ request }) => {
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
 
 		const reject = Object.entries(flags).some((flag) => !flag[1]);
-
-		console.log(reject);
 		if (reject)
 			throw error(400, {
 				message: JSON.stringify({ flags, messages: licenciasRuleEngine.messages })
@@ -143,8 +141,6 @@ const create: Action = async ({ request }) => {
 
 		licencia.datosTeletrabajo = data[0].id;
 	}
-
-	console.log('lic: ' + licencia);
 
 	await supabase.from('licencia').insert(licencia);
 };

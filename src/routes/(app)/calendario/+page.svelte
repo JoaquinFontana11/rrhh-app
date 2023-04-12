@@ -31,8 +31,6 @@
 	};
 
 	const reloadItems = (month: number, tipoLicencia: string, direccion: number, equipo: number) => {
-		console.log(direccion);
-		console.log([...data.equipos]);
 		if (direccion !== 100) {
 			equipos = [...data.equipos].filter((equipo) => {
 				return equipo.direccion
@@ -41,7 +39,6 @@
 			});
 			equipos.push({ equipo: 'Todos los equipos', id: 100 });
 		} else equipos = [...data.equipos, { equipo: 'Todos los equipos', id: 100 }];
-		console.log(equipos);
 		let licencias = data.data
 			.filter((licencia) => {
 				const licenciaMonthInicio = new Date(licencia.fechaInicio).getMonth();

@@ -71,7 +71,7 @@
 		if (!resSupabase.data) return;
 
 		let data = flatSupabaseResponse(resSupabase.data);
-		console.log(data);
+
 		data = data.map((agente: any) => {
 			const newAgente: { [key: string]: any } = {};
 			Object.entries(agente).forEach((entries: any[]) => {

@@ -35,7 +35,6 @@ export const execSupabaseQuery = async (
 
 	// ejecutamos la query y la aplanamos
 	const res = await eval(querySupabase);
-
 	return res;
 };
 

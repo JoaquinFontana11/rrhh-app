@@ -19,10 +19,8 @@
 	export let fields: string[] = [];
 
 	fields = fields.filter((field) => {
-		return field !== 'id';
+		return field !== 'id' && field !== 'created_at';
 	});
-
-	console.log(fields);
 
 	let field: string;
 	let filter: 'lt' | 'lte' | 'eq' | 'gt' | 'gte' | 'ilike';
