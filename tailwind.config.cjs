@@ -22,20 +22,24 @@ module.exports = {
 					Grey: '#838383',
 					Rose: '#e81f76',
 					Error: '#BE1717',
-					Succes: '#22a954',
-					Green: '#84CC16',
-					Black: '#414042'
+					Succes: '#22a954'
 				},
 				dark: {
 					Turquoise: '#509199',
 					Rose: '#CB1B67',
-					Grey: '#525252'
+					Grey: '#525252',
+					Error: '#B62424'
 				},
 				light: {
 					Turquoise: '#60CCDA',
 					Rose: '#EB3B87',
 					Grey: '#B2B2B2',
 					Black: '#787878'
+				},
+				gradient: {
+					Turquoise1: '#74c9e3',
+					Turquoise2: '#a3d8e7',
+					Turquoise3: '#cae7ea'
 				}
 			}
 		}

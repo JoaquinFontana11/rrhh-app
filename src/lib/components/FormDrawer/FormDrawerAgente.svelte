@@ -1088,7 +1088,7 @@
 				<div
 					class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
 				>
-					<Icon src={ExclamationCircle} class="text-rose-500 w-6 h-6" />
+					<Icon src={ExclamationCircle} class="text-DPMA-Error w-6 h-6" />
 					<div class="w-5/6">
 						<p class="text-stone-700 dark:text-stone-200 text-sm">{error.error}</p>
 						<p class="text-stone-500 text-sm">{error.description}</p>
@@ -1102,7 +1102,7 @@
 			<div
 				class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
 			>
-				<Icon src={CheckCircle} class="text-lime-500 w-6 h-6" />
+				<Icon src={CheckCircle} class="text-DPMA-Succes w-6 h-6" />
 				<div class="w-5/6">
 					<p class="text-stone-700 dark:text-stone-200 text-sm">{successMessage.title}</p>
 					<p class="text-stone-500 text-sm">{successMessage.description}</p>

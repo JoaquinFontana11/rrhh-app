@@ -15,7 +15,7 @@
 	<hr class=" my-1 h-0.5 bg-stone-300 dark:bg-stone-900" />
 	<div class="flex justify-end items-center gap-6">
 		<button
-			class="flex flex-row border p-2 rounded-lg bg-rose-600 hover:bg-rose-700  dark:hover:bg-rose-700 dark:bg-rose-800 disabled:dark:bg-stone-600 dark:border-stone-500"
+			class="flex flex-row border p-2 rounded-lg bg-DPMA-Error hover:bg-dark-Error disabled:dark:bg-stone-600 dark:border-stone-500"
 			on:click={() => {
 				dispatcher('confirm', true);
 			}}

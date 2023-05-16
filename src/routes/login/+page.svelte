@@ -17,7 +17,7 @@
 
 <svelte:window on:mousemove={mouseMove} />
 
-<div class="w-screen h-screen bg-lime-100 overflow-hidden">
+<div class="w-screen h-screen bg-gradient-Turquoise3 overflow-hidden">
 	<img
 		class="w-36 h-26 relative"
 		style={`top: ${$coords.y}px; left: ${$coords.x}px; transform: rotate(${deg}deg)`}
@@ -43,7 +43,7 @@
 		/>
 		<input
 			type="submit"
-			class="p-2 bg-lime-500 rounded-lg hover:cursor-pointer hover:bg-lime-400"
+			class="p-2 bg-DPMA-Turquoise rounded-lg hover:cursor-pointer hover:bg-gradient-Turquoise1"
 		/>
 		<span>En caso de no tener usuario, solicitelo al administrador</span>
 	</form>

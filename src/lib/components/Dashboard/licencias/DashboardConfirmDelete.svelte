@@ -33,7 +33,7 @@
 			bind:value={reason}
 		/>
 		<button
-			class="flex flex-row border p-2 rounded-lg bg-rose-600 hover:bg-rose-700  dark:hover:bg-rose-700 dark:bg-rose-800 disabled:dark:bg-stone-600 dark:border-stone-500"
+			class="flex flex-row border p-2 rounded-lg bg-DPMA-Error hover:bg-dark-Error disabled:dark:bg-stone-600 dark:border-stone-500"
 			class:disabled={reason === ''}
 			disabled={reason === ''}
 			on:click={() => {

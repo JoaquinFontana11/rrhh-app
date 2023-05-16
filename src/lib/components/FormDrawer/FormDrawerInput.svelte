@@ -56,7 +56,7 @@
 				}}
 				class="flex justify-center items-center h-full "
 			>
-				<Icon src={ExclamationCircle} class="text-red-500 w-6 h-6 ml-5" />
+				<Icon src={ExclamationCircle} class="text-DPMA-Error w-6 h-6 ml-5" />
 			</div>
 
 			{#if viewErrors}
@@ -145,7 +145,7 @@
 
 <style lang="postcss">
 	.error {
-		@apply border-rose-500 text-rose-500;
+		@apply border-DPMA-Error text-DPMA-Error;
 	}
 	.ocultar {
 		@apply hidden;

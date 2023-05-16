@@ -60,7 +60,7 @@
 	<slot />
 	<button
 		type="submit"
-		class="w-5/6 mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-lime-500 hover:bg-lime-600 hover:cursor-pointer"
+		class="w-5/6 mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-DPMA-Rose hover:bg-dark-Rose hover:cursor-pointer"
 		class:disabled
 		{disabled}
 	>
@@ -89,6 +89,6 @@
 {/if} -->
 <style lang="postcss">
 	.disabled {
-		@apply bg-lime-300 cursor-not-allowed;
+		@apply bg-light-Rose cursor-not-allowed;
 	}
 </style>

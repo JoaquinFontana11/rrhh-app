@@ -43,7 +43,7 @@
 
 <style lang="postcss">
 	.highligth {
-		@apply bg-lime-500 hover:bg-lime-600;
+		@apply bg-DPMA-Rose hover:bg-dark-Rose;
 	}
 	.text-highligth {
 		@apply text-lime-500 hover:text-lime-600;

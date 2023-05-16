@@ -13,7 +13,7 @@
 	</span>
 	<div class="flex gap-1 justify-center items-center">
 		{#if !validate}
-			<div class="w-2 h-2 bg-rose-500 rounded-full" />
+			<div class="w-2 h-2 bg-DPMA-Error rounded-full" />
 		{/if}
 		<Icon src={ChevronDown} class="pl-2 w-7 h-7  " />
 	</div>
