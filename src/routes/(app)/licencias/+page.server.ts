@@ -50,7 +50,8 @@ const create: Action = async ({ request }) => {
 			.select('*')
 			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
 			.eq('agente', licencia.agente)
-			.eq('tipo', 'ausente');
+			.eq('tipo', 'ausente')
+			.neq('borrado', true);
 
 		dataAusentes = dataAusentes || [];
 		const flags = licenciasRuleEngine.ausenteRules({ licencia, dataAusentes });
@@ -69,7 +70,8 @@ const create: Action = async ({ request }) => {
 			.select('*, datosAcademicos(*)')
 			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
 			.eq('agente', licencia.agente)
-			.eq('tipo', 'academica');
+			.eq('tipo', 'academica')
+			.neq('borrado', true);
 
 		dataAcademica = dataAcademica || [];
 		const flags = licenciasRuleEngine.academicoRules({ licencia, dataAcademica });
@@ -89,7 +91,8 @@ const create: Action = async ({ request }) => {
 			.select('*, datosVacaciones(*)')
 			.gte('fechaInicio', `${date.getFullYear()}-01-01`)
 			.eq('agente', licencia.agente)
-			.eq('tipo', 'vacaciones');
+			.eq('tipo', 'vacaciones')
+			.neq('borrado', true);
 
 		let { data: agente }: { data: any } = await supabase
 			.from('agente')

@@ -5,8 +5,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from 'svelte-spinner';
 	import { validateAllNomina, validateAllLicencia } from '$lib/helpers';
-	import { Icon, ChevronDown, ExclamationCircle } from 'svelte-hero-icons';
-
 	export let components: IComponentObject;
 	export let action: string;
 	export let disabled: boolean = true;
@@ -19,6 +17,7 @@
 
 	const handlerSubmit = async (e: Event) => {
 		if (loading) return;
+		console.log('aaaa');
 		error = { message: [], status: false };
 		loading = true;
 		let formData = new FormData();
@@ -63,7 +62,6 @@
 		type="submit"
 		class="w-5/6 mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-lime-500 hover:bg-lime-600 hover:cursor-pointer"
 		class:disabled
-		value="Agregar agente"
 		{disabled}
 	>
 		{#if loading}

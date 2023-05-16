@@ -54,7 +54,7 @@
 				: $tipoLicenciaStore == 'vacaciones'
 				? ', datosVacaciones(periodo)'
 				: ''
-		}').neq('id', 167)`;
+		}').neq('borrado', true)`;
 		const resSupabase: PostgrestResponse<AgenteSupabase> = await execSupabaseQuery(
 			query,
 			exportType == 'all' ? null : $pageLicenciaStore,

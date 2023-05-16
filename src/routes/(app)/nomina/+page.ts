@@ -45,12 +45,12 @@ export const load: CustomPageLoad = async ({ url }) => {
 	let resFieldsSupabase: PostgrestResponse<any> = await supabase
 		.from('agente')
 		.select(
-			'*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)'
+			'*,datosRecorrido (tipoContratacion,PP(*),PTT(*),CLS(*)), datosAcademicos (*), datosSalud (*),superiorDirecto(*),equipo(*),direccion(*)'
 		)
 		.range(0, 1);
 
 	const fields = flatSupabaseResponse(resFieldsSupabase.data);
-
+	console.log(Object.entries(fields[0]).map((entries) => entries[0]));
 	return {
 		data: agentes,
 		lastPage: Math.trunc((lastPage as number) / 10),
@@ -66,15 +66,22 @@ const reloadData = async (
 	filters: any[],
 	cantPage: number
 ) => {
+	const val = await supabase
+		.from('agente')
+		.select(
+			'*,datosRecorrido (tipoContratacion,PP (*),PTT (*),CLS (*)), datosAcademicos (*), datosSalud (*),superiorDirecto(*),equipo(*),direccion(*)'
+		);
+	//console.log(val);
 	const resSupabase = await execSupabaseQuery(
-		`supabase.from('agente').select('*, datosRecorrido (*), datosAcademicos (*), datosSalud (*), equipo (*),  direccion (*), superiorDirecto (*)')`,
+		`supabase.from('agente').select('*,datosRecorrido (tipoContratacion,PP (*),PTT (*),CLS (*)), datosAcademicos (*), datosSalud (*),superiorDirecto(*),equipo(*),direccion(*)')`,
 		page,
 		filters,
 		order,
 		cantPage
 	);
-
+	//console.log(resSupabase);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
+	//console.log(resSupabase);
 	return resSupabase;
 };
 

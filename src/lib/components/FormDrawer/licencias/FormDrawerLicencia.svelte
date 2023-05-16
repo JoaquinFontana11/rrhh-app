@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { Icon, ChevronDown, ExclamationCircle, CheckCircle } from 'svelte-hero-icons';
-	import type { Agente, IComponentObject } from '$lib/types';
+	import type { Agente, IComponentObject, Licencia } from '$lib/types';
 	import FormDrawer from '../FormDrawer.svelte';
 	import FormDrawerInputGroup from '../FormDrawerInputGroup.svelte';
 	import FormDrawerInputGroupButton from '../FormDrawerInputGroupButton.svelte';
 	import { validateEmptyInput } from '../validators';
 	import { diffDays } from '$lib/helpers';
 	import { LicenciaStore } from '$lib/stores/licenciaStore';
+	import DashboardConfirmDelete from '$lib/components/Dashboard/licencias/DashboardConfirmDelete.svelte';
+	import { fly } from 'svelte/transition';
+	import Spinner from 'svelte-spinner';
+	import type { PostgrestResponse } from '@supabase/supabase-js';
+	import { supabase } from '$lib/supabaseClient';
 
 	export let props: any;
 
@@ -29,12 +34,15 @@
 		academica: true
 	};
 
+	let showDeletePopUp = false;
+	let loading = false;
+
 	let components: IComponentObject = {};
 	$: components = {
 		datosGenerales: [
 			{
 				type: 'select',
-				label: 'agente',
+				label: 'Agente',
 				name: 'agente',
 				value: $LicenciaStore.agente || 1,
 				validators: [validateEmptyInput],
@@ -44,7 +52,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de inicio',
+				label: 'Fecha de inicio',
 				name: 'fechaInicio',
 				value: $LicenciaStore.fechaInicio || '',
 				required: true,
@@ -83,7 +91,7 @@
 			},
 			{
 				type: 'date',
-				label: 'fecha de fin',
+				label: 'Fecha de fin',
 				name: 'fechaFin',
 				value: $LicenciaStore.fechaFin || '',
 				required: true,
@@ -122,7 +130,7 @@
 			},
 			{
 				type: 'text',
-				label: 'observaciones',
+				label: 'Observaciones',
 				name: 'observaciones',
 				value: $LicenciaStore.observaciones || '',
 				required: false,
@@ -130,7 +138,7 @@
 			},
 			{
 				type: 'select',
-				label: 'autorizado por Siape',
+				label: 'Autorizado en SIAPE',
 				name: 'autorizadoSiape',
 				value: $LicenciaStore.autorizadoSiape || false,
 				required: false,
@@ -142,18 +150,18 @@
 			},
 			{
 				type: 'select',
-				label: 'tipo',
+				label: 'Tipo',
 				name: 'tipo',
 				value: $LicenciaStore.tipo || '',
 				required: true,
 				validators: [validateEmptyInput],
 				options: [
-					{ value: 'ausente', name: 'ausente con aviso' },
-					{ value: 'academica', name: 'academica' },
-					{ value: 'salud', name: 'salud' },
-					{ value: 'teletrabajo', name: 'teletrabajo' },
-					{ value: 'vacaciones', name: 'vacaciones' },
-					{ value: 'otro', name: 'otro' }
+					{ value: 'ausente', name: 'Ausente con aviso' },
+					{ value: 'academica', name: 'Academica' },
+					{ value: 'salud', name: 'Salud' },
+					{ value: 'teletrabajo', name: 'Teletrabajo' },
+					{ value: 'vacaciones', name: 'Vacaciones' },
+					{ value: 'otro', name: 'Otro' }
 				],
 				disabled: action === 'create' ? false : true
 			}
@@ -161,7 +169,7 @@
 		vacaciones: [
 			{
 				type: 'select',
-				label: 'periodo',
+				label: 'Periodo',
 				name: 'periodo',
 				value: $LicenciaStore.periodo || 1,
 				required: true,
@@ -177,7 +185,7 @@
 		salud: [
 			{
 				type: 'text',
-				label: 'concepto',
+				label: 'Concepto',
 				name: 'concepto',
 				value: $LicenciaStore.concepto || '',
 				required: true,
@@ -187,7 +195,7 @@
 		academica: [
 			{
 				type: 'select',
-				label: 'ultima materia',
+				label: 'Ultima materia',
 				name: 'ultimaMateria',
 				value: $LicenciaStore.ultimaMateria || false,
 				required: true,
@@ -201,7 +209,7 @@
 		teletrabajo: [
 			{
 				type: 'select',
-				label: 'mail autorizado',
+				label: 'Mail autorizado',
 				name: 'mailAutorizado',
 				value: $LicenciaStore.mailAutorizado || false,
 				required: true,
@@ -213,7 +221,7 @@
 			},
 			{
 				type: 'select',
-				label: 'comunicacion inicio',
+				label: 'Comunicacion inicio',
 				name: 'comunicacionInicio',
 				value: $LicenciaStore.comunicacionInicio || false,
 				required: true,
@@ -225,7 +233,7 @@
 			},
 			{
 				type: 'select',
-				label: 'comunicacion fin',
+				label: 'Comunicacion fin',
 				name: 'comunicacionFin',
 				value: $LicenciaStore.comunicacionFin || false,
 				required: true,
@@ -237,7 +245,7 @@
 			},
 			{
 				type: 'select',
-				label: 'comunico inicio a',
+				label: 'Comunico inicio a',
 				name: 'comunicoInicioA',
 				value: $LicenciaStore.comunicoInicioA || '',
 				validators: [validateEmptyInput],
@@ -247,7 +255,7 @@
 			},
 			{
 				type: 'select',
-				label: 'comunico fin a',
+				label: 'Comunico fin a',
 				name: 'comunicoFinA',
 				value: $LicenciaStore.comunicoFinA || '',
 				validators: [validateEmptyInput],
@@ -257,7 +265,7 @@
 			},
 			{
 				type: 'select',
-				label: 'conectado a teams',
+				label: 'Conectado a teams',
 				name: 'conectadoATeams',
 				value: $LicenciaStore.conectadoATeams || false,
 				required: true,
@@ -284,6 +292,10 @@
 	};
 
 	const showValidations = (e: CustomEvent) => {
+		showErrors = false;
+		success = false;
+		errorsMessage = [];
+		successMessage = { title: '', description: '' };
 		const dataErrors = JSON.parse(e.detail.message);
 
 		showErrors = true;
@@ -302,12 +314,58 @@
 	};
 
 	const showSuccess = (e: CustomEvent) => {
+		showErrors = false;
+		success = false;
+		errorsMessage = [];
+		successMessage = { title: '', description: '' };
 		successMessage.title = `Licencia ${action === 'create' ? 'Creada' : 'Actualizada'}`;
 		successMessage.description = `La licencia se ${
 			action === 'create' ? 'creó' : 'actualizó'
 		} correctamente!`;
 		success = true;
 		showErrors = false;
+	};
+	const deleteLicense = async (e: CustomEvent) => {
+		showErrors = false;
+		success = false;
+		errorsMessage = [];
+		successMessage = { title: '', description: '' };
+		const message = e.detail;
+		if (loading || !message.status) {
+			showDeletePopUp = false;
+			return;
+		}
+
+		const { data: currentLicense, error: errorLicense }: PostgrestResponse<Licencia> =
+			await supabase.from('licencia').select('*').eq('id', $LicenciaStore.id).limit(1);
+
+		if (errorLicense) {
+			errorsMessage.push({
+				error: 'Eliminar Licencia',
+				description: errorLicense.message + ''
+			});
+			showErrors = true;
+			showDeletePopUp = false;
+			loading = false;
+			return;
+		}
+		currentLicense[0].borrado = message.status;
+		currentLicense[0].razonBorrado = message.reason;
+
+		const { error: errorNewLicense }: PostgrestResponse<any> = await supabase
+			.from('licencia')
+			.update(currentLicense)
+			.eq('id', currentLicense[0].id);
+		if (errorNewLicense) {
+			errorsMessage.push({
+				error: 'Eliminar Licencia',
+				description: errorNewLicense.message + ''
+			});
+			showErrors = true;
+		}
+		showDeletePopUp = false;
+		loading = false;
+		return;
 	};
 </script>
 
@@ -350,6 +408,28 @@
 			{/if}
 		{/if}
 	</FormDrawer>
+	{#if components.datosGenerales && action === 'update'}
+		<button
+			class="w-5/6 mt-5 p-2 text-sm font-semibold rounded-md flex gap-2 justify-center items-center bg-lime-500 hover:bg-lime-600 hover:cursor-pointer"
+			on:click={() => {
+				showDeletePopUp = true;
+			}}
+		>
+			{#if loading}
+				<Spinner class="text-stone-900" />
+			{:else}
+				Eliminar
+			{/if}
+		</button>
+	{/if}
+	{#if showDeletePopUp}
+		<div class="fixed inset-0 flex items-center justify-center z-[100]">
+			<div class="fixed inset-0 bg-stone-900 dark:bg-stone-700 opacity-75 blur-lg" />
+			<div class="relative z-10 pl-14" transition:fly={{ duration: 150 }}>
+				<DashboardConfirmDelete on:confirm={deleteLicense} />
+			</div>
+		</div>
+	{/if}
 	{#if showErrors}
 		<div class=" w-full p-3 m-5 flex flex-col gap-5">
 			{#each errorsMessage as error}

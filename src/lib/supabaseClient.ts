@@ -32,16 +32,16 @@ export const execSupabaseQuery = async (
 
 	// agegamos el order
 	querySupabase += `.order('${order.field}', {ascending: ${order.direction}})`;
-
 	// ejecutamos la query y la aplanamos
 	const res = await eval(querySupabase);
+	/* 	console.log(querySupabase);
+	console.log(res); */
 	return res;
 };
 
 export const flatSupabaseResponse = (resSupabaseData: any) =>
 	resSupabaseData.map((data: any) => {
 		let flattedArr: any = [];
-
 		// repasamos las claves y si hay un objeto lo llevamos un nivel por encima
 		for (let key in data) {
 			if (typeof data[key] !== 'object' || data[key] == null) {
@@ -52,7 +52,7 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 				flattedArr.push([key, { id: data[key].id, value: data[key].equipo }]);
 			} else if (key == 'direccion') {
 				flattedArr.push([key, { id: data[key].id, value: data[key].acronimo }]);
-			} else {
+			} else if (typeof data[key] === 'object') {
 				for (let subKey in data[key]) {
 					if (subKey === 'direccion') {
 						data[key][subKey].value = data[key][subKey].acronimo;
@@ -60,8 +60,11 @@ export const flatSupabaseResponse = (resSupabaseData: any) =>
 						data[key][subKey].value = data[key][subKey].equipo;
 					} else if (key == 'comunicoInicioA' || key == 'comunicoFinA') {
 						flattedArr.push([key, { id: data[key].id, value: data[key].nombreCompleto }]);
+					} else if (['CLS', 'PTT', 'PP'].includes(subKey)) {
+						for (let subSubKey in data[key][subKey])
+							flattedArr.push([subSubKey, data[key][subKey][subSubKey]]);
 					}
-					flattedArr.push([subKey, data[key][subKey]]);
+					if (!['CLS', 'PTT', 'PP'].includes(subKey)) flattedArr.push([subKey, data[key][subKey]]);
 				}
 			}
 		}

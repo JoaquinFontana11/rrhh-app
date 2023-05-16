@@ -78,10 +78,9 @@ const reloadData = async (
 			: tipo == 'vacaciones'
 			? ', datosVacaciones(periodo)'
 			: ''
-	}').neq('id', 167)`;
+	}').neq('borrado', true)`;
 
 	filters = await manageFilters(filters);
-
 	const resSupabase = await execSupabaseQuery(query, page, filters, order, cantPage);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 
@@ -103,13 +102,12 @@ const calcLastPage = async (
 			: tipo == 'vacaciones'
 			? ', datosVacaciones(periodo)'
 			: ''
-	}', {count: 'exact'}).neq('id', 167)`;
+	}', {count: 'exact'}).neq('borrado', true)`;
 
 	filters.map((f) => {
 		query += `.${f.filter}('${f.field}', '${f.value}')`;
 	});
 	query += `.order('${order.field}', {ascending: ${order.direction}})`;
-
 	const resSupabase = await eval(query);
 
 	return resSupabase;

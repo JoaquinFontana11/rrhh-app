@@ -5,6 +5,75 @@ import { supabase } from '$lib/supabaseClient';
 const create: Action = async ({ request }) => {
 	const data = await request.formData();
 
+	const CLS = {
+		fechaBajaCLS: data.get('fechaBajaCLS') || null,
+		referenciaBajaCLS: data.get('referenciaBajaCLS') || null,
+		antiguedadExternaCLS: data.get('antiguedadExternaCLS') || null,
+		fechaAltaCLS: data.get('fechaAltaCLS') || null,
+		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
+		actoAltaCLS: data.get('actoAltaCLS') || null
+	};
+
+	const PP = {
+		fechaBajaPP: data.get('fechaBajaPP') || null,
+		referenciaBajaPP: data.get('referenciaBajaPP') || null,
+		antiguedadExternaPP: data.get('antiguedadExternaPP') || null,
+		fechaAltaPP: data.get('fechaAltaPP') || null,
+		expedienteAltaPP: data.get('expedienteAltaPP') || null,
+		actoAltaPP: data.get('actoAltaPP') || null,
+		categoriaPP: data.get('categoriaPP') || null,
+		agrupamiento: data.get('agrupamientoPP') || null,
+		numSiapePP: data.get('numSiapePP') || null
+	};
+
+	const PTT = {
+		fechaBajaPTT: data.get('fechaBajaPTT') || null,
+		referenciaBajaPTT: data.get('referenciaBajaPTT') || null,
+		antiguedadExternaPTT: data.get('antiguedadExternaPTT') || null,
+		fechaAltaPTT: data.get('fechaAltaPTT') || null,
+		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
+		actoAltaPTT: data.get('actoAltaPTT') || null,
+		categoriaPTT: data.get('categoriaPTT') || null,
+		agrupamiento: data.get('agrupamientoPTT') || null,
+		numSiapePTT: data.get('numSiapePTT') || null
+	};
+
+	const { data: dataCLS, error: errorCLS }: { data: any; error: any } = await supabase
+		.from('contratoCLS')
+		.insert(CLS)
+		.select();
+
+	const { data: dataPP, error: errorPP }: { data: any; error: any } = await supabase
+		.from('contratoPP')
+		.insert(PP)
+		.select();
+
+	const { data: dataPTT, error: errorPTT }: { data: any; error: any } = await supabase
+		.from('contratoPTT')
+		.insert(PTT)
+		.select();
+
+	if (errorCLS || errorPP || errorPTT) {
+		if (dataCLS) await supabase.from('CLS').delete().eq('id', dataCLS[0].id);
+		if (dataPP) await supabase.from('PP').delete().eq('id', dataPP[0].id);
+		if (dataPTT) await supabase.from('PTT').delete().eq('id', dataPTT[0].id);
+		const message = errorCLS
+			? {
+					error: 'Contrato CLS',
+					description: errorCLS.details ? errorCLS.details + '' : errorCLS.message + ''
+			  }
+			: errorPP
+			? {
+					error: 'Contrato PP',
+					description: errorPP.details ? errorPP.details + '' : errorPP.message + ''
+			  }
+			: {
+					error: 'Contrato PTT',
+					description: errorPTT.details ? errorPTT.details + '' : errorPTT.message + ''
+			  };
+		throw error(400, { message: message });
+	}
+
 	const datosAcademicos = {
 		carreraUniversitaria: data.get('carreraUniversitaria'),
 		carreraPostgrado: data.get('carreraPostgrado'),
@@ -16,28 +85,14 @@ const create: Action = async ({ request }) => {
 		medicamentos: data.get('medicamentos'),
 		consideracion: data.get('consideracion'),
 		telefonoContactoEmergencia: data.get('telefonoContactoEmergencia'),
-		nombreContactoEmergencia: data.get('nombreContactoEmergencia')
+		nombreContactoEmergencia: data.get('nombreContactoEmergencia'),
+		obraSocialActiva: data.get('obraSocialActiva')
 	};
 	const datosRecorrido = {
-		categoria: data.get('categoria') || null,
-		agrupamiento: data.get('agrupamiento') || null,
-		numSiape: data.get('numSiape') || null,
 		tipoContratacion: data.get('tipoContratacion'),
-		referenciaBaja: data.get('referenciaBaja') || null,
-		obraSocialActiva: data.get('obraSocialActiva') || null,
-		fechaAltaCLS: data.get('fechaAltaCLS') || null,
-		fechaBajaCLS: data.get('fechaBajaCLS') || null,
-		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
-		actoAltaCLS: data.get('actoAltaCLS') || null,
-		fechaAltaPTT: data.get('fechaAltaPTT') || null,
-		fechaBajaPTT: data.get('fechaBajaPTT') || null,
-		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
-		actoAltaPTT: data.get('actoAltaPTT') || null,
-		fechaAltaPP: data.get('fechaAltaPP') || null,
-		fechaBajaPP: data.get('fechaBajaPP') || null,
-		expedienteAltaPP: data.get('expedienteAltaPP') || null,
-		actoAltaPP: data.get('actoAltaPP') || null,
-		antiguedadExterna: data.get('antiguedadExterna') || null
+		CLS: dataCLS[0].id,
+		PP: dataPP[0].id,
+		PTT: dataPTT[0].id
 	};
 
 	const { data: dataSalud, error: errorSalud }: { data: any; error: any } = await supabase
@@ -129,7 +184,40 @@ const create: Action = async ({ request }) => {
 // TODO: ACTUALIZAR CON LOS NUEVOS DATOS
 const update: Action = async ({ request }) => {
 	const data = await request.formData();
-	console.log(data);
+
+	const CLS = {
+		fechaBajaCLS: data.get('fechaBajaCLS') || null,
+		referenciaBajaCLS: data.get('referenciaBajaCLS') || null,
+		antiguedadExternaCLS: data.get('antiguedadExternaCLS') || null,
+		fechaAltaCLS: data.get('fechaAltaCLS') || null,
+		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
+		actoAltaCLS: data.get('actoAltaCLS') || null
+	};
+
+	const PP = {
+		fechaBajaPP: data.get('fechaBajaPP') || null,
+		referenciaBajaPP: data.get('referenciaBajaPP') || null,
+		antiguedadExternaPP: data.get('antiguedadExternaPP') || null,
+		fechaAltaPP: data.get('fechaAltaPP') || null,
+		expedienteAltaPP: data.get('expedienteAltaPP') || null,
+		actoAltaPP: data.get('actoAltaPP') || null,
+		categoriaPP: data.get('categoriaPP') || null,
+		agrupamientoPP: data.get('agrupamientoPP') || null,
+		numSiapePP: data.get('numSiapePP') || null
+	};
+
+	const PTT = {
+		fechaBajaPTT: data.get('fechaBajaPTT') || null,
+		referenciaBajaPTT: data.get('referenciaBajaPTT') || null,
+		antiguedadExternaPTT: data.get('antiguedadExternaPTT') || null,
+		fechaAltaPTT: data.get('fechaAltaPTT') || null,
+		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
+		actoAltaPTT: data.get('actoAltaPTT') || null,
+		categoriaPTT: data.get('categoriaPTT') || null,
+		agrupamientoPTT: data.get('agrupamientoPTT') || null,
+		numSiapePTT: data.get('numSiapePTT') || null
+	};
+
 	const datosAcademicos = {
 		carreraUniversitaria: data.get('carreraUniversitaria'),
 		carreraPostgrado: data.get('carreraPostgrado'),
@@ -141,28 +229,11 @@ const update: Action = async ({ request }) => {
 		medicamentos: data.get('medicamentos'),
 		consideracion: data.get('consideracion'),
 		telefonoContactoEmergencia: data.get('telefonoContactoEmergencia'),
-		nombreContactoEmergencia: data.get('nombreContactoEmergencia')
+		nombreContactoEmergencia: data.get('nombreContactoEmergencia'),
+		obraSocialActiva: data.get('obraSocialActiva')
 	};
 	const datosRecorrido = {
-		categoria: data.get('categoria') || null,
-		agrupamiento: data.get('agrupamiento') || null,
-		numSiape: data.get('numSiape') || null,
-		tipoContratacion: data.get('tipoContratacion'),
-		referenciaBaja: data.get('referenciaBaja') || null,
-		obraSocialActiva: data.get('obraSocialActiva') || null,
-		fechaAltaCLS: data.get('fechaAltaCLS') || null,
-		fechaBajaCLS: data.get('fechaBajaCLS') || null,
-		expedienteAltaCLS: data.get('expedienteAltaCLS') || null,
-		actoAltaCLS: data.get('actoAltaCLS') || null,
-		fechaAltaPTT: data.get('fechaAltaPTT') || null,
-		fechaBajaPTT: data.get('fechaBajaPTT') || null,
-		expedienteAltaPTT: data.get('expedienteAltaPTT') || null,
-		actoAltaPTT: data.get('actoAltaPTT') || null,
-		fechaAltaPP: data.get('fechaAltaPP') || null,
-		fechaBajaPP: data.get('fechaBajaPP') || null,
-		expedienteAltaPP: data.get('expedienteAltaPP') || null,
-		actoAltaPP: data.get('actoAltaPP') || null,
-		antiguedadExterna: data.get('antiguedadExterna') || null
+		tipoContratacion: data.get('tipoContratacion')
 	};
 
 	const agente = {
@@ -228,14 +299,132 @@ const update: Action = async ({ request }) => {
 		throw error(400, { message: message });
 	}
 
+	const { data: currentCLS, error: errorCLS }: { data: any; error: any } = await supabase
+		.from('contratoCLS')
+		.select('*')
+		.eq('id', currentRecorrido[0].CLS);
+	const { data: currentPP, error: errorPP }: { data: any; error: any } = await supabase
+		.from('contratoPP')
+		.select('*')
+		.eq('id', currentRecorrido[0].PP);
+	const { data: currentPTT, error: errorPTT }: { data: any; error: any } = await supabase
+		.from('contratoPTT')
+		.select('*')
+		.eq('id', currentRecorrido[0].PTT);
+
+	if (errorCLS || errorPP || errorPTT) {
+		const message = errorCLS
+			? {
+					error: 'Contrato CLS',
+					description: errorCLS.details ? errorCLS.details + '' : errorCLS.message + ''
+			  }
+			: errorPP
+			? {
+					error: 'Contrato PP',
+					description: errorPP.details ? errorPP.details + '' : errorPP.message + ''
+			  }
+			: errorPTT
+			? {
+					error: 'Contrato PTT',
+					description: errorPTT.details ? errorPTT.details + '' : errorPTT.message + ''
+			  }
+			: {
+					error: 'Datos Personales',
+					description: errorAgente.details ? errorAgente.details + '' : errorAgente.message + ''
+			  };
+		throw error(400, { message: message });
+	}
+
 	// actualizamos los datos
 	// TODO: estaria bueno hacer esto una transaccion, pero por el momento no se puede hacer con supabase
 	// una alternativa es usar funciones PLSQL pero por el momento estan el alpha en supabase
+
+	let newDataCLS,
+		newDataPP,
+		newDataPTT = false;
+	let updateCLSError,
+		updatePPError,
+		updatePTTError = false;
+
+	if (currentCLS[0].id !== 0) {
+		const { data, error } = await supabase
+			.from('contratoCLS')
+			.update(CLS)
+			.eq('id', currentCLS[0].id);
+		newDataCLS = data;
+		updateCLSError = error;
+	} else if (CLS.fechaAltaCLS) {
+		const { data, error }: { data: any; error: any } = await supabase
+			.from('contratoCLS')
+			.insert(CLS)
+			.select();
+
+		newDataCLS = data;
+		updateCLSError = error;
+	}
+	if (currentPP[0].id !== 0) {
+		const { data, error } = await supabase.from('contratoPP').update(PP).eq('id', currentPP[0].id);
+
+		newDataPP = data;
+		updatePPError = error;
+	} else if (PP.fechaAltaPP) {
+		const { data, error }: { data: any; error: any } = await supabase
+			.from('contratoPP')
+			.insert(PP)
+			.select();
+
+		newDataPP = data;
+		updatePPError = error;
+	}
+	if (currentPTT[0].id !== 0) {
+		const { data, error } = await supabase
+			.from('contratoPTT')
+			.update(PTT)
+			.eq('id', currentPTT[0].id);
+
+		newDataPTT = data;
+		updatePTTError = error;
+	} else if (PTT.fechaAltaPTT) {
+		const { data, error }: { data: any; error: any } = await supabase
+			.from('contratoPTT')
+			.insert(PTT)
+			.select();
+
+		newDataPTT = data;
+		updatePTTError = error;
+	}
+	if (updateCLSError || updatePPError || updatePTTError) {
+		const message = updateCLSError
+			? {
+					error: 'Contrato CLS',
+					description: updateCLSError.details
+						? updateCLSError.details + ''
+						: updateCLSError.message + ''
+			  }
+			: updatePPError
+			? {
+					error: 'Contrato PP',
+					description: updatePPError.details
+						? updatePPError.details + ''
+						: updatePPError.message + ''
+			  }
+			: {
+					error: 'Contrato PTT',
+					description: updatePTTError.details
+						? updatePTTError.details + ''
+						: updatePTTError.message + ''
+			  };
+		throw error(400, { message: message });
+	}
+
+	datosRecorrido.CLS = newDataCLS ? newDataCLS[0].id : datosRecorrido.CLS;
+	datosRecorrido.PP = newDataPP ? newDataPP[0].id : datosRecorrido.PP;
+	datosRecorrido.PTT = newDataPTT ? newDataPTT[0].id : datosRecorrido.PTT;
+
 	const { data: newDataSalud, error: updateSaludError } = await supabase
 		.from('datosSalud')
 		.update(datosSalud)
 		.eq('id', currentSalud[0].id);
-
 	const { data: newDataAcademico, error: updateAcademicoError } = await supabase
 		.from('datosAcademicos')
 		.update(datosAcademicos)
@@ -244,8 +433,6 @@ const update: Action = async ({ request }) => {
 		.from('datosRecorrido')
 		.update(datosRecorrido)
 		.eq('id', currentRecorrido[0].id);
-
-	// eliminamos el DNI momentaneamente para no afectar la clave primaria
 	const { error: updateAgenteError } = await supabase
 		.from('agente')
 		.update(agente)

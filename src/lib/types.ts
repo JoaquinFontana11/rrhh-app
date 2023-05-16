@@ -56,6 +56,8 @@ type LicenciaSupabase = {
 	tipo: 'ausente' | 'vacaciones' | 'otro' | 'teletrabajo' | 'academica' | 'salud';
 	observaciones: string;
 	autorizadoSiape: boolean;
+	borrado: boolean;
+	razonBorrado: string | null;
 	datosAcademicos:
 		| number
 		| {
@@ -99,6 +101,8 @@ type FlatLicenciaSupabase = {
 	tipo: 'ausente' | 'vacaciones' | 'otro' | 'teletrabajo' | 'academica' | 'salud';
 	observaciones: string;
 	autorizadoSiape: boolean;
+	borrado: boolean;
+	razonBorrado: string | null;
 	ultimaMateria: boolean;
 	concepto: string;
 	mailAutorizado: boolean;
@@ -114,50 +118,57 @@ type FlatAgenteSupabase = {
 	created_at: string;
 	DNI: number;
 	CUIT: number;
-	nombreCompleto: string;
 	fechaNacimiento: string;
-	domicilio: string;
 	emailPersonal: string;
-	emailInstitucional: string;
 	telefono: number;
+	domicilio: string;
 	curriculum: string;
 	genero: string;
 	activo: boolean;
-	equipo: string;
-	direccion: string;
-	rol: string;
-	superiorDirecto: string;
+	nombreCompleto: string;
 	tieneHijos: boolean;
-	asignacionFamiliar: boolean;
 	beneficioGuarderia: boolean;
+	asignacionFamiliar: boolean;
+	rol: string;
+	direccion: string;
+	equipo: string;
+	superiorDirecto: string;
 	tipoSangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | '0+' | '0-';
 	medicamentos: string;
 	consideracion: string;
 	obraSocial: string;
-	telefonoContactoEmergencia: number;
 	nombreContactoEmergencia: string;
+	telefonoContactoEmergencia: number;
+	obraSocialActiva: boolean;
 	carreraUniversitaria: string;
 	carreraPostgrado: string;
 	carreraFinalizada: boolean;
-	categoria: number;
-	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
-	numSiape: number;
 	tipoContratacion: 'CLS' | 'PTT' | 'PP';
-	referenciaBaja: string;
-	obraSocialActiva: boolean;
-	fechaAltaCLS: string;
+	emailInstitucional: string;
 	fechaBajaCLS: string;
+	referenciaBajaCLS: string;
+	antiguedadExternaCLS: number;
+	fechaAltaCLS: string;
 	expedienteAltaCLS: string;
 	actoAltaCLS: string;
-	fechaAltaPTT: string;
-	fechaBajaPTT: string;
-	expedienteAltaPTT: string;
-	actoAltaPTT: string;
+	referenciaBajaPP: string;
+	antiguedadExternaPP: number;
+	categoriaPP: number;
+	agrupamientoPP: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiapePP: number;
 	fechaAltaPP: string;
-	fechaBajaPP: string;
 	expedienteAltaPP: string;
 	actoAltaPP: string;
-	antiguedadExterna: number;
+	fechaBajaPP: string;
+	agrupamientoPTT: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiapePTT: number;
+	fechaAltaPTT: string;
+	expedienteAltaPTT: string;
+	actoAltaPTT: string;
+	fechaBajaPTT: string;
+	referenciaBajaPTT: string;
+	categoriaPTT: number;
+	antiguedadExternaPTT: number;
 };
 
 type AgenteSupabase = {
@@ -165,23 +176,20 @@ type AgenteSupabase = {
 	created_at: string;
 	DNI: number;
 	CUIT: number;
-	nombreCompleto: string;
 	fechaNacimiento: string;
-	domicilio: string;
 	emailPersonal: string;
-	emailInstitucional: string;
 	telefono: number;
+	domicilio: string;
 	curriculum: string;
 	genero: string;
 	activo: boolean;
-	equipo:
-		| number
-		| {
-				id: number;
-				equipo: string;
-				created_at: string;
-				direccion: number;
-		  };
+	nombreCompleto: string;
+	tieneHijos: boolean;
+	beneficioGuarderia: boolean;
+	asignacionFamiliar: boolean;
+	superiorDirecto: string;
+	emailInstitucional: string;
+	rol: string;
 	direccion:
 		| number
 		| {
@@ -190,11 +198,15 @@ type AgenteSupabase = {
 				direccion: string;
 				created_at: string;
 		  };
-	rol: string;
-	superiorDirecto: number | AgenteSupabase;
-	tieneHijos: boolean;
-	asignacionFamiliar: boolean;
-	beneficioGuarderia: boolean;
+	equipo:
+		| number
+		| {
+				id: number;
+				equipo: string;
+				created_at: string;
+				direccion: number;
+		  };
+
 	datosSalud:
 		| number
 		| {
@@ -206,7 +218,9 @@ type AgenteSupabase = {
 				obraSocial: string;
 				telefonoContactoEmergencia: number;
 				nombreContactoEmergencia: string;
+				obraSocialActiva: boolean;
 		  };
+
 	datosAcademicos:
 		| number
 		| {
@@ -216,30 +230,49 @@ type AgenteSupabase = {
 				carreraPostgrado: string;
 				carreraFinalizada: boolean;
 		  };
+
 	datosRecorrido:
 		| number
 		| {
 				id: number;
 				created_at: string;
-				categoria: number;
-				agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
-				numSiape: number;
 				tipoContratacion: 'CLS' | 'PTT' | 'PP';
-				referenciaBaja: string;
-				obraSocialActiva: boolean;
-				fechaAltaCLS: string;
-				fechaBajaCLS: string;
-				expedienteAltaCLS: string;
-				actoAltaCLS: string;
-				fechaAltaPTT: string;
-				fechaBajaPTT: string;
-				expedienteAltaPTT: string;
-				actoAltaPTT: string;
-				fechaAltaPP: string;
-				fechaBajaPP: string;
-				expedienteAltaPP: string;
-				actoAltaPP: string;
-				antiguedadExterna: number;
+				CLS:
+					| number
+					| {
+							fechaBajaCLS: string;
+							referenciaBajaCLS: string;
+							antiguedadExternaCLS: number;
+							fechaAltaCLS: string;
+							expedienteAltaCLS: string;
+							actoAltaCLS: string;
+					  };
+				PP:
+					| number
+					| {
+							referenciaBajaPP: string;
+							antiguedadExternaPP: number;
+							categoriaPP: number;
+							agrupamientoPP: 'tecnico' | 'adminsitrativo' | 'profesional';
+							numSiapePP: number;
+							fechaAltaPP: string;
+							expedienteAltaPP: string;
+							actoAltaPP: string;
+							fechaBajaPP: string;
+					  };
+				PTT:
+					| number
+					| {
+							agrupamientoPTT: 'tecnico' | 'adminsitrativo' | 'profesional';
+							numSiapePTT: number;
+							fechaAltaPTT: string;
+							expedienteAltaPTT: string;
+							actoAltaPTT: string;
+							fechaBajaPTT: string;
+							referenciaBajaPTT: string;
+							categoriaPTT: number;
+							antiguedadExternaPTT: number;
+					  };
 		  };
 };
 
@@ -304,50 +337,63 @@ export type Agente = {
 	id: number | null;
 	DNI: number;
 	CUIT: number;
-	nombreCompleto: string;
 	fechaNacimiento: string;
-	domicilio: string;
 	emailPersonal: string;
-	emailInstitucional: string;
 	telefono: number;
+	domicilio: string;
 	curriculum: string;
 	genero: string;
 	activo: boolean;
-	equipo: number;
-	direccion: number;
-	rol: string;
-	superiorDirecto: number;
+	nombreCompleto: string;
 	tieneHijos: boolean;
-	asignacionFamiliar: boolean;
 	beneficioGuarderia: boolean;
+	asignacionFamiliar: boolean;
+	superiorDirecto: string;
+
 	tipoSangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | '0+' | '0-';
 	medicamentos: string;
 	consideracion: string;
 	obraSocial: string;
-	telefonoContactoEmergencia: number;
 	nombreContactoEmergencia: string;
+	telefonoContactoEmergencia: number;
+	obraSocialActiva: boolean;
+
 	carreraUniversitaria: string;
 	carreraPostgrado: string;
 	carreraFinalizada: boolean;
-	categoria: number;
-	agrupamiento: 'tecnico' | 'adminsitrativo' | 'profesional';
-	numSiape: number;
+
 	tipoContratacion: 'CLS' | 'PTT' | 'PP';
-	referenciaBaja: string;
-	obraSocialActiva: boolean;
-	fechaAltaCLS: string;
+	emailInstitucional: string;
+	rol: string;
+	direccion: string;
+	equipo: string;
+
 	fechaBajaCLS: string;
+	referenciaBajaCLS: string;
+	antiguedadExternaCLS: number;
+	fechaAltaCLS: string;
 	expedienteAltaCLS: string;
 	actoAltaCLS: string;
-	fechaAltaPTT: string;
-	fechaBajaPTT: string;
-	expedienteAltaPTT: string;
-	actoAltaPTT: string;
+
+	referenciaBajaPP: string;
+	antiguedadExternaPP: number;
+	categoriaPP: number;
+	agrupamientoPP: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiapePP: number;
 	fechaAltaPP: string;
-	fechaBajaPP: string;
 	expedienteAltaPP: string;
 	actoAltaPP: string;
-	antiguedadExterna: number;
+	fechaBajaPP: string;
+
+	agrupamientoPTT: 'tecnico' | 'adminsitrativo' | 'profesional';
+	numSiapePTT: number;
+	fechaAltaPTT: string;
+	expedienteAltaPTT: string;
+	actoAltaPTT: string;
+	fechaBajaPTT: string;
+	referenciaBajaPTT: string;
+	categoriaPTT: number;
+	antiguedadExternaPTT: number;
 };
 
 export type Licencia = {
@@ -357,6 +403,8 @@ export type Licencia = {
 	fechaFin: string;
 	tipo: string;
 	observaciones: Text;
+	borrado: boolean;
+	razonBorrado: string | null;
 	autorizadoSiape: boolean;
 	datosSalud: number | null;
 	datosTeletrabajo: number | null;
