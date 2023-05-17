@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class={`w-[34rem] h-auto bg-white border border-white dark:border-stone-500 dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2`}
+	class={`w-[34rem] h-auto bg-white border border-white dark:border-stone-700 dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2`}
 >
 	<div class="flex justify-end">
 		<button
@@ -23,7 +23,9 @@
 	</div>
 	<hr class=" my-1 h-0.5 bg-stone-300 dark:bg-stone-900" />
 	<div class=" flex flex-col justify-end items-center gap-6">
-		<label for="razonBorrado">Inserte la razon del Borrado antes de continuar</label>
+		<label for="razonBorrado" class="dark:text-stone-100 font-semibold"
+			>Inserte la razon del Borrado antes de continuar</label
+		>
 		<input
 			id="razonBorrado"
 			type="text"

@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class={`w-[34rem] h-auto bg-white border border-white dark:border-stone-500 dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2`}
+	class={`w-[34rem] h-auto bg-white border border-white dark:border-stone-700 dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2`}
 >
 	<div class="flex items-center justify-center flex-col dark:text-stone-100">
 		<span class="font-bold text-lg ">¿Esta seguro que quiere eliminar esta nota?</span>
