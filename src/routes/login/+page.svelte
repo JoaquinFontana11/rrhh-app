@@ -33,13 +33,13 @@
 			type="email"
 			name="email"
 			placeholder="Ingrese email"
-			class="p-2 bg-white border border-stone-200 outline-none rounded-lg focus:border-lime-500"
+			class="p-2 bg-white border border-stone-200 outline-none rounded-lg focus:border-DPMA-Turquoise"
 		/>
 		<input
 			type="password"
 			name="password"
 			placeholder="Ingrese contraseña"
-			class="p-2 bg-white border border-stone-200 outline-none rounded-lg focus:border-lime-500"
+			class="p-2 bg-white border border-stone-200 outline-none rounded-lg focus:border-DPMA-Turquoise"
 		/>
 		<input
 			type="submit"

@@ -61,12 +61,12 @@
 
 <style lang="postcss">
 	.ok {
-		@apply text-green-500 border-green-500;
+		@apply text-DPMA-Succes border-DPMA-Succes;
 	}
 	.warn {
-		@apply text-yellow-500 border-yellow-500;
+		@apply text-DPMA-Yellow border-DPMA-Yellow;
 	}
 	.alert {
-		@apply text-red-500 border-red-500;
+		@apply text-DPMA-Error border-DPMA-Error;
 	}
 </style>

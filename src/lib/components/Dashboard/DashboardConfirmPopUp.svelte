@@ -24,7 +24,7 @@
 			<span class="dark:text-stone-100">Aceptar</span>
 		</button>
 		<button
-			class="flex flex-row border p-2 rounded-lg bg-green-500 hover:bg-green-600 dark:hover:bg-green-700 dark:bg-green-800 disabled:dark:bg-stone-600 dark:border-stone-500"
+			class="flex flex-row border p-2 rounded-lg bg-DPMA-Succes hover:bg-dark-Succes dark:hover:bg-dark-Succes dark:bg-dark-Succes disabled:dark:bg-stone-600 dark:border-stone-500"
 			on:click={() => {
 				dispatcher('confirm', false);
 			}}

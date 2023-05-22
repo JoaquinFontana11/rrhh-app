@@ -21,6 +21,10 @@
 	let title: string;
 	let subtitle: string;
 
+	let disabled: boolean;
+
+	$: disabled = title === '' || subtitle === '' || title === undefined || subtitle === undefined;
+
 	const fields = {
 		fechaInicio: 'Fecha de Inicio',
 		fechaFin: 'Fecha de Fin',
@@ -120,6 +124,9 @@
 		id="formato"
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 		bind:value={exportFormat}
+		on:change={() => {
+			disabled = !(exportFormat === 'excel');
+		}}
 	>
 		<option value="excel">Excel</option>
 		<option value="pdf">Pdf</option>
@@ -149,5 +156,13 @@
 			bind:value={subtitle}
 		/>
 	{/if}
-	<button class="bg-lime-500 rounded-lg p-1" on:click={exportData}>Exportar licencias</button>
+	<button class="bg-DPMA-Rose rounded-lg p-1" class:disabled {disabled} on:click={exportData}
+		>Exportar licencias</button
+	>
 </div>
+
+<style lang="postcss">
+	.disabled {
+		@apply bg-light-Rose cursor-not-allowed;
+	}
+</style>

@@ -79,7 +79,7 @@
 	/>
 	<span class="text-stone-400 text-sm dark:text-stone-600">formato de fecha: yyyy-mm-dd</span>
 	<button
-		class="bg-lime-500 rounded-lg p-1"
+		class="bg-DPMA-Rose rounded-lg p-1"
 		on:click={async () => {
 			filterStore.update((filterStoreValue) => {
 				if (!value) return filterStoreValue;
@@ -98,7 +98,7 @@
 
 	<p class="dark:text-stone-400">Filtros activos</p>
 	{#each $filterStore as filterValue}
-		<div class="flex justify-between bg-lime-100 p-1 rounded-lg gap-2">
+		<div class="flex justify-between bg-light-Rose p-1 rounded-lg gap-2">
 			<p class="flex justify-center grow gap-5">
 				<span>
 					{filterValue.field}

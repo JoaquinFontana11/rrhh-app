@@ -66,11 +66,11 @@ const reloadData = async (
 	filters: any[],
 	cantPage: number
 ) => {
-	const val = await supabase
+	/* 	const val = await supabase
 		.from('agente')
 		.select(
 			'*,datosRecorrido (tipoContratacion,PP (*),PTT (*),CLS (*)), datosAcademicos (*), datosSalud (*),superiorDirecto(*),equipo(*),direccion(*)'
-		);
+		); */
 	//console.log(val);
 	const resSupabase = await execSupabaseQuery(
 		`supabase.from('agente').select('*,datosRecorrido (tipoContratacion,PP (*),PTT (*),CLS (*)), datosAcademicos (*), datosSalud (*),superiorDirecto(*),equipo(*),direccion(*)')`,
@@ -79,7 +79,7 @@ const reloadData = async (
 		order,
 		cantPage
 	);
-	//console.log(resSupabase);
+	console.log(resSupabase);
 	resSupabase.data = flatSupabaseResponse(resSupabase.data);
 	//console.log(resSupabase);
 	return resSupabase;

@@ -192,13 +192,13 @@
 			bind:value={subtitle}
 		/>
 	{/if}
-	<button class="bg-lime-500 rounded-lg p-1" class:disabled {disabled} on:click={exportData}
+	<button class="bg-DPMA-Rose rounded-lg p-1" class:disabled {disabled} on:click={exportData}
 		>Exportar agentes</button
 	>
 </div>
 
 <style lang="postcss">
 	.disabled {
-		@apply bg-lime-300 cursor-not-allowed;
+		@apply bg-light-Rose cursor-not-allowed;
 	}
 </style>

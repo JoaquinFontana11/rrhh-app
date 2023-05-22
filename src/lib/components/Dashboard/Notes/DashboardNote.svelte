@@ -135,12 +135,12 @@
 
 <style lang="postcss">
 	.icon-ok {
-		@apply text-green-500;
+		@apply text-DPMA-Succes;
 	}
 	.icon-warn {
-		@apply text-yellow-500;
+		@apply text-DPMA-Yellow;
 	}
 	.icon-alert {
-		@apply text-rose-500;
+		@apply text-DPMA-Rose;
 	}
 </style>

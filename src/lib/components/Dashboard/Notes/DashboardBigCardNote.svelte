@@ -57,10 +57,10 @@
 <div
 	class={`w-[34rem] h-[34rem] bg-white border border-white dark:bg-stone-800 rounded-md shadow-xl p-2 flex flex-col gap-2 dark:border-2 ${
 		note.nivel == 'ok'
-			? 'dark:border-green-500'
+			? 'dark:border-DPMA-Succes'
 			: note.nivel == 'warn'
-			? 'dark:border-yellow-500'
-			: 'dark:border-rose-500'
+			? 'dark:border-DPMA-Yellow'
+			: 'dark:border-DPMA-Rose'
 	}`}
 >
 	<div
@@ -79,10 +79,10 @@
 					on:input={setLimitText}
 					class={` rounded-lg outline-none p-2  dark:text-stone-100 w-96 ${
 						note.nivel == 'ok'
-							? 'bg-green-400 border-green-500 dark:bg-green-700'
+							? 'bg-light-Succes border-DPMA-Succes dark:bg-dark-Succes'
 							: note.nivel == 'warn'
-							? 'bg-yellow-400 border-yellow-500 dark:bg-yellow-700'
-							: 'bg-rose-400 border-rose-500 dark:bg-rose-700'
+							? 'bg-light-Yellow border-DPMA-Yellow dark:bg-dark-Yellow'
+							: 'bg-light-Rose border-DPMA-Rose dark:bg-dark-Rose'
 					}`}
 				/>
 				<button
@@ -218,13 +218,13 @@
 
 <style lang="postcss">
 	.bg-ok {
-		@apply bg-green-500;
+		@apply bg-DPMA-Succes;
 	}
 	.bg-warn {
-		@apply bg-yellow-500;
+		@apply bg-DPMA-Yellow;
 	}
 	.bg-alert {
-		@apply bg-rose-500;
+		@apply bg-DPMA-Rose;
 	}
 	.disabled {
 		@apply bg-stone-50 cursor-not-allowed;

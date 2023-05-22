@@ -50,6 +50,6 @@
 
 <style lang="postcss">
 	.disabled {
-		@apply bg-green-300 cursor-not-allowed;
+		@apply bg-light-Succes cursor-not-allowed;
 	}
 </style>

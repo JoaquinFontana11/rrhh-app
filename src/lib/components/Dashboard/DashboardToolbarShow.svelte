@@ -37,7 +37,7 @@
 		{/each}
 	</select>
 	<button
-		class="bg-lime-500 rounded-lg p-1"
+		class="bg-DPMA-Rose rounded-lg p-1"
 		on:click={() => {
 			showStore.update((showStoreValue) => {
 				if (!field) return showStoreValue;
@@ -60,7 +60,7 @@
 	>
 	<p class="dark:text-stone-400">Campos visibles</p>
 	{#each $showStore as showValue}
-		<div class="flex justify-between bg-lime-100 p-1 rounded-lg gap-2">
+		<div class="flex justify-between bg-light-Rose p-1 rounded-lg gap-2">
 			<p class="flex justify-center grow gap-5">
 				{showValue.field}
 			</p>
@@ -82,9 +82,9 @@
 
 <style lang="postcss">
 	.green {
-		@apply bg-lime-500;
+		@apply bg-DPMA-Rose;
 	}
 	.red {
-		@apply bg-rose-500;
+		@apply bg-DPMA-Rose;
 	}
 </style>

@@ -8,7 +8,7 @@
 </script>
 
 <button
-	class="w-10 h-10 pr-2 rounded-lg text-DPMA-Black hover:text-light-Black flex justify-center items-center"
+	class="w-10 h-10 pr-2 rounded-lg text-DPMA-Grey hover:text-light-Grey flex justify-center items-center"
 	on:click|preventDefault={logOut}
 	on:keypress|preventDefault={logOut}
 >

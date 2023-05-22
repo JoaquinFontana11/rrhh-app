@@ -78,7 +78,7 @@
 			<div
 				class="flex bg-white shadow-md p-2 justify-arround items-center gap-2 rounded-lg dark:bg-stone-800 dark:border dark:border-stone-700"
 			>
-				<Icon src={ExclamationCircle} class="text-rose-500 w-6 h-6" />
+				<Icon src={ExclamationCircle} class="text-DPMA-Rose w-6 h-6" />
 				<div class="w-5/6">
 					<p class="text-stone-700 dark:text-stone-200 text-sm">{message.error}</p>
 					<p class="text-stone-500 text-sm">{message.description}</p>

@@ -13,7 +13,7 @@
 
 <div class="flex justify-start items-center gap-1 w-full">
 	<button
-		class="rounded-full w-2 h-2 bg-rose-500"
+		class="rounded-full w-2 h-2 bg-DPMA-Rose"
 		class:red={color == 'red'}
 		class:yellow={color == 'yellow'}
 		class:sky={color == 'sky'}
@@ -27,16 +27,16 @@
 
 <style lang="postcss">
 	.red {
-		@apply bg-rose-500;
+		@apply bg-DPMA-Rose;
 	}
 	.yellow {
-		@apply bg-yellow-500;
+		@apply bg-DPMA-Yellow;
 	}
 	.sky {
 		@apply bg-sky-500;
 	}
 	.green {
-		@apply bg-green-500;
+		@apply bg-DPMA-Succes;
 	}
 	.indigo {
 		@apply bg-indigo-500;

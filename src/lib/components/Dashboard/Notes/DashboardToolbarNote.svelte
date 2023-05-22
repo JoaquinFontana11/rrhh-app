@@ -80,7 +80,7 @@
 		class="bg-white border border-stone-200 rounded-lg outline-none p-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
 	/>
 	<button
-		class="bg-lime-500 rounded-lg p-1 hover:bg-lime-400 flex justify-center items-center"
+		class="bg-DPMA-Rose rounded-lg p-1 hover:bg-light-Rose flex justify-center items-center"
 		class:disabled={contenido === '' || titulo === ''}
 		on:click={createNote}
 		>{#if loading} <Spinner /> {:else} Agregar nota {/if}</button
@@ -89,6 +89,6 @@
 
 <style lang="postcss">
 	.disabled {
-		@apply bg-lime-300 cursor-not-allowed;
+		@apply bg-light-Rose cursor-not-allowed;
 	}
 </style>

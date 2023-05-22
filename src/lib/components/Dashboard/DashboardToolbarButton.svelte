@@ -46,6 +46,6 @@
 		@apply bg-DPMA-Rose hover:bg-dark-Rose;
 	}
 	.text-highligth {
-		@apply text-lime-500 hover:text-lime-600;
+		@apply text-DPMA-Rose hover:text-dark-Rose;
 	}
 </style>

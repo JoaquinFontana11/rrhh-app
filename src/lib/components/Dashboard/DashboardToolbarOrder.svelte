@@ -39,7 +39,7 @@
 		<option value={false}>descendente</option>
 	</select>
 	<button
-		class="bg-lime-500 rounded-lg p-1"
+		class="bg-DPMA-Rose rounded-lg p-1"
 		on:click={() => {
 			orderStore.update((n) => {
 				return {
